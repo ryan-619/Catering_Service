@@ -1,12 +1,20 @@
 import { motion } from 'framer-motion'
 import { FaWhatsapp, FaRing, FaBuilding, FaUsers, FaStar } from 'react-icons/fa'
+import hero1 from '../assets/hero/hero1.jpg'
+import hero2 from '../assets/hero/hero2.jpg'
+import hero3 from '../assets/hero/hero3.jpg'
+import hero4 from '../assets/hero/hero4.jpg'
+import hero5 from '../assets/hero/hero5.jpg'
+import hero6 from '../assets/hero/hero6.jpg'
 
 const heroSlides = [
-  'https://images.unsplash.com/photo-1567521464027-f127ff144326?w=1600&q=80',
-  'https://images.unsplash.com/photo-1555244162-803834f70033?w=1600&q=80',
-  'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=1600&q=80',
-  'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1600&q=80',
-  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=80',
+
+  hero1,
+  hero2,
+  hero3,
+  hero4,
+  hero5,
+  hero6,
 ]
 
 export default function Hero({ onBookNow }) {

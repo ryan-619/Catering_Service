@@ -26,9 +26,6 @@ export default function About({ onBookNow }) {
                 Pure Vegetarian Excellence<br />
                 <em className="italic" style={{ color: 'var(--green)' }}>Since 1982</em>
               </h2>
-              <div className="tagline-box">
-                हम आभारी हैं माता अन्नपूर्णा के — जिन्होंने हमको माध्यम बनाया, आपका अन्न आप तक पहुँचाने का।
-              </div>
               <p style={{ marginTop: '18px' }}>
                 Founded in <strong>1982</strong>, Lala Trivedi Catering Service has built a proud legacy
                 of <strong>pure vegetarian catering</strong> in Kanpur, U.P. For over four decades, we
