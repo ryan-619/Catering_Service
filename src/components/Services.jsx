@@ -7,7 +7,7 @@ const services = [
   {
     tag: 'Lunch Box',
     name: 'Lunch Box Catering',
-    items: ['Corporate Meetings', 'Seminars', 'School Events', 'Office Training', 'Travel Groups'],
+    items: ['Corporate Meetings', 'Seminars', 'School Events', 'Office Training', 'Travel Groups', 'Wedding Functions', 'Puja / Religious Programs'],
     img: lunchBoxImg,
     alt: 'Lunch Box Catering',
   },

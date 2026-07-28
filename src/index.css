@@ -853,6 +853,34 @@ footer{background:#0F1F13;padding:64px 0 0}
   line-height: 1.75;
 }
 
+.pers-trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.pers-trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(27,123,52,.06);
+  border: 1px solid rgba(27,123,52,.22);
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--green-dk);
+}
+
+.pers-trust-badge svg { color: var(--green); font-size: .95rem; flex-shrink: 0; }
+
+@media (max-width: 560px) {
+  .pers-trust-badges { flex-direction: column; align-items: stretch; gap: 10px; }
+  .pers-trust-badge { justify-content: center; text-align: center; font-size: .78rem; }
+}
+
 /* Grid */
 .pers-grid {
   display: grid;
