@@ -32,7 +32,7 @@ const founders = [
       { val: '300+', lbl: 'Menus' },
       { val: '100%', lbl: 'Veg Always' },
     ],
-    expNum: '20+',
+    expNum: '26+',
     expLbl: 'Years of Leadership',
     reverse: true,
   },

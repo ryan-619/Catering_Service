@@ -1,25 +1,28 @@
 import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
+import lunchBoxImg from '../assets/services/lunch-box.jpg'
+import thaliImg from '../assets/services/thali.jpg'
+import liveBuffetImg from '../assets/services/live-buffet.jpg'
 
 const services = [
   {
     tag: 'Lunch Box',
     name: 'Lunch Box Catering',
     items: ['Corporate Meetings', 'Seminars', 'School Events', 'Office Training', 'Travel Groups'],
-    img: 'https://images.unsplash.com/photo-1567521464027-f127ff144326?w=800&q=80',
+    img: lunchBoxImg,
     alt: 'Lunch Box Catering',
   },
   {
     tag: 'Thali',
     name: 'Thali Catering',
     items: ['Birthday Parties', 'Housewarming', 'Puja', 'Family Functions', 'Small Gatherings'],
-    img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80',
+    img: thaliImg,
     alt: 'Thali Catering',
   },
   {
     tag: 'Live Buffet',
     name: 'Live Buffet Catering',
     items: ['Wedding', 'Reception', 'Anniversary', 'Corporate Events', 'Festivals'],
-    img: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80',
+    img: liveBuffetImg,
     alt: 'Live Buffet Catering',
   },
 ]

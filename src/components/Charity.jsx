@@ -126,7 +126,7 @@ export default function Charity() {
 
               <div className="charity-highlights">
                 <div className="charity-highlight">
-                  <span className="charity-highlight-num">500+</span>
+                  <span className="charity-highlight-num">1000+</span>
                   <span className="charity-highlight-lbl">Prasad Every Tuesday</span>
                 </div>
                 <div className="charity-highlight">
