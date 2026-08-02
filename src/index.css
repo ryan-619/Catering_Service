@@ -853,34 +853,6 @@ footer{background:#0F1F13;padding:64px 0 0}
   line-height: 1.75;
 }
 
-.pers-trust-badges {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 28px;
-}
-
-.pers-trust-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  background: rgba(27,123,52,.06);
-  border: 1px solid rgba(27,123,52,.22);
-  border-radius: 30px;
-  padding: 10px 20px;
-  font-size: .82rem;
-  font-weight: 500;
-  color: var(--green-dk);
-}
-
-.pers-trust-badge svg { color: var(--green); font-size: .95rem; flex-shrink: 0; }
-
-@media (max-width: 560px) {
-  .pers-trust-badges { flex-direction: column; align-items: stretch; gap: 10px; }
-  .pers-trust-badge { justify-content: center; text-align: center; font-size: .78rem; }
-}
-
 /* Grid */
 .pers-grid {
   display: grid;
@@ -1140,7 +1112,6 @@ footer{background:#0F1F13;padding:64px 0 0}
 .gallery-slide-video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; background: var(--charcoal); }
 .gallery-slide:hover .gallery-slide-video { transform: scale(1.07); }
 .gallery-slide-badge { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 20px; background: rgba(0,0,0,.6); color: var(--white); font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; }
-.gallery-swiper-rm { margin-top: 46px; }
 
 /* Nav Buttons */
 .gallery-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 40px; height: 40px; border-radius: 50%; background: var(--green); color: var(--white); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .9rem; transition: background .25s, transform .25s; left: 0; }
@@ -1180,6 +1151,91 @@ footer{background:#0F1F13;padding:64px 0 0}
   .gallery-lightbox-prev { left: -24px; }
   .gallery-lightbox-next { right: -24px; }
 }
+
+/* ── NATIONAL-LEVEL EVENTS ── */
+#national-events { padding: var(--pad) 0; background: var(--white); }
+
+.ne-header { text-align: center; margin-bottom: 56px; }
+.ne-header .gline { margin: 10px auto 18px; }
+
+.ne-subtitle {
+  font-size: .97rem;
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+/* Subsection */
+.ne-sub {
+  border: 1px solid rgba(27,123,52,.16);
+  border-radius: 18px;
+  padding: clamp(24px, 4vw, 44px);
+  background: var(--ivory);
+}
+
+.ne-sub + .ne-sub { margin-top: 40px; }
+
+.ne-sub-head { text-align: center; margin-bottom: 34px; }
+
+.ne-sub-line {
+  display: block;
+  width: 36px;
+  height: 3px;
+  background: var(--yellow);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.ne-sub-title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--green-dk);
+  line-height: 1.25;
+  margin-bottom: 12px;
+}
+
+.ne-sub-desc {
+  font-size: .92rem;
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Photos / Videos block inside a subsection */
+.ne-block + .ne-block { margin-top: 40px; }
+
+.ne-block-title {
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.ne-carousel { padding: 0 48px; }
+
+.ne-empty {
+  text-align: center;
+  font-size: .9rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .ne-carousel { padding: 0 36px; }
+}
+
+@media (max-width: 480px) {
+  .ne-carousel { padding: 0 28px; }
+}
+
 /* ── CUISINE MODAL ── */
 .cuisine-explore {
   font-size: .75rem;
@@ -1446,6 +1502,32 @@ footer{background:#0F1F13;padding:64px 0 0}
 .slide-2 { animation-delay: 5s; }
 .slide-3 { animation-delay: 7.5s; }
 .slide-4 { animation-delay: 10s; }
+
+/* Second slideshow — 3 photos, so it needs its own cycle length. Same 2.5s
+   per photo as the one above, hence 7.5s total instead of 12.5s. */
+.charity-slideshow-2 { margin-top: 28px; margin-bottom: 0; }
+
+.charity-slide-img-2 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: sevaSlide2 7.5s infinite;
+}
+
+.slide2-0 { animation-delay: 0s; }
+.slide2-1 { animation-delay: 2.5s; }
+.slide2-2 { animation-delay: 5s; }
+
+@keyframes sevaSlide2 {
+  0% { opacity: 0; }
+  8.33% { opacity: 1; }
+  33.33% { opacity: 1; }
+  41.67% { opacity: 0; }
+  100% { opacity: 0; }
+}
 
 @keyframes sevaSlide {
   0% { opacity: 0; }

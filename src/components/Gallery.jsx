@@ -29,38 +29,9 @@ import g17 from '../assets/gallery/g17.jpg'
 // import g19 from '../assets/gallery/g19.jpg'
 // import gvideo from '../assets/gallery/gvideo.mp4'
 
-import rm1 from '../assets/rammandir/rm1.jpg'
-import rm2 from '../assets/rammandir/rm2.jpg'
-import rm3 from '../assets/rammandir/rm3.jpg'
-import rm4 from '../assets/rammandir/rm4.jpg'
-import rm5 from '../assets/rammandir/rm5.jpg'
-import rm6 from '../assets/rammandir/rm6.jpg'
-import rm7 from '../assets/rammandir/rm7.jpg'
-import rm8 from '../assets/rammandir/rm8.jpg'
-import rm9 from '../assets/rammandir/rm9.jpg'
-import rm10 from '../assets/rammandir/rm10.jpg'
-import rm11 from '../assets/rammandir/rm11.jpg'
-import rm12 from '../assets/rammandir/rm12.jpg'
-import rm13 from '../assets/rammandir/rm13.jpg'
-import rm14 from '../assets/rammandir/rm14.jpg'
-import rm15 from '../assets/rammandir/rm15.jpg'
-import rm16 from '../assets/rammandir/rm16.jpg'
-import rm17 from '../assets/rammandir/rm17.jpg'
-import rm18 from '../assets/rammandir/rm18.jpg'
-import rmv1 from '../assets/rammandir/rmv1.mp4'
-import rmv2 from '../assets/rammandir/rmv2.mp4'
-import rmv3 from '../assets/rammandir/rmv3.mp4'
-
 const photos = [g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17]
 
 const photoMedia = photos.map((src) => ({ src, type: 'image' }))
-
-const ramMandirMedia = [
-  rm1,rm2,rm3,rm4,rm5,rm6,rm7,rm8,rm9,
-  rm10,rm11,rm12,rm13,rm14,rm15,rm16,rm17,rm18,
-].map((src) => ({ src, type: 'image' })).concat(
-  [rmv1, rmv2, rmv3].map((src) => ({ src, type: 'video' }))
-)
 
 const masonryLayout = [
   { img: g1, cls: 'tall' },
@@ -205,71 +176,6 @@ export default function Gallery() {
               <FaChevronLeft />
             </button>
             <button className="swiper-btn-next gallery-nav-btn gallery-nav-next">
-              <FaChevronRight />
-            </button>
-          </div>
-        </FadeUp>
-
-        {/* Ram Mandir Carousel */}
-        <FadeUp delay={0.4}>
-          <div className="gallery-swiper-wrap gallery-swiper-rm">
-            <h3 className="gallery-carousel-title">Events in Ram Mandir</h3>
-            <Swiper
-              modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={16}
-              slidesPerView={1}
-              navigation={{
-                prevEl: '.swiper-btn-prev-rm',
-                nextEl: '.swiper-btn-next-rm',
-              }}
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 2500, disableOnInteraction: false }}
-              loop={true}
-              breakpoints={{
-                480: { slidesPerView: 2, spaceBetween: 12 },
-                768: { slidesPerView: 3, spaceBetween: 16 },
-                1024: { slidesPerView: 4, spaceBetween: 20 },
-              }}
-              className="gallery-swiper"
-            >
-              {ramMandirMedia.map((item, i) => (
-                <SwiperSlide key={i}>
-                  <div
-                    className="gallery-slide"
-                    onClick={() => openLightbox(ramMandirMedia, i)}
-                  >
-                    {item.type === 'video' ? (
-                      <video
-                        src={item.src}
-                        muted
-                        playsInline
-                        preload="metadata"
-                        className="gallery-slide-video"
-                      />
-                    ) : (
-                      <img src={item.src} alt={`Ram Mandir event ${i + 1}`} />
-                    )}
-                    <div className="gallery-slide-overlay">
-                      {item.type === 'video' ? (
-                        <FaPlay className="gallery-slide-icon" />
-                      ) : (
-                        <FaExpand className="gallery-slide-icon" />
-                      )}
-                    </div>
-                    {item.type === 'video' && (
-                      <span className="gallery-slide-badge">
-                        <FaPlay /> Video
-                      </span>
-                    )}
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-
-            <button className="swiper-btn-prev-rm gallery-nav-btn">
-              <FaChevronLeft />
-            </button>
-            <button className="swiper-btn-next-rm gallery-nav-btn gallery-nav-next">
               <FaChevronRight />
             </button>
           </div>

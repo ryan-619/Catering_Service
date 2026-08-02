@@ -1,4 +1,4 @@
-import { FaLandmark, FaFlag, FaFilm, FaMusic, FaAward, FaOm } from 'react-icons/fa'
+import { FaLandmark, FaFlag, FaFilm, FaMusic } from 'react-icons/fa'
 import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
 import p1 from '../assets/p1.jpeg'
 import p2 from '../assets/p2.jpg'
@@ -34,12 +34,6 @@ const personalities = [
   { img: p15, name: 'Arun Yogiraj', title: 'Ram lalla Ayodhya', tag: <> </> },
 ]
 
-const trustBadges = [
-  { icon: <FaAward />, text: 'Trusted at National-Level Events' },
-  { icon: <FaLandmark />, text: 'Privileged to Serve at Rashtriya Karyakari Samiti' },
-  { icon: <FaOm />, text: 'Blessed to Serve at Ram Mandir' },
-]
-
 export default function Personalities() {
   return (
     <section id="personalities">
@@ -53,13 +47,6 @@ export default function Personalities() {
               Over the decades, LTCS has had the privilege of serving and being
               associated with some of India's most celebrated personalities.
             </p>
-            <div className="pers-trust-badges">
-              {trustBadges.map((b) => (
-                <span className="pers-trust-badge" key={b.text}>
-                  {b.icon} {b.text}
-                </span>
-              ))}
-            </div>
           </div>
         </FadeUp>
 

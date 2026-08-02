@@ -10,6 +10,7 @@ import Speciality from './components/Speciality'
 import Stats from './components/Stats'
 import Cuisines from './components/Cuisines'
 import Personalities from './components/Personalities'
+import NationalEvents from './components/NationalEvents'
 import Testimonials from './components/Testimonials'
 import Charity from './components/Charity'
 import Faq from './components/Faq'
@@ -41,11 +42,14 @@ export default function App() {
       <Stats />
       
       <Cuisines />
+      {/* Order: Our Honour → National-Level Events → Moments We've Crafted
+          → Client Reviews → Seva & Compassion */}
       <Personalities />
+      <NationalEvents />
+      <Gallery />
+      <VideoGallery />
       <Testimonials />
       <Charity />
-      <Gallery />
-            <VideoGallery />
       <Cta onBookNow={openModal} />
        <Faq onBookNow={openModal} />
       <ContactBar />

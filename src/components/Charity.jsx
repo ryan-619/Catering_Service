@@ -5,6 +5,9 @@ import 'swiper/css/pagination'
 import { FaMosque, FaCalendarAlt, FaBoxOpen, FaHandsHelping, FaLeaf, FaWhatsapp, FaHeart } from 'react-icons/fa'
 import { useState } from 'react'
 import { submitCharity } from '../api/api'
+import seva1 from '../assets/seva/seva1.jpg'
+import seva2 from '../assets/seva/seva2.jpg'
+import seva3 from '../assets/seva/seva3.jpg'
 
 const sevaPhotos = [
   'https://res.cloudinary.com/r9upjg8g/image/upload/v1784820510/WhatsApp_Image_2026-07-23_at_2.12.25_PM_2_fvyvix.jpg',
@@ -13,6 +16,9 @@ const sevaPhotos = [
   'https://res.cloudinary.com/r9upjg8g/image/upload/v1784820341/WhatsApp_Image_2026-07-23_at_2.12.23_PM_kng2iv.jpg',
   'https://res.cloudinary.com/r9upjg8g/image/upload/v1784820341/WhatsApp_Image_2026-07-23_at_2.12.24_PM_ctph53.jpg',
 ]
+// Second slideshow — food distribution seva, rotates independently of the one above.
+const sevaPhotos2 = [seva1, seva2, seva3]
+
 const cards = [
   {
     icon: <FaMosque />,
@@ -123,6 +129,17 @@ export default function Charity() {
                 warm, nutritious, pure vegetarian prasad reaches everyone with
                 <strong> devotion, dignity and love</strong>.
               </p>
+
+              <div className="charity-slideshow charity-slideshow-2">
+                {sevaPhotos2.map((photo, i) => (
+                  <img
+                    key={i}
+                    src={photo}
+                    alt={`Prasad distribution ${i + 1}`}
+                    className={`charity-slide-img-2 slide2-${i}`}
+                  />
+                ))}
+              </div>
 
               <div className="charity-highlights">
                 <div className="charity-highlight">
