@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaFire, FaLeaf, FaStar, FaPizzaSlice, FaCrown, FaGlassCheers, FaCookie, FaSeedling, FaTimes } from 'react-icons/fa'
+import { FaFire, FaLeaf, FaStar, FaPizzaSlice, FaCrown, FaGlassCheers, FaCookie, FaSeedling, FaTimes, FaWhatsapp } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
 
@@ -134,7 +134,28 @@ const cuisines = [
   },
 ]
 
-export default function Cuisines() {
+// Full menu — 15 categories, 5 signature items each. Listed as text rather
+// than photos: sourcing 75 accurate dish images isn't practical, and a wrong
+// photo next to a dish name is worse than no photo at all.
+const menuCategories = [
+  { icon: '🥂', name: 'Welcome Drinks & Mocktails', items: ['Virgin Mojito', 'Blue Lagoon', 'Fruit Punch', 'Fresh Lime Soda', 'Cold Coffee'] },
+  { icon: '🍲', name: 'Soups', items: ['Tomato Soup with Cream', 'Sweet Corn Soup', 'Manchow Soup', 'Thai Vegetable Soup', 'Lemon Coriander Soup'] },
+  { icon: '🧆', name: 'Signature Starters', items: ['Malai Paneer Tikka', 'Achari Paneer Tikka', 'Spring Roll', 'Hariyali Kabab', 'Crispy Potato'] },
+  { icon: '🥗', name: 'Live Chaat Counter', items: ['Raj Kachori', 'Bhalla Papdi Chaat', 'Banarasi Tomato Chaat', 'Basket Chaat', 'Pani Ka Batashe'] },
+  { icon: '🍜', name: 'Indo-Chinese', items: ['Hakka Noodles', 'Veg Manchurian', 'Paneer Manchurian', 'Chilli Paneer', 'Fried Rice'] },
+  { icon: '🫓', name: 'South Indian', items: ['Masala Dosa', 'Paper Dosa', 'Idli Sambar', 'Rava Dosa', 'Sambar Vada'] },
+  { icon: '🍕', name: 'Italian Corner', items: ['Mini Pizza', 'Paneer Pizza', 'Cheese Pasta', 'Baked Pasta', 'Garlic Bread'] },
+  { icon: '🍛', name: 'North Indian Main Course', items: ['Shahi Paneer', 'Paneer Makhani', 'Methi Malai Paneer', 'Dal Makhani', 'Navratan Korma'] },
+  { icon: '🍚', name: 'Rice & Pulao', items: ['Veg Pulao', 'Jeera Rice', 'Kashmiri Rice', 'Matar Pulao', 'Steam Rice'] },
+  { icon: '🫓', name: 'Indian Breads', items: ['Butter Naan', 'Lachha Paratha', 'Missi Roti', 'Tandoori Roti', 'Stuffed Kulcha'] },
+  { icon: '🥗', name: 'Salads & Accompaniments', items: ['Green Salad', 'Russian Salad', 'Fruit Raita', 'Boondi Raita', 'Masala Papad'] },
+  { icon: '🍰', name: 'Desserts & Mithai', items: ['Gulab Jamun', 'Rasmalai', 'Jalebi with Rabdi', 'Gajar Halwa', 'Kesar Kheer'] },
+  { icon: '🍨', name: 'Ice Cream Station', items: ['Ice Cream Parlour', 'Softy', 'Ice Cream Roll', 'Cream Ball Ice Cream', 'Ice Cream with Sauces'] },
+  { icon: '🍉', name: 'Fresh Fruit Counter', items: ['Watermelon', 'Pineapple', 'Grapes', 'Dragon Fruit', 'Kiwi'] },
+  { icon: '🌍', name: 'Regional Food Experiences', items: ['Amritsari Kulcha', 'Sarson Ka Saag & Makki Ki Roti', 'Dal Baati Churma', 'Gujarati Dhokla', 'Khandvi'] },
+]
+
+export default function Cuisines({ onBookNow }) {
   const [selected, setSelected] = useState(null)
 
   return (
@@ -179,6 +200,65 @@ export default function Cuisines() {
             </StaggerItem>
           ))}
         </Stagger>
+
+        {/* Full Menu */}
+        <FadeUp>
+          <div className="menu-block">
+            <div className="menu-block-head">
+              <span className="ey">The Full Spread</span>
+              <span className="gline"></span>
+              <h3 className="menu-block-title">Our Complete Menu</h3>
+              <p className="menu-block-sub">
+                Fifteen counters, five signature items in each — every one
+                100% pure vegetarian.
+              </p>
+            </div>
+
+            <div className="menu-grid">
+              {menuCategories.map((cat, i) => (
+                <motion.div
+                  className="menu-card"
+                  key={cat.name}
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.4, delay: (i % 3) * 0.08 }}
+                >
+                  <div className="menu-card-head">
+                    <span className="menu-card-icon" aria-hidden="true">{cat.icon}</span>
+                    <h4 className="menu-card-title">{cat.name}</h4>
+                  </div>
+                  <ul className="menu-card-list">
+                    {cat.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="menu-cta">
+              <h4 className="menu-cta-title">Request Our Complete Menu</h4>
+              <p className="menu-cta-desc">
+                Customized menus available for Weddings, Corporate Events,
+                Social Gatherings &amp; Special Celebrations.
+              </p>
+              <div className="menu-cta-actions">
+                <button className="btn btn-y" onClick={onBookNow}>
+                  Request Complete Menu
+                </button>
+                <a
+                  href="https://wa.me/919936485155?text=Hello! Please share your complete catering menu."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-wa"
+                >
+                  <FaWhatsapp /> WhatsApp Us
+                </a>
+              </div>
+            </div>
+          </div>
+        </FadeUp>
       </div>
 
       {/* Cuisine Modal */}

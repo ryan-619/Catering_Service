@@ -6,6 +6,8 @@ import hero3 from '../assets/hero/hero3.jpg'
 import hero4 from '../assets/hero/hero4.jpg'
 import hero5 from '../assets/hero/hero5.jpg'
 import hero6 from '../assets/hero/hero6.jpg'
+import hero7 from '../assets/hero/hero7.jpg'
+import hero8 from '../assets/hero/hero8.jpg'
 
 const heroSlides = [
 
@@ -15,6 +17,8 @@ const heroSlides = [
   hero4,
   hero5,
   hero6,
+  hero7,
+  hero8,
 ]
 
 export default function Hero({ onBookNow }) {

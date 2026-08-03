@@ -41,7 +41,7 @@ export default function App() {
       <Speciality />
       <Stats />
       
-      <Cuisines />
+      <Cuisines onBookNow={openModal} />
       {/* Order: Our Honour → National-Level Events → Moments We've Crafted
           → Client Reviews → Seva & Compassion */}
       <Personalities />
