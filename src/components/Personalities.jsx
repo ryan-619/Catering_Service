@@ -17,21 +17,21 @@ import p14 from '../assets/p14.jpeg'
 import p15 from '../assets/p15.jpeg'
 
 const personalities = [
-    { img: p2, name: 'PM Narendra Modi', title: 'Prime Minister of India', tag: <><FaFlag /> Prime Minister</> },
-   { img: p5, name: 'Rajnath Singh', title: 'Defence Minister of India', tag: <><FaMusic /> Defence Minister </> }, 
+  { img: p2, name: 'PM Narendra Modi', title: 'Prime Minister of India', tag: <><FaFlag /> Prime Minister</> },
   { img: p1, name: 'CM Yogi Adityanath', title: 'Chief Minister, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
-  { img: p6, name: 'Sunil Bansal', title: 'National General Secretary, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
-  { img: p7, name: 'Sanjay Seth', title: 'Minister of State for Defence, Central Government', tag: <><FaLandmark /> Political Leader</> },
+  { img: p5, name: 'Rajnath Singh', title: 'Defence Minister of India', tag: <><FaLandmark /> Defence Minister</> },
   { img: p8, name: 'Brijesh Pathak', title: 'Deputy CM', tag: <><FaLandmark /> Political Leader</> },
+  { img: p6, name: 'Sunil Bansal', title: 'National General Secretary, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
   { img: p9, name: 'Dharam Pal', title: 'Uttar Pradesh Organization General Secretary', tag: <><FaLandmark /> Political Leader</> },
+  { img: p7, name: 'Sanjay Seth', title: 'Minister of State for Defence, Central Government', tag: <><FaLandmark /> Political Leader</> },
   { img: p10, name: 'Sunil Devdhar', title: 'Uttar Pradesh Organization General Secretary', tag: <><FaLandmark /> Political Leader</> },
   { img: p11, name: 'Swatantra Dev Singh', title: 'Jal Shakti Minister', tag: <><FaLandmark /> Political Leader</> },
-  { img: p12, name: 'Mahendra Singh', title: 'MP State In-charge', tag: <><FaLandmark /> Political Leader</> },
   { img: p13, name: 'Baldev Singh Aulakh', title: 'Minister of State Government', tag: <><FaLandmark /> Political Leader</> },
-   { img: p14, name: 'Vinod Kumar Singh', title: 'Member of Parliament', tag: <><FaLandmark /> Political Leader</> },
+  { img: p12, name: 'Mahendra Singh', title: 'MP State In-charge', tag: <><FaLandmark /> Political Leader</> },
+  { img: p14, name: 'Vinod Kumar Sonkar', title: 'Member of Parliament', tag: <><FaLandmark /> Political Leader</> },
   { img: p3, name: 'Vindu Dara Singh', title: 'Actor & Celebrity', tag: <><FaFilm /> Bollywood</> },
   { img: p4, name: 'Udit Narayan', title: 'Legendary Playback Singer', tag: <><FaMusic /> Music Icon</> },
-  { img: p15, name: 'Arun Yogiraj', title: 'Ram lalla Ayodhya', tag: <> </> },
+  { img: p15, name: 'Arun Yogiraj', title: 'Sculptor of Ram Lalla, Ayodhya', tag: <><FaLandmark /> Sculptor</> },
 ]
 
 export default function Personalities() {

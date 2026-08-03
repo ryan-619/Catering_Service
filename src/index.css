@@ -1350,6 +1350,10 @@ footer{background:#0F1F13;padding:64px 0 0}
 
 .ne-carousel { padding: 0 48px; }
 
+/* Dignitary cards inside a subsection reuse .pers-card styling; only the grid
+   gutter is tightened so they sit comfortably inside the bordered panel. */
+.ne-cards-grid { margin-bottom: 0; gap: 18px; }
+
 .ne-empty {
   text-align: center;
   font-size: .9rem;

@@ -30,6 +30,47 @@ import rmv1 from '../assets/rammandir/rmv1.mp4'
 import rmv2 from '../assets/rammandir/rmv2.mp4'
 import rmv3 from '../assets/rammandir/rmv3.mp4'
 
+import s1 from '../assets/samiti/s1.jpg'
+import s2 from '../assets/samiti/s2.jpg'
+import s3 from '../assets/samiti/s3.jpg'
+import s4 from '../assets/samiti/s4.jpg'
+import s5 from '../assets/samiti/s5.jpg'
+import s6 from '../assets/samiti/s6.jpg'
+import s7 from '../assets/samiti/s7.jpg'
+import s8 from '../assets/samiti/s8.jpg'
+import s9 from '../assets/samiti/s9.jpg'
+import s10 from '../assets/samiti/s10.jpg'
+import s11 from '../assets/samiti/s11.jpg'
+import s12 from '../assets/samiti/s12.jpg'
+import s13 from '../assets/samiti/s13.jpg'
+import s14 from '../assets/samiti/s14.jpg'
+import s15 from '../assets/samiti/s15.jpg'
+import s16 from '../assets/samiti/s16.jpg'
+import s17 from '../assets/samiti/s17.jpg'
+
+// Dignitaries served at the Rashtriya Karyakari Samiti. Photo order follows the
+// numbering supplied with the images; where two people appear in one frame the
+// same photo backs both of their cards.
+const samitiCards = [
+  { img: s1,  name: 'Narendra Modi',        title: 'Prime Minister of India' },
+  { img: s2,  name: 'Jagat Prakash Nadda',  title: 'National President, Bharatiya Janata Party' },
+  { img: s3,  name: 'Jagat Prakash Nadda',  title: 'National President, Bharatiya Janata Party' },
+  { img: s4,  name: 'Sambit Patra',         title: 'National Spokesperson, Bharatiya Janata Party' },
+  { img: s5,  name: 'Sambit Patra',         title: 'National Spokesperson, Bharatiya Janata Party' },
+  { img: s6,  name: 'Sunil Bhai Ojha',      title: 'PMO Coordinator & Uttar Pradesh Co-in-charge' },
+  { img: s7,  name: 'Manohar Lal Khattar',  title: 'Former Chief Minister, Haryana' },
+  { img: s8,  name: 'Lalji Tandon',         title: 'Former Governor of Bihar' },
+  { img: s9,  name: 'Syed Shahnawaz Hussain', title: 'National Spokesperson & Central Election Committee Member, Bharatiya Janata Party' },
+  { img: s10, name: 'Keshav Maurya',        title: 'Deputy Chief Minister, Uttar Pradesh' },
+  { img: s11, name: 'Suresh Khanna',        title: 'Cabinet Minister, Government of Uttar Pradesh' },
+  { img: s12, name: 'Shiv Prakash',         title: 'National Joint General Secretary (Organisation), Bharatiya Janata Party' },
+  { img: s13, name: 'Dr. Mahesh Sharma',    title: 'Former Union Minister of State, Government of India' },
+  { img: s14, name: 'Dr. Mahesh Sharma',    title: 'Former Union Minister of State, Government of India' },
+  { img: s15, name: 'Sushil Modi',          title: 'Former Deputy Chief Minister, Bihar' },
+  { img: s16, name: 'Ashutosh Tandon',      title: 'Former Cabinet Minister' },
+  { img: s17, name: 'Prakash Javadekar',    title: 'Chairperson, National Tiger Conservation Authority of India' },
+]
+
 const asImages = (arr) => arr.map((src) => ({ src, type: 'image' }))
 const asVideos = (arr) => arr.map((src) => ({ src, type: 'video' }))
 
@@ -40,6 +81,7 @@ const subsections = [
     key: 'samiti',
     title: 'Privileged to Serve at Rashtriya Karyakari Samiti',
     desc: 'Entrusted with catering for the national executive committee — serving pure vegetarian meals at a gathering of national significance.',
+    cards: samitiCards,
     photos: asImages([]),
     videos: asVideos([]),
   },
@@ -179,6 +221,31 @@ export default function NationalEvents() {
                 <p className="ne-sub-desc">{sub.desc}</p>
               </div>
 
+              {sub.cards?.length > 0 && (
+                <div className="ne-block">
+                  <h4 className="ne-block-title">Dignitaries We Served</h4>
+                  <div className="pers-grid ne-cards-grid">
+                    {sub.cards.map((c, i) => (
+                      <div className="pers-card" key={`${c.name}-${i}`}>
+                        <div className="pers-img-wrap">
+                          <img src={c.img} alt={c.name} className="pers-img" />
+                          <div className="pers-overlay">
+                            <div className="pers-overlay-content">
+                              <div className="pers-overlay-name">{c.name}</div>
+                              <div className="pers-overlay-title">{c.title}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="pers-body">
+                          <div className="pers-name">{c.name}</div>
+                          <div className="pers-title">{c.title}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {sub.photos.length > 0 && (
                 <div className="ne-block">
                   <h4 className="ne-block-title">Photos</h4>
@@ -201,7 +268,7 @@ export default function NationalEvents() {
                 </div>
               )}
 
-              {sub.photos.length === 0 && sub.videos.length === 0 && (
+              {!sub.cards?.length && sub.photos.length === 0 && sub.videos.length === 0 && (
                 <p className="ne-empty">Photos and videos from this event are coming soon.</p>
               )}
             </div>

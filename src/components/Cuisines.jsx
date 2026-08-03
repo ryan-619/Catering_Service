@@ -141,9 +141,9 @@ const menuCategories = [
   { icon: '🥂', name: 'Welcome Drinks & Mocktails', items: ['Virgin Mojito', 'Blue Lagoon', 'Fruit Punch', 'Fresh Lime Soda', 'Cold Coffee'] },
   { icon: '🍲', name: 'Soups', items: ['Tomato Soup with Cream', 'Sweet Corn Soup', 'Manchow Soup', 'Thai Vegetable Soup', 'Lemon Coriander Soup'] },
   { icon: '🧆', name: 'Signature Starters', items: ['Malai Paneer Tikka', 'Achari Paneer Tikka', 'Spring Roll', 'Hariyali Kabab', 'Crispy Potato'] },
-  { icon: '🥗', name: 'Live Chaat Counter', items: ['Raj Kachori', 'Bhalla Papdi Chaat', 'Banarasi Tomato Chaat', 'Basket Chaat', 'Pani Ka Batashe'] },
+  { icon: '🥙', name: 'Live Chaat Counter', items: ['Raj Kachori', 'Bhalla Papdi Chaat', 'Banarasi Tomato Chaat', 'Basket Chaat', 'Pani Ka Batashe'] },
   { icon: '🍜', name: 'Indo-Chinese', items: ['Hakka Noodles', 'Veg Manchurian', 'Paneer Manchurian', 'Chilli Paneer', 'Fried Rice'] },
-  { icon: '🫓', name: 'South Indian', items: ['Masala Dosa', 'Paper Dosa', 'Idli Sambar', 'Rava Dosa', 'Sambar Vada'] },
+  { icon: '🥞', name: 'South Indian', items: ['Masala Dosa', 'Paper Dosa', 'Idli Sambar', 'Rava Dosa', 'Sambar Vada'] },
   { icon: '🍕', name: 'Italian Corner', items: ['Mini Pizza', 'Paneer Pizza', 'Cheese Pasta', 'Baked Pasta', 'Garlic Bread'] },
   { icon: '🍛', name: 'North Indian Main Course', items: ['Shahi Paneer', 'Paneer Makhani', 'Methi Malai Paneer', 'Dal Makhani', 'Navratan Korma'] },
   { icon: '🍚', name: 'Rice & Pulao', items: ['Veg Pulao', 'Jeera Rice', 'Kashmiri Rice', 'Matar Pulao', 'Steam Rice'] },
@@ -207,11 +207,7 @@ export default function Cuisines({ onBookNow }) {
             <div className="menu-block-head">
               <span className="ey">The Full Spread</span>
               <span className="gline"></span>
-              <h3 className="menu-block-title">Our Complete Menu</h3>
-              <p className="menu-block-sub">
-                Fifteen counters, five signature items in each — every one
-                100% pure vegetarian.
-              </p>
+              <h3 className="menu-block-title">A Glimpse of Our Menu</h3>
             </div>
 
             <div className="menu-grid">
