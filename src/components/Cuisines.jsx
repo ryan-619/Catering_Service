@@ -182,7 +182,7 @@ export default function Cuisines({ onBookNow }) {
                 style={{ cursor: 'pointer' }}
               >
                 <div className="cuisine-img-wrap">
-                  <img src={c.img} alt={c.name} className="cuisine-img" />
+                  <img src={c.img} alt={c.name} className="cuisine-img" loading="lazy" />
                   <div className="cuisine-gradient"></div>
                   <span className="cuisine-badge" style={{ background: c.badgeColor }}>
                     <span className="cuisine-badge-icon">{c.badgeIcon}</span>
@@ -308,7 +308,7 @@ export default function Cuisines({ onBookNow }) {
                       transition={{ delay: i * 0.07, duration: 0.4 }}
                     >
                       <div className="cuisine-dish-img-wrap">
-                        <img src={dish.img} alt={dish.name} />
+                        <img src={dish.img} alt={dish.name} loading="lazy" />
                         <div className="cuisine-dish-overlay"></div>
                       </div>
                       <div className="cuisine-dish-name">{dish.name}</div>

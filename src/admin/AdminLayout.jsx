@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom'
 import { FaCalendarAlt, FaHeart, FaSignOutAlt, FaTachometerAlt, FaStar, FaImages } from 'react-icons/fa'
+import './admin.css'
 
 export default function AdminLayout() {
   const navigate = useNavigate()

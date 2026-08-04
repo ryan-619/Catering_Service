@@ -67,7 +67,7 @@ export default function Personalities() {
             <StaggerItem key={i}>
               <div className="pers-card">
                 <div className="pers-img-wrap">
-                  <img src={p.img} alt={p.name} className="pers-img" />
+                  <img src={p.img} alt={p.name} className="pers-img" loading="lazy" />
                   <div className="pers-overlay">
                     <div className="pers-overlay-content">
                       <div className="pers-tag">{p.tag}</div>

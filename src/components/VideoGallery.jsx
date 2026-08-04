@@ -73,6 +73,7 @@ export default function VideoGallery() {
                       <img
                         src={videos[active].thumb}
                         alt={videos[active].title}
+                        loading="lazy"
                       />
                       <div className="vg-thumb-overlay">
                         <motion.button
@@ -124,7 +125,7 @@ export default function VideoGallery() {
                   transition={{ delay: i * 0.1 }}
                 >
                   <div className="vg-thumb-img-wrap">
-                    <img src={v.thumb} alt={v.title} />
+                    <img src={v.thumb} alt={v.title} loading="lazy" />
                     <div className="vg-thumb-play">
                       <FaPlay />
                     </div>

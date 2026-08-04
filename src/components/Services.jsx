@@ -46,7 +46,7 @@ export default function Services() {
           {services.map((s) => (
             <StaggerItem key={s.name}>
               <div className="sc">
-                <img src={s.img} alt={s.alt} />
+                <img src={s.img} alt={s.alt} loading="lazy" />
                 <div className="so">
                   <span className="stag">{s.tag}</span>
                   <div className="sname">{s.name}</div>

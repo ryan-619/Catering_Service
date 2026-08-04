@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { FaLeaf, FaSeedling, FaRecycle, FaFlask, FaBan } from 'react-icons/fa'
 import { motion } from 'framer-motion'
 
@@ -44,10 +45,9 @@ export default function Speciality() {
 
       <div className="speciality-strip">
         {specialities.map((s, i) => (
-          <>
+          <Fragment key={i}>
             <motion.div
               className="speciality-item"
-              key={i}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -67,9 +67,9 @@ export default function Speciality() {
               </div>
             </motion.div>
             {i < specialities.length - 1 && (
-              <div className="speciality-divider" key={`div-${i}`} />
+              <div className="speciality-divider" />
             )}
-          </>
+          </Fragment>
         ))}
       </div>
     </section>

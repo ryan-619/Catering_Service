@@ -126,7 +126,7 @@ export default function Gallery() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 onClick={() => openLightbox(photoMedia, i)}
               >
-                <img src={item.img} alt={`Event ${i + 1}`} />
+                <img src={item.img} alt={`Event ${i + 1}`} loading="lazy" />
                 <div className="gm-overlay">
                   <FaExpand className="gm-icon" />
                 </div>
@@ -163,7 +163,7 @@ export default function Gallery() {
                     className="gallery-slide"
                     onClick={() => openLightbox(photoMedia, i + 9)}
                   >
-                    <img src={photo} alt={`Event ${i + 10}`} />
+                    <img src={photo} alt={`Event ${i + 10}`} loading="lazy" />
                     <div className="gallery-slide-overlay">
                       <FaExpand className="gallery-slide-icon" />
                     </div>

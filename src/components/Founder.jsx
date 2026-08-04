@@ -60,7 +60,7 @@ export default function Founder() {
               {/* Photo */}
               <div className="founder-left">
                 <div className="founder-circle-wrap">
-                  <img src={f.img} alt={f.name} className="founder-circle-img" />
+                  <img src={f.img} alt={f.name} className="founder-circle-img" loading="lazy" />
                   <div className="founder-ring"></div>
                 </div>
                 <div className="founder-exp-card">

@@ -114,6 +114,7 @@ export default function Charity() {
       src={photo}
       alt={`Seva event ${i + 1}`}
       className={`charity-slide-img slide-${i}`}
+      loading="lazy"
     />
   ))}
 </div>
@@ -142,6 +143,7 @@ export default function Charity() {
                     src={photo}
                     alt={`Prasad distribution ${i + 1}`}
                     className={`charity-slide-img-2 slide2-${i}`}
+                    loading="lazy"
                   />
                 ))}
               </div>

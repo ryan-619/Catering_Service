@@ -10,6 +10,7 @@ export default function About({ onBookNow }) {
               <img
                 src="https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80"
                 alt="LTCS catering event"
+                loading="lazy"
               />
               <div className="about-badge">
                 <div className="num">42+</div>

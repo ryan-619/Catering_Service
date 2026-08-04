@@ -137,7 +137,7 @@ function MediaCarousel({ items, navKey, onOpen }) {
                   className="gallery-slide-video"
                 />
               ) : (
-                <img src={item.src} alt={`Event ${i + 1}`} />
+                <img src={item.src} alt={`Event ${i + 1}`} loading="lazy" />
               )}
               <div className="gallery-slide-overlay">
                 {item.type === 'video' ? (
@@ -228,7 +228,7 @@ export default function NationalEvents() {
                     {sub.cards.map((c, i) => (
                       <div className="pers-card" key={`${c.name}-${i}`}>
                         <div className="pers-img-wrap">
-                          <img src={c.img} alt={c.name} className="pers-img" />
+                          <img src={c.img} alt={c.name} className="pers-img" loading="lazy" />
                           <div className="pers-overlay">
                             <div className="pers-overlay-content">
                               <div className="pers-overlay-name">{c.name}</div>
