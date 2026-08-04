@@ -2,8 +2,8 @@ import { FaLandmark, FaFlag, FaFilm, FaMusic } from 'react-icons/fa'
 import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
 import p1 from '../assets/p1.jpeg'
 import p2 from '../assets/p2.jpg'
-import p3 from '../assets/p3.jpg'
-import p4 from '../assets/p4.jpg'
+import p3 from '../assets/p3.jpeg'
+import p4 from '../assets/p4.jpeg'
 import p5 from '../assets/p5.jpeg'
 import p6 from '../assets/p6.jpeg'
 import p7 from '../assets/p7.jpeg'
@@ -15,12 +15,23 @@ import p12 from '../assets/p12.jpeg'
 import p13 from '../assets/p13.jpeg'
 import p14 from '../assets/p14.jpeg'
 import p15 from '../assets/p15.jpeg'
+import p16 from '../assets/p16.jpeg'
+import p19 from '../assets/p19.jpeg'
+import p18 from '../assets/p18.jpeg'
+import p17 from '../assets/p17.jpeg'
+
+
 
 const personalities = [
+  { img: p16, name: 'Draoupadi Murmu', title: 'President of India', tag: <><FaFlag /> President </> },
   { img: p2, name: 'PM Narendra Modi', title: 'Prime Minister of India', tag: <><FaFlag /> Prime Minister</> },
+  { img: p17, name: 'PM Narendra Modi', title: 'Prime Minister of India', tag: <><FaFlag /> Prime Minister</> },
   { img: p1, name: 'CM Yogi Adityanath', title: 'Chief Minister, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
   { img: p5, name: 'Rajnath Singh', title: 'Defence Minister of India', tag: <><FaLandmark /> Defence Minister</> },
+  { img: p19, name: 'Nritya Gopal Das', title: 'Nyas Peeth', tag: <><FaLandmark /> </> },
   { img: p8, name: 'Brijesh Pathak', title: 'Deputy CM', tag: <><FaLandmark /> Political Leader</> },
+  { img: p18, name: 'Satish Mahana', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
+  { img: p18, name: 'Chandra Shekhar', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
   { img: p6, name: 'Sunil Bansal', title: 'National General Secretary, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
   { img: p9, name: 'Dharam Pal', title: 'Uttar Pradesh Organization General Secretary', tag: <><FaLandmark /> Political Leader</> },
   { img: p7, name: 'Sanjay Seth', title: 'Minister of State for Defence, Central Government', tag: <><FaLandmark /> Political Leader</> },
@@ -29,9 +40,10 @@ const personalities = [
   { img: p13, name: 'Baldev Singh Aulakh', title: 'Minister of State Government', tag: <><FaLandmark /> Political Leader</> },
   { img: p12, name: 'Mahendra Singh', title: 'MP State In-charge', tag: <><FaLandmark /> Political Leader</> },
   { img: p14, name: 'Vinod Kumar Sonkar', title: 'Member of Parliament', tag: <><FaLandmark /> Political Leader</> },
+  { img: p14, name: 'Uday Bhan Kavaria', title: 'Member of Parliament', tag: <><FaLandmark /> Political Leader</> },
   { img: p3, name: 'Vindu Dara Singh', title: 'Actor & Celebrity', tag: <><FaFilm /> Bollywood</> },
   { img: p4, name: 'Udit Narayan', title: 'Legendary Playback Singer', tag: <><FaMusic /> Music Icon</> },
-  { img: p15, name: 'Arun Yogiraj', title: 'Sculptor of Ram Lalla, Ayodhya', tag: <><FaLandmark /> Sculptor</> },
+  { img: p15, name: 'Arun Yogiraj', title: 'South Businessman', tag: <><FaLandmark /> Businessman</> },
 ]
 
 export default function Personalities() {

@@ -59,8 +59,11 @@ nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.97);backdrop-
 .hero-veg{background:var(--yellow);color:var(--charcoal);font-size:.65rem;font-weight:700;letter-spacing:.12em;padding:3px 8px;border-radius:2px}
 .hero-title{font-family:"Cormorant Garamond",serif;font-size:clamp(2.6rem,6vw,5rem);font-weight:700;color:var(--white);line-height:1.08;margin-bottom:10px}
 .hero-title em{font-style:italic;color:var(--yellow)}
-.hero-sub-hindi{font-family:"Noto Sans Devanagari",sans-serif;font-size:clamp(1rem,2.2vw,1.3rem);color:rgba(255,255,255,.8);margin-bottom:12px}
-.hero-sub{font-size:1rem;color:rgba(255,255,255,.65);max-width:500px;margin-bottom:38px;font-weight:300}
+.hero-sub-hindi{font-family:"Noto Sans Devanagari",sans-serif;font-size:clamp(1rem,2.2vw,1.3rem);color:rgba(255,255,255,.92);margin-bottom:12px}
+.hero-sub{font-size:1rem;color:rgba(255,255,255,.85);max-width:500px;margin-bottom:38px;font-weight:300}
+/* The slideshow photos vary a lot in brightness, so the copy carries its own
+   shadow rather than relying on the scrim alone. */
+.hero-title,.hero-sub-hindi,.hero-sub{text-shadow:0 2px 12px rgba(0,0,0,.55)}
 .hero-actions{display:flex;gap:14px;flex-wrap:wrap}
 .hero-strip{position:absolute;bottom:0;left:0;right:0;background:var(--yellow);padding:14px 0;z-index:3}
 .hero-strip-inner{display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap;padding:0 20px}
@@ -1636,8 +1639,9 @@ footer{background:#0F1F13;padding:64px 0 0}
 .slide-3 { animation-delay: 7.5s; }
 .slide-4 { animation-delay: 10s; }
 
-/* Second slideshow — 3 photos, so it needs its own cycle length. Same 2.5s
-   per photo as the one above, hence 7.5s total instead of 12.5s. */
+/* Second slideshow — 8 photos at 2.5s each, so a 20s cycle. Every slide needs
+   its own delay; a missing .slide2-N would leave that photo stuck at delay 0
+   and stacked on top of the first. */
 .charity-slideshow-2 { margin-top: 28px; margin-bottom: 0; }
 
 .charity-slide-img-2 {
@@ -1647,18 +1651,24 @@ footer{background:#0F1F13;padding:64px 0 0}
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  animation: sevaSlide2 7.5s infinite;
+  animation: sevaSlide2 20s infinite;
 }
 
 .slide2-0 { animation-delay: 0s; }
 .slide2-1 { animation-delay: 2.5s; }
 .slide2-2 { animation-delay: 5s; }
+.slide2-3 { animation-delay: 7.5s; }
+.slide2-4 { animation-delay: 10s; }
+.slide2-5 { animation-delay: 12.5s; }
+.slide2-6 { animation-delay: 15s; }
+.slide2-7 { animation-delay: 17.5s; }
 
+/* 2.5s visible out of 20s = 12.5%, with a ~0.6s crossfade either side. */
 @keyframes sevaSlide2 {
   0% { opacity: 0; }
-  8.33% { opacity: 1; }
-  33.33% { opacity: 1; }
-  41.67% { opacity: 0; }
+  3.125% { opacity: 1; }
+  12.5% { opacity: 1; }
+  15.625% { opacity: 0; }
   100% { opacity: 0; }
 }
 
@@ -1704,15 +1714,27 @@ footer{background:#0F1F13;padding:64px 0 0}
   100% { opacity: 0; }
 }
 
+/* Neutral scrim instead of a green wash, so the food photography keeps its real
+   colour. Weighted to the left where the headline sits, plus a soft top/bottom
+   vignette to hold the navbar and strip legible. */
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(21,74,33,.88) 0%,
-    rgba(21,74,33,.6) 50%,
-    rgba(21,74,33,.82) 100%
-  );
+  background:
+    linear-gradient(
+      100deg,
+      rgba(10,12,10,.82) 0%,
+      rgba(10,12,10,.62) 34%,
+      rgba(10,12,10,.28) 62%,
+      rgba(10,12,10,.42) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.42) 0%,
+      rgba(0,0,0,0) 22%,
+      rgba(0,0,0,0) 58%,
+      rgba(0,0,0,.55) 100%
+    );
   z-index: 1;
 }
 

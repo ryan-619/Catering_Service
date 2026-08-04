@@ -5,9 +5,14 @@ import 'swiper/css/pagination'
 import { FaMosque, FaCalendarAlt, FaBoxOpen, FaHandsHelping, FaLeaf, FaWhatsapp, FaHeart } from 'react-icons/fa'
 import { useState } from 'react'
 import { submitCharity } from '../api/api'
-import seva1 from '../assets/seva/seva1.jpg'
-import seva2 from '../assets/seva/seva2.jpg'
-import seva3 from '../assets/seva/seva3.jpg'
+import s1 from '../assets/seva/s1.jpeg'
+import s2 from '../assets/seva/s2.jpeg'
+import s3 from '../assets/seva/s3.jpeg'
+import s4 from '../assets/seva/s4.jpeg'
+import s5 from '../assets/seva/s5.jpeg'
+import s6 from '../assets/seva/s6.jpeg'
+import s7 from '../assets/seva/s7.jpeg'
+import s8 from '../assets/seva/s8.jpeg'
 
 const sevaPhotos = [
   'https://res.cloudinary.com/r9upjg8g/image/upload/v1784820510/WhatsApp_Image_2026-07-23_at_2.12.25_PM_2_fvyvix.jpg',
@@ -17,7 +22,7 @@ const sevaPhotos = [
   'https://res.cloudinary.com/r9upjg8g/image/upload/v1784820341/WhatsApp_Image_2026-07-23_at_2.12.24_PM_ctph53.jpg',
 ]
 // Second slideshow — food distribution seva, rotates independently of the one above.
-const sevaPhotos2 = [seva1, seva2, seva3]
+const sevaPhotos2 = [s1, s2, s3, s4, s5, s6, s7, s8]
 
 const cards = [
   {
