@@ -7,7 +7,7 @@ const faqs = [
   { q: 'Can you provide Jain food options?', a: 'Yes. We cater to Jain dietary requirements with dedicated preparation. Please mention your requirements when booking and we will ensure complete compliance.' },
   { q: 'Do you offer tasting sessions?', a: 'Yes. We offer menu tasting sessions at our Kanpur office so you can experience our food quality before making a decision. Contact us to schedule.' },
   { q: 'What is your service area?', a: 'We are based in Kanpur, U.P. and serve events across Kanpur and surrounding areas. Contact us for events outside Kanpur to discuss logistics.' },
-  { q: 'How do I get a quote or book?', a: 'Call us at +91-9936485155 or +91-8299503034, WhatsApp at +91-9936485155, or fill out the booking form on this page. We respond within 24 hours.' },
+  { q: 'How do I get a quote or book?', a: 'Call us at +91-9936485155 or +91-8299504889, WhatsApp at +91-9936485155, or fill out the booking form on this page. We respond within 24 hours.' },
 ]
 
 export default function Faq({ onBookNow }) {

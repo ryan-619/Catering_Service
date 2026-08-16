@@ -48,8 +48,8 @@ export default function Footer() {
                 <a href="tel:+919936485155" style={{ color: 'rgba(255,255,255,.5)', textDecoration: 'none' }}>
                   +91-9936485155
                 </a><br />
-                <a href="tel:+918299503034" style={{ color: 'rgba(255,255,255,.5)', textDecoration: 'none' }}>
-                  +91-8299503034
+                <a href="tel:+918299504889" style={{ color: 'rgba(255,255,255,.5)', textDecoration: 'none' }}>
+                  +91-8299504889
                 </a>
               </span>
             </div>

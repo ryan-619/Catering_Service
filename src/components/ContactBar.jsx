@@ -10,7 +10,7 @@ export default function ContactBar() {
             <div className="cb-label">Call Us</div>
             <div className="cb-val">
               <a href="tel:+919936485155">+91-9936485155</a><br />
-              <a href="tel:+918299503034">+91-8299503034</a><br />
+              <a href="tel:+918299504889">+91-8299504889</a><br />
               <a href="tel:+919336118498">+91-9336118498</a>
             </div>
           </div>

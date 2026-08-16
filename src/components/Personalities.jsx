@@ -14,11 +14,12 @@ import p11 from '../assets/p11.jpeg'
 import p12 from '../assets/p12.jpeg'
 import p13 from '../assets/p13.jpeg'
 import p14 from '../assets/p14.jpeg'
-import p15 from '../assets/p15.jpeg'
 import p16 from '../assets/p16.jpeg'
 import p19 from '../assets/p19.jpeg'
 import p18 from '../assets/p18.jpeg'
 import p17 from '../assets/p17.jpeg'
+import arunYogiraj from '../assets/arunyogiraj.jpeg'
+import chandraShekhar from '../assets/chandrashekhar.jpeg'
 
 
 
@@ -31,7 +32,7 @@ const personalities = [
   { img: p19, name: 'Nritya Gopal Das', title: 'Nyas Peeth', tag: <><FaLandmark /> </> },
   { img: p8, name: 'Brijesh Pathak', title: 'Deputy CM', tag: <><FaLandmark /> Political Leader</> },
   { img: p18, name: 'Satish Mahana', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
-  { img: p18, name: 'Chandra Shekhar', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
+  { img: chandraShekhar, name: 'Chandra Shekhar', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
   { img: p6, name: 'Sunil Bansal', title: 'National General Secretary, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
   { img: p9, name: 'Dharam Pal', title: 'Uttar Pradesh Organization General Secretary', tag: <><FaLandmark /> Political Leader</> },
   { img: p7, name: 'Sanjay Seth', title: 'Minister of State for Defence, Central Government', tag: <><FaLandmark /> Political Leader</> },
@@ -40,10 +41,10 @@ const personalities = [
   { img: p13, name: 'Baldev Singh Aulakh', title: 'Minister of State Government', tag: <><FaLandmark /> Political Leader</> },
   { img: p12, name: 'Mahendra Singh', title: 'MP State In-charge', tag: <><FaLandmark /> Political Leader</> },
   { img: p14, name: 'Vinod Kumar Sonkar', title: 'Member of Parliament', tag: <><FaLandmark /> Political Leader</> },
-  { img: p14, name: 'Uday Bhan Kavaria', title: 'Member of Parliament', tag: <><FaLandmark /> Political Leader</> },
+  { img: p14, name: 'Uday Bhan Kavaria', title: 'Ex - MLA Prayagraj', tag: <><FaLandmark /> Political Leader</> },
   { img: p3, name: 'Vindu Dara Singh', title: 'Actor & Celebrity', tag: <><FaFilm /> Bollywood</> },
   { img: p4, name: 'Udit Narayan', title: 'Legendary Playback Singer', tag: <><FaMusic /> Music Icon</> },
-  { img: p15, name: 'Arun Yogiraj', title: 'South Businessman', tag: <><FaLandmark /> Businessman</> },
+  { img: arunYogiraj, name: 'South Businessman', title: '', tag: <><FaLandmark /> Businessman</> },
 ]
 
 export default function Personalities() {
@@ -72,13 +73,13 @@ export default function Personalities() {
                     <div className="pers-overlay-content">
                       <div className="pers-tag">{p.tag}</div>
                       <div className="pers-overlay-name">{p.name}</div>
-                      <div className="pers-overlay-title">{p.title}</div>
+                      {p.title && <div className="pers-overlay-title">{p.title}</div>}
                     </div>
                   </div>
                 </div>
                 <div className="pers-body">
                   <div className="pers-name">{p.name}</div>
-                  <div className="pers-title">{p.title}</div>
+                  {p.title && <div className="pers-title">{p.title}</div>}
                 </div>
               </div>
             </StaggerItem>
