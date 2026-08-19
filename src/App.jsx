@@ -18,6 +18,7 @@ import Gallery from './components/Gallery'
 import VideoGallery from './components/VideoGallery'
 import Cta from './components/Cta'
 import ContactBar from './components/ContactBar'
+import Gratitude from './components/Gratitude'
 import Footer from './components/Footer'
 import QuoteModal from './components/QuoteModal'
 // import WhyUs from './components/WhyUs'
@@ -53,6 +54,7 @@ export default function App() {
       <Cta onBookNow={openModal} />
        <Faq onBookNow={openModal} />
       <ContactBar />
+      <Gratitude />
       <Footer />
       <QuoteModal isOpen={modalOpen} onClose={closeModal} />
     </>

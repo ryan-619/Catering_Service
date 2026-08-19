@@ -1210,25 +1210,118 @@ footer{background:#0F1F13;padding:64px 0 0}
 .gallery-video-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(21,74,33,.5) 0%, transparent 60%); display: flex; align-items: flex-end; padding: 24px; }
 .gallery-video-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--green); color: var(--white); font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; border-radius: 20px; }
 
-/* Masonry Grid */
-.gallery-masonry { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 200px; gap: 8px; margin-bottom: 40px; }
-.gm-item { position: relative; overflow: hidden; border-radius: 10px; cursor: pointer; }
-.gm-item.tall { grid-row: span 2; }
-.gm-item.wide { grid-column: span 2; }
+/* Masonry Grid — column flow rather than fixed cells, because these shots mix
+   ultra-wide 20:9 counter panoramas with a portrait. Fixed rows would crop the
+   panoramas to squares and leave a ragged gap on the last row. */
+.gallery-masonry {
+  column-count: 2;
+  column-gap: 12px;
+  margin-bottom: 40px;
+}
+.gm-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  cursor: pointer;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin-bottom: 12px;
+  display: block;
+}
 .gm-item img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  height: auto;
   display: block;
   transition: transform .5s ease;
   filter: brightness(1.02) contrast(1.05) saturate(1.1);
+}
+
+/* The one portrait shot is 9:20 — left at natural ratio it renders ~5x taller
+   than the panoramas and swamps its column, so it gets a capped height and
+   crops from the centre instead. */
+.gm-item.portrait img {
+  height: 520px;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 640px) {
+  .gallery-masonry { column-count: 1; }
+  .gm-item.portrait img { height: 420px; }
 }
 .gm-item:hover img { transform: scale(1.07); }
 .gm-overlay { position: absolute; inset: 0; background: rgba(21,74,33,0); display: flex; align-items: center; justify-content: center; transition: background .3s; }
 .gm-item:hover .gm-overlay { background: rgba(21,74,33,.35); }
 .gm-icon { color: var(--white); font-size: 1.4rem; opacity: 0; transform: scale(0.7); transition: all .3s; }
 .gm-item:hover .gm-icon { opacity: 1; transform: scale(1); }
+
+/* Caption revealed on hover, sitting under the expand icon. */
+.gm-overlay { flex-direction: column; gap: 10px; }
+.gm-cap {
+  color: var(--white);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 14px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .3s ease, transform .3s ease;
+  text-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+.gm-item:hover .gm-cap { opacity: 1; transform: translateY(0); }
+.gm-item { box-shadow: 0 2px 10px rgba(0,0,0,.06); transition: box-shadow .35s ease; }
+.gm-item:hover { box-shadow: 0 16px 40px rgba(21,74,33,.22); }
+
+/* ── GALLERY VIDEOS ── */
+.gallery-videos { margin-top: 52px; }
+.gv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.gv-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--charcoal);
+  aspect-ratio: 16/10;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  transition: box-shadow .35s ease;
+}
+.gv-card:hover { box-shadow: 0 18px 44px rgba(21,74,33,.25); }
+.gv-thumb { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .5s ease; }
+.gv-card:hover .gv-thumb { transform: scale(1.06); }
+.gv-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,.12) 55%);
+  transition: background .3s;
+}
+.gv-card:hover .gv-overlay { background: linear-gradient(to top, rgba(21,74,33,.6) 0%, rgba(21,74,33,.25) 55%); }
+.gv-play {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255,255,255,.92); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; padding-left: 4px;
+  transition: transform .3s ease, background .3s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,.3);
+}
+.gv-card:hover .gv-play { transform: scale(1.12); background: var(--white); }
+.gv-cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 12px 14px;
+  color: var(--white);
+  font-size: .8rem; font-weight: 500;
+  letter-spacing: .05em;
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0,0,0,.6);
+}
+
+@media (max-width: 768px) {
+  .gv-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+@media (max-width: 480px) {
+  .gv-grid { grid-template-columns: 1fr; }
+}
 
 /* Carousel */
 .gallery-carousel-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--charcoal); margin-bottom: 20px; }
@@ -1267,9 +1360,6 @@ footer{background:#0F1F13;padding:64px 0 0}
 
 /* Responsive */
 @media (max-width: 768px) {
-  .gallery-masonry { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 160px; gap: 6px; }
-  .gm-item.wide { grid-column: span 1; }
-  .gm-item.tall { grid-row: span 1; }
   .gallery-swiper-wrap { padding: 0 36px; }
   .gallery-lightbox-prev { left: -36px; }
   .gallery-lightbox-next { right: -36px; }
@@ -1278,7 +1368,6 @@ footer{background:#0F1F13;padding:64px 0 0}
 }
 
 @media (max-width: 480px) {
-  .gallery-masonry { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 130px; }
   .gallery-swiper-wrap { padding: 0 28px; }
   .gallery-lightbox-prev { left: -24px; }
   .gallery-lightbox-next { right: -24px; }
@@ -2132,4 +2221,140 @@ footer{background:#0F1F13;padding:64px 0 0}
 @media (max-width: 480px) {
   .speciality-item { flex: 0 0 100%; flex-direction: row; text-align: left; }
   .speciality-text { text-align: left; }
+}
+/* ── GRATITUDE CARD (closing note) ── */
+#gratitude {
+  padding: clamp(48px, 6vw, 88px) 0;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(27,123,52,.07) 0%, transparent 60%),
+    var(--cream);
+}
+
+.grat-wrap {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Soft halo behind the card so it lifts off the cream background. */
+.grat-glow {
+  position: absolute;
+  inset: -6% -4%;
+  border-radius: 28px;
+  background: radial-gradient(60% 55% at 50% 45%, rgba(194,24,91,.14), transparent 70%);
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.grat-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.20), 0 3px 10px rgba(0,0,0,.10);
+  transition: transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease;
+}
+.grat-card:hover {
+  transform: translateY(-6px) scale(1.012);
+  box-shadow: 0 28px 70px rgba(0,0,0,.26), 0 4px 14px rgba(0,0,0,.12);
+}
+
+@media (max-width: 560px) {
+  .grat-wrap { max-width: 100%; }
+  .grat-card { border-radius: 14px; }
+}
+
+/* ── UI / MOTION POLISH ── */
+
+/* Buttons: consistent lift + a light sweep on hover. */
+.btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  transition: transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s ease, background .25s ease, color .25s ease;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.35), transparent);
+  transform: skewX(-20deg);
+  transition: left .55s ease;
+  pointer-events: none;
+}
+.btn:hover::after { left: 130%; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+.btn-g:hover  { box-shadow: 0 10px 26px rgba(27,123,52,.34); }
+.btn-y:hover  { box-shadow: 0 10px 26px rgba(245,216,0,.40); }
+.btn-ol:hover { background: var(--green); color: var(--white); box-shadow: 0 10px 26px rgba(27,123,52,.28); }
+.btn-wa:hover { box-shadow: 0 10px 26px rgba(37,211,102,.38); }
+
+/* Keyboard focus ring — previously there was none anywhere. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(27,123,52,.55);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Nav links get an underline that grows from the centre. */
+.nav-links a { position: relative; }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 50%; bottom: -6px;
+  width: 0; height: 2px;
+  background: var(--green);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: width .28s cubic-bezier(.22,1,.36,1);
+}
+.nav-links a:hover::after { width: 100%; }
+
+/* Cards across the site share one lift curve. */
+.cuisine-card,
+.pers-card,
+.sc,
+.charity-card,
+.tcard {
+  transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+}
+.cuisine-card:hover,
+.pers-card:hover,
+.charity-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 44px rgba(27,123,52,.18);
+}
+
+/* Carousel arrows: clearer affordance. */
+.gallery-nav-btn { box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.gallery-nav-btn:active { transform: translateY(-50%) scale(.94); }
+
+/* Lightbox close/prev/next get a hover lift. */
+.gallery-lightbox-close:hover,
+.gallery-lightbox-prev:hover,
+.gallery-lightbox-next:hover { transform: translateY(-50%) scale(1.08); }
+.gallery-lightbox-close:hover { transform: scale(1.12); }
+
+/* Smooth scroll + let the sticky navbar clear anchor targets. */
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+
+/* Respect reduced-motion: strip transforms/animations for those users. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

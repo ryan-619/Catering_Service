@@ -1,86 +1,81 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination, Autoplay } from 'swiper/modules'
 import { FaExpand, FaTimes, FaChevronLeft, FaChevronRight, FaPlay } from 'react-icons/fa'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
+import { FadeUp } from './AnimatedSection'
 
-import g1 from '../assets/gallery/g1.jpg'
-import g2 from '../assets/gallery/g2.jpg'
-import g3 from '../assets/gallery/g3.jpg'
-import g4 from '../assets/gallery/g4.jpg'
-import g5 from '../assets/gallery/g5.jpg'
-import g6 from '../assets/gallery/g6.jpg'
-import g7 from '../assets/gallery/g7.jpg'
-import g8 from '../assets/gallery/g8.jpg'
-import g9 from '../assets/gallery/g9.jpg'
-import g10 from '../assets/gallery/g10.jpg'
-import g11 from '../assets/gallery/g11.jpg'
-import g12 from '../assets/gallery/g12.jpg'
-import g13 from '../assets/gallery/g13.jpg'
-import g14 from '../assets/gallery/g14.jpg'
-import g15 from '../assets/gallery/g15.jpg'
-import g16 from '../assets/gallery/g16.jpg'
-import g17 from '../assets/gallery/g17.jpg'
-// import g18 from '../assets/gallery/g18.jpg'
-// import g19 from '../assets/gallery/g19.jpg'
-// import gvideo from '../assets/gallery/gvideo.mp4'
+import ev1 from '../assets/events/ev1.jpg'
+import ev2 from '../assets/events/ev2.jpg'
+import ev3 from '../assets/events/ev3.jpg'
+import ev4 from '../assets/events/ev4.jpg'
+import ev5 from '../assets/events/ev5.jpg'
+import ev6 from '../assets/events/ev6.jpg'
+import ev7 from '../assets/events/ev7.jpg'
+import evv1 from '../assets/events/ev-v1.mp4'
+import evv2 from '../assets/events/ev-v2.mp4'
+import evv3 from '../assets/events/ev-v3.mp4'
 
-const photos = [g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16,g17]
+// Six of these are wide 20:9 panoramas of the live counters and one (ev7) is a
+// portrait, so the grid spans are assigned to match each shot's real aspect
+// ratio rather than forcing everything into the same cell.
+const photos = [
+  { src: ev1, cls: 'wide', cap: 'Illuminated Live Counter' },
+  { src: ev7, cls: 'portrait', cap: 'Sweet & Dessert Station' },
+  { src: ev2, cls: 'wide', cap: 'Grand Buffet Setup' },
+  { src: ev3, cls: 'wide', cap: 'Brass & Copper Service' },
+  { src: ev4, cls: '',     cap: 'Signature Counter Décor' },
+  { src: ev5, cls: '',     cap: 'Royal Banquet Spread' },
+  { src: ev6, cls: 'wide', cap: 'Premium Event Styling' },
+]
 
-const photoMedia = photos.map((src) => ({ src, type: 'image' }))
+const videos = [
+  { src: evv1, cap: 'Live Counter Walkthrough' },
+  { src: evv2, cap: 'Banquet Setup' },
+  { src: evv3, cap: 'Full Event Spread' },
+]
 
-const masonryLayout = [
-  { img: g1, cls: 'tall' },
-  { img: g2, cls: '' },
-  { img: g3, cls: '' },
-  { img: g4, cls: 'tall' },
-  { img: g5, cls: 'wide' },
-  { img: g6, cls: '' },
-  { img: g7, cls: '' },
-  { img: g8, cls: '' },
-  { img: g9, cls: '' },
+// One combined collection so the lightbox can step from the last photo straight
+// into the videos.
+const allMedia = [
+  ...photos.map((p) => ({ src: p.src, type: 'image', cap: p.cap })),
+  ...videos.map((v) => ({ src: v.src, type: 'video', cap: v.cap })),
 ]
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState(null)
 
-  const openLightbox = (items, index) => setLightbox({ items, index })
+  const openLightbox = (index) => setLightbox({ index })
   const closeLightbox = () => setLightbox(null)
 
-  const prevPhoto = useCallback(() => {
-    setLightbox((prev) =>
-      prev && {
-        ...prev,
-        index: (prev.index - 1 + prev.items.length) % prev.items.length,
-      }
-    )
+  const prevItem = useCallback(() => {
+    setLightbox((p) => p && { index: (p.index - 1 + allMedia.length) % allMedia.length })
   }, [])
 
-  const nextPhoto = useCallback(() => {
-    setLightbox((prev) =>
-      prev && { ...prev, index: (prev.index + 1) % prev.items.length }
-    )
+  const nextItem = useCallback(() => {
+    setLightbox((p) => p && { index: (p.index + 1) % allMedia.length })
   }, [])
 
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') prevPhoto()
-      if (e.key === 'ArrowRight') nextPhoto()
+      if (e.key === 'ArrowLeft') prevItem()
+      if (e.key === 'ArrowRight') nextItem()
     }
     window.addEventListener('keydown', handleKey)
     return () => window.removeEventListener('keydown', handleKey)
-  }, [prevPhoto, nextPhoto])
+  }, [prevItem, nextItem])
+
+  // Body scroll lock while the lightbox is open.
+  useEffect(() => {
+    document.body.style.overflow = lightbox ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [lightbox])
+
+  const current = lightbox ? allMedia[lightbox.index] : null
 
   return (
     <section id="gallery">
       <div className="ct">
 
-        {/* Header */}
         <FadeUp>
           <div className="gh">
             <span className="ey">Photo Gallery</span>
@@ -93,91 +88,60 @@ export default function Gallery() {
           </div>
         </FadeUp>
 
-        {/* Featured Video
-        <FadeUp delay={0.2}>
-          <div className="gallery-video-wrap">
-            <video
-              src={gvideo}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="gallery-video"
-            />
-            <div className="gallery-video-overlay">
-              <div className="gallery-video-badge">
-                <FaPlay style={{ fontSize: '.7rem' }} />
-                Live Event
-              </div>
-            </div>
-          </div>
-        </FadeUp> */}
-
-        {/* Masonry Grid */}
-        <FadeUp delay={0.3}>
+        {/* Photos */}
+        <FadeUp delay={0.15}>
           <div className="gallery-masonry">
-            {masonryLayout.map((item, i) => (
+            {photos.map((item, i) => (
               <motion.div
                 className={`gm-item ${item.cls}`}
                 key={i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                onClick={() => openLightbox(photoMedia, i)}
+                initial={{ opacity: 0, y: 24, scale: 0.97 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.55, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -6 }}
+                onClick={() => openLightbox(i)}
               >
-                <img src={item.img} alt={`Event ${i + 1}`} loading="lazy" />
+                <img src={item.src} alt={item.cap} loading="lazy" />
                 <div className="gm-overlay">
                   <FaExpand className="gm-icon" />
+                  <span className="gm-cap">{item.cap}</span>
                 </div>
               </motion.div>
             ))}
           </div>
         </FadeUp>
 
-        {/* Swiper Carousel */}
-        <FadeUp delay={0.4}>
-          <div className="gallery-swiper-wrap">
-            <h3 className="gallery-carousel-title">More Memories</h3>
-            <Swiper
-              modules={[Navigation, Pagination, Autoplay]}
-              spaceBetween={16}
-              slidesPerView={1}
-              navigation={{
-                prevEl: '.swiper-btn-prev',
-                nextEl: '.swiper-btn-next',
-              }}
-              pagination={{ clickable: true }}
-              autoplay={{ delay: 2500, disableOnInteraction: false }}
-              loop={true}
-              breakpoints={{
-                480: { slidesPerView: 2, spaceBetween: 12 },
-                768: { slidesPerView: 3, spaceBetween: 16 },
-                1024: { slidesPerView: 4, spaceBetween: 20 },
-              }}
-              className="gallery-swiper"
-            >
-              {photos.slice(9).map((photo, i) => (
-                <SwiperSlide key={i}>
-                  <div
-                    className="gallery-slide"
-                    onClick={() => openLightbox(photoMedia, i + 9)}
-                  >
-                    <img src={photo} alt={`Event ${i + 10}`} loading="lazy" />
-                    <div className="gallery-slide-overlay">
-                      <FaExpand className="gallery-slide-icon" />
-                    </div>
+        {/* Videos */}
+        <FadeUp delay={0.2}>
+          <div className="gallery-videos">
+            <h3 className="gallery-carousel-title">Behind the Setup</h3>
+            <div className="gv-grid">
+              {videos.map((v, i) => (
+                <motion.div
+                  className="gv-card"
+                  key={i}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -6 }}
+                  onClick={() => openLightbox(photos.length + i)}
+                >
+                  <video
+                    src={v.src}
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="gv-thumb"
+                  />
+                  <div className="gv-overlay">
+                    <span className="gv-play"><FaPlay /></span>
                   </div>
-                </SwiperSlide>
+                  <div className="gv-cap">{v.cap}</div>
+                </motion.div>
               ))}
-            </Swiper>
-
-            <button className="swiper-btn-prev gallery-nav-btn">
-              <FaChevronLeft />
-            </button>
-            <button className="swiper-btn-next gallery-nav-btn gallery-nav-next">
-              <FaChevronRight />
-            </button>
+            </div>
           </div>
         </FadeUp>
 
@@ -185,7 +149,7 @@ export default function Gallery() {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightbox !== null && (
+        {current && (
           <motion.div
             className="gallery-lightbox"
             initial={{ opacity: 0 }}
@@ -195,21 +159,23 @@ export default function Gallery() {
           >
             <motion.div
               className="gallery-lightbox-inner"
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0, y: 16 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 16 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 26 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="gallery-lightbox-close" onClick={closeLightbox}>
+              <button className="gallery-lightbox-close" onClick={closeLightbox} aria-label="Close">
                 <FaTimes />
               </button>
-              <button className="gallery-lightbox-prev" onClick={prevPhoto}>
+              <button className="gallery-lightbox-prev" onClick={prevItem} aria-label="Previous">
                 <FaChevronLeft />
               </button>
-              {lightbox.items[lightbox.index].type === 'video' ? (
+
+              {current.type === 'video' ? (
                 <video
-                  key={lightbox.items[lightbox.index].src}
-                  src={lightbox.items[lightbox.index].src}
+                  key={current.src}
+                  src={current.src}
                   controls
                   autoPlay
                   playsInline
@@ -217,16 +183,18 @@ export default function Gallery() {
                 />
               ) : (
                 <img
-                  src={lightbox.items[lightbox.index].src}
-                  alt={`Event ${lightbox.index + 1}`}
+                  key={current.src}
+                  src={current.src}
+                  alt={current.cap}
                   className="gallery-lightbox-img"
                 />
               )}
-              <button className="gallery-lightbox-next" onClick={nextPhoto}>
+
+              <button className="gallery-lightbox-next" onClick={nextItem} aria-label="Next">
                 <FaChevronRight />
               </button>
               <div className="gallery-lightbox-counter">
-                {lightbox.index + 1} / {lightbox.items.length}
+                {current.cap} &nbsp;·&nbsp; {lightbox.index + 1} / {allMedia.length}
               </div>
             </motion.div>
           </motion.div>
