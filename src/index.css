@@ -2358,3 +2358,190 @@ html { scroll-behavior: smooth; scroll-padding-top: 84px; }
     scroll-behavior: auto !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREMIUM THEME LAYER
+   Appended last so it refines the base styles site-wide. CSS-only — no
+   markup changes. Lifts the shared header atoms (.ey / .gline / .st),
+   adds a gold accent + depth, and polishes cards, stats and nav.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --gold:      #B8863B;
+  --gold-lt:   #E3C06A;
+  --gold-grad: linear-gradient(135deg, #E3C06A 0%, #B8863B 55%, #8C6522 100%);
+  --shadow-sm: 0 2px 8px rgba(26,26,24,.06);
+  --shadow-md: 0 10px 30px rgba(26,26,24,.10);
+  --shadow-lg: 0 24px 60px rgba(26,26,24,.16);
+  --ring:      rgba(27,123,52,.55);
+}
+
+/* — Refined eyebrow: a touch bolder, a hair more tracking, gold-warm tint
+     on light sections while the per-section dark overrides still win. — */
+.ey {
+  font-weight: 600;
+  letter-spacing: .24em;
+  font-size: .7rem;
+}
+
+/* — Ornamental divider. The line keeps its per-section colour (green on
+     light, green-lt on dark) but fades at both ends via a mask, and a small
+     gold diamond sits at its centre — reads on light and dark alike. — */
+.gline {
+  position: relative;
+  width: 72px;
+  height: 2px;
+  border-radius: 2px;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+          mask: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent);
+  overflow: visible;
+}
+.gline::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 8px; height: 8px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--gold-grad);
+  border-radius: 1px;
+  -webkit-mask: none; mask: none;
+  box-shadow: 0 1px 4px rgba(140,101,34,.5);
+}
+
+/* — Headings: marginally heavier and optically tightened for a more
+     confident, editorial feel. — */
+h2.st {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* — Subtle background depth so the flat light sections aren't dead solids.
+     Warm radial washes, barely-there. — */
+#about {
+  background:
+    radial-gradient(90% 60% at 85% 0%, rgba(184,134,59,.05), transparent 60%),
+    radial-gradient(70% 50% at 0% 100%, rgba(27,123,52,.045), transparent 60%),
+    var(--white);
+}
+#testi {
+  background:
+    radial-gradient(80% 55% at 12% 0%, rgba(27,123,52,.05), transparent 60%),
+    var(--white);
+}
+#national-events {
+  background:
+    radial-gradient(85% 55% at 90% 0%, rgba(184,134,59,.055), transparent 62%),
+    var(--white);
+}
+#gallery {
+  background:
+    radial-gradient(80% 50% at 50% 0%, rgba(27,123,52,.05), transparent 60%),
+    var(--ivory);
+}
+#cuisines {
+  background:
+    radial-gradient(70% 50% at 100% 0%, rgba(194,24,91,.04), transparent 60%),
+    var(--white) !important;
+}
+
+/* — Card polish: a consistent resting shadow + hairline, so cards read as
+     lifted objects rather than flat rectangles. — */
+.cuisine-card,
+.pers-card,
+.tc,
+.charity-card,
+.gv-card,
+.gm-item,
+.ne-sub {
+  box-shadow: var(--shadow-sm);
+}
+.cuisine-card,
+.pers-card,
+.tc {
+  border: 1px solid rgba(26,26,24,.05);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--white);
+}
+.cuisine-card:hover,
+.pers-card:hover,
+.tc:hover,
+.charity-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* — Testimonials: warm cream card so it reads against the white section,
+     with a fine gold top accent, gold quote mark and gold stars. — */
+.tc {
+  padding: 30px 28px;
+  background: linear-gradient(180deg, #FFFEF6 0%, var(--cream) 100%);
+  border-top: 3px solid var(--gold);
+}
+.tq { color: var(--gold-lt); opacity: .5; }
+.tstars { color: var(--gold); letter-spacing: 2px; }
+.tavt {
+  background: var(--gold-grad) !important;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(140,101,34,.35);
+}
+
+/* — Stats band: gradient green with a soft glow + gold hairline top/bottom,
+     numbers in warm gold. — */
+#stats {
+  background:
+    radial-gradient(120% 140% at 50% -20%, var(--green-lt) 0%, transparent 55%),
+    linear-gradient(160deg, var(--green) 0%, var(--green-dk) 100%);
+  border-top: 1px solid rgba(227,192,106,.35);
+  border-bottom: 1px solid rgba(227,192,106,.35);
+  position: relative;
+}
+.sn {
+  background: linear-gradient(180deg, #FFF4CF 0%, #E3C06A 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-lt);
+}
+.si { border-right-color: rgba(255,255,255,.14); }
+.sl { letter-spacing: .12em; }
+
+/* — Top bar: subtle gradient + gold links for a richer strip. — */
+.topbar {
+  background: linear-gradient(90deg, var(--green-dk) 0%, var(--green) 50%, var(--green-dk) 100%);
+}
+.topbar a { color: var(--gold-lt); }
+
+/* — Nav: deeper glass + a gold underglow on the border. — */
+nav {
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  box-shadow: 0 1px 0 rgba(184,134,59,.25), 0 6px 24px rgba(26,26,24,.05);
+}
+
+/* — Buttons: slightly softer radius + a refined resting shadow so they read
+     as premium pills. (Hover sweep/lift already defined earlier.) — */
+.btn { border-radius: 6px; font-weight: 600; }
+.btn-g { box-shadow: 0 6px 18px rgba(27,123,52,.22); }
+.btn-y { box-shadow: 0 6px 18px rgba(245,216,0,.28); }
+
+/* — Section-heading eyebrow gets a faint gold rule beneath the whole header
+     block on the light sections via the divider; nothing else needed. — */
+
+/* — Refined text selection + a slim custom scrollbar for the premium feel. — */
+::selection { background: rgba(184,134,59,.24); color: var(--charcoal); }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: var(--ivory); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--green-lt), var(--green-dk));
+  border-radius: 8px;
+  border: 3px solid var(--ivory);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--green-dk); }
+
+/* — Gallery images: gentle zoom already present; add a warm ring on hover. — */
+.gm-item:hover { box-shadow: 0 18px 44px rgba(184,134,59,.22), var(--shadow-md); }
+
+/* — Cuisine cards: gold-tinted "Explore" affordance. — */
+.cuisine-explore { color: var(--green); font-weight: 600; }
+.cuisine-card:hover .cuisine-explore { color: var(--gold); }
