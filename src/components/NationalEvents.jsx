@@ -79,7 +79,7 @@ const asVideos = (arr) => arr.map((src) => ({ src, type: 'video' }))
 const subsections = [
   {
     key: 'samiti',
-    title: 'Privileged to Serve at Rashtriya Karyakari Samiti',
+    title: 'Privileged to Serve at Rashtriya Karyakari Samiti at BJP',
     desc: 'Entrusted with catering for the national executive committee — serving pure vegetarian meals at a gathering of national significance.',
     cards: samitiCards,
     photos: asImages([]),

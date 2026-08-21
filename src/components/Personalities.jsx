@@ -29,7 +29,7 @@ const personalities = [
   { img: p17, name: 'PM Narendra Modi', title: 'Prime Minister of India', tag: <><FaFlag /> Prime Minister</> },
   { img: p1, name: 'CM Yogi Adityanath', title: 'Chief Minister, Uttar Pradesh', tag: <><FaLandmark /> Political Leader</> },
   { img: p5, name: 'Rajnath Singh', title: 'Defence Minister of India', tag: <><FaLandmark /> Defence Minister</> },
-  { img: p19, name: 'Nritya Gopal Das', title: 'Nyas Peeth', tag: <><FaLandmark /> </> },
+  { img: p19, name: 'Nripendra Misra, Govind Dev Giri Ji Maharaj', title: 'Nyas Peeth', tag: <><FaLandmark /> </> },
   { img: p8, name: 'Brijesh Pathak', title: 'Deputy CM', tag: <><FaLandmark /> Political Leader</> },
   { img: p18, name: 'Satish Mahana', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
   { img: chandraShekhar, name: 'Chandra Shekhar', title: 'Speaker of the Legislative Assembly UP', tag: <><FaLandmark /> Political Leader</> },
