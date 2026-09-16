@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import './styles/main.css'
 
 // Admin routes are only ever visited by staff, so they are split into their own
 // chunk (loaded on demand) instead of shipping in the bundle every public

@@ -1,0 +1,230 @@
+/* ═══════════════════════════════════════════════════════════════
+   STATS — the four-number band
+   Full-bleed forest green, a gold radial wash over a faint gold
+   lattice, gold hairlines top and bottom, four foil numerals
+   separated by thin vertical rules.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Local scale knobs. Kept on the bare class (not the id-qualified rule
+   below) so the media queries can override them at equal specificity. */
+.lx-stats {
+  --lx-stats-pad: clamp(54px, 6.4vw, 92px);
+  --lx-stats-num: clamp(2.6rem, 5.6vw, 5.2rem);
+  --lx-stats-col-gap: clamp(14px, 2.6vw, 44px);
+  --lx-stats-row-gap: clamp(30px, 4vw, 46px);
+  --lx-stats-rule: color-mix(in srgb, var(--lx-gold-500) 34%, transparent);
+  --lx-stats-motif-ink: color-mix(in srgb, var(--lx-gold-400) 9%, transparent);
+}
+
+/* The legacy sheet still owns `#stats` by id (background, padding, borders)
+   and an id outranks a class, so the band's own box is declared once,
+   id-qualified, to take ownership. Everything inside is plain `lx-`. */
+#stats.lx-stats {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border: 0;
+  padding-block: var(--lx-stats-pad);
+  background: var(--lx-grad-green);
+  color: var(--lx-paper);
+}
+
+/* ── Gold hairlines, top and bottom ── */
+#stats.lx-stats::before,
+#stats.lx-stats::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-gold-600) 14%,
+    var(--lx-gold-300) 50%,
+    var(--lx-gold-600) 86%,
+    transparent
+  );
+  opacity: .62;
+}
+#stats.lx-stats::before { top: 0; }
+#stats.lx-stats::after { bottom: 0; }
+
+/* ── Layer 1: the big gold wash (background-position is scrubbed) ── */
+.lx-stats-wash {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 100% 134%;
+  background-position: 50% -20px;
+  background-image: radial-gradient(
+    54% 118% at 50% 42%,
+    color-mix(in srgb, var(--lx-gold-500) 28%, transparent) 0%,
+    color-mix(in srgb, var(--lx-gold-600) 13%, transparent) 40%,
+    transparent 72%
+  );
+}
+
+/* ── Layer 2: faint gold lattice, feathered off at the edges ── */
+.lx-stats-motif {
+  position: absolute;
+  inset: -70px 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 21px, var(--lx-stats-motif-ink) 21px 22px),
+    repeating-linear-gradient(-45deg, transparent 0 21px, var(--lx-stats-motif-ink) 21px 22px);
+  -webkit-mask-image: radial-gradient(72% 80% at 50% 50%, var(--lx-ink) 0%, transparent 78%);
+  mask-image: radial-gradient(72% 80% at 50% 50%, var(--lx-ink) 0%, transparent 78%);
+}
+
+/* ── Content ── */
+.lx-stats-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(28px, 3.6vw, 48px);
+}
+
+.lx-stats-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: var(--lx-stats-col-gap);
+  row-gap: var(--lx-stats-row-gap);
+}
+
+.lx-stats-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 1vw, 13px);
+  min-width: 0;
+  padding-inline: clamp(4px, 1vw, 16px);
+  text-align: center;
+}
+
+/* Thin gold rules — vertical between columns, horizontal between rows. */
+.lx-stats-item::before,
+.lx-stats-item::after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.lx-stats-item::before {
+  top: 4%;
+  bottom: 4%;
+  left: calc(var(--lx-stats-col-gap) / -2);
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--lx-stats-rule) 20%,
+    var(--lx-stats-rule) 80%,
+    transparent
+  );
+}
+.lx-stats-item::after {
+  left: 14%;
+  right: 14%;
+  bottom: calc(var(--lx-stats-row-gap) / -2);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lx-stats-rule), transparent);
+}
+.lx-stats-item + .lx-stats-item::before { opacity: 1; }
+
+/* ── Numeral ── */
+.lx-stats-num {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: .03em;
+  font-family: var(--lx-display);
+  font-size: var(--lx-stats-num);
+  font-weight: 600;
+  line-height: .9;
+  letter-spacing: -.022em;
+  background-position: 0% 0%;
+  -webkit-text-fill-color: transparent;
+}
+
+.lx-stats-val {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.lx-stats-unit {
+  margin-top: .13em;
+  font-size: .42em;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+/* ── Label ── */
+.lx-stats-label {
+  max-width: 15ch;
+  font-family: var(--lx-sans);
+  font-size: clamp(.63rem, 1.05vw, var(--lx-t-xs));
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  color: color-mix(in srgb, var(--lx-gold-100) 74%, transparent);
+}
+
+/* ── Footnote ── */
+.lx-stats-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 18px);
+  text-align: center;
+}
+
+.lx-stats-note {
+  margin: 0;
+  max-width: 36ch;
+  font-family: var(--lx-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.06rem, 2vw, 1.52rem);
+  line-height: 1.45;
+  color: var(--lx-gold-300);
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+/* Four columns get tight between 761 and 900 — ease the numeral down. */
+@media (min-width: 761px) and (max-width: 900px) {
+  .lx-stats { --lx-stats-num: clamp(2.15rem, 4.9vw, 3.1rem); }
+  .lx-stats-label { letter-spacing: .16em; }
+}
+
+/* 2 × 2 below 760px: vertical rule only inside each row, hairline
+   divider under the first row instead. */
+@media (max-width: 760px) {
+  .lx-stats { --lx-stats-num: clamp(2.45rem, 11vw, 3.4rem); }
+  .lx-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .lx-stats-item + .lx-stats-item::before { opacity: 0; }
+  .lx-stats-item:nth-child(even)::before { opacity: 1; }
+  .lx-stats-item:nth-child(-n + 2)::after { opacity: 1; }
+}
+
+@media (max-width: 420px) {
+  .lx-stats { --lx-stats-num: clamp(2.05rem, 10.4vw, 2.7rem); }
+  .lx-stats-label { letter-spacing: .15em; max-width: 13ch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-stats-motif { transform: none !important; }
+}

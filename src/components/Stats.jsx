@@ -1,44 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
-
-function Counter({ target, suffix }) {
-  const [count, setCount] = useState(0)
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true })
-  const started = useRef(false)
-
-  useEffect(() => {
-    if (!inView || started.current) return
-    started.current = true
-
-    const isText = isNaN(parseInt(target))
-    if (isText) { setCount(target); return }
-
-    const num = parseInt(target.toString().replace(/\D/g, ''))
-    const duration = 2000
-    const steps = 60
-    const increment = num / steps
-    let current = 0
-
-    const timer = setInterval(() => {
-      current += increment
-      if (current >= num) {
-        setCount(num)
-        clearInterval(timer)
-      } else {
-        setCount(Math.floor(current))
-      }
-    }, duration / steps)
-
-    return () => clearInterval(timer)
-  }, [inView, target])
-
-  return (
-    <span ref={ref}>
-      {typeof count === 'number' ? count.toLocaleString() : count}{suffix}
-    </span>
-  )
-}
+import { gsap, prefersReducedMotion } from '../lib/gsapSetup'
+import { useGsapContext } from '../lib/useGsap'
+import Reveal from './ui/Reveal'
+import CountUp from './ui/CountUp'
 
 const stats = [
   { num: 42, unit: '+', label: 'Years of Service' },
@@ -48,26 +11,62 @@ const stats = [
 ]
 
 export default function Stats() {
+  const scope = useGsapContext((ctx, el) => {
+    if (prefersReducedMotion()) return
+
+    /* A fresh config per trigger — ScrollTrigger mutates the object it is given. */
+    const drift = () => ({ trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.6 })
+
+    /* 1 — the gold wash drifts ~40px against the scroll as the band passes. */
+    gsap.fromTo(
+      el.querySelector('.lx-stats-wash'),
+      { backgroundPosition: '50% -20px' },
+      { backgroundPosition: '50% 20px', ease: 'none', scrollTrigger: drift() },
+    )
+    gsap.fromTo(
+      el.querySelector('.lx-stats-motif'),
+      { y: 20 },
+      { y: -20, ease: 'none', scrollTrigger: drift() },
+    )
+
+    /* 2 — one sheen sweeps across the foil numerals as they arrive. */
+    gsap.fromTo(
+      el.querySelectorAll('.lx-stats-num'),
+      { backgroundPosition: '150% 0%' },
+      {
+        backgroundPosition: '0% 0%',
+        duration: 1.05,
+        ease: 'power2.out',
+        stagger: 0.09,
+        scrollTrigger: { trigger: el, start: 'top 78%', once: true },
+      },
+    )
+  })
+
   return (
-    <section id="stats">
-      <div className="ct">
-        <div className="srow">
-          {stats.map((s, i) => (
-            <motion.div
-              className="si"
-              key={s.label}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-            >
-              <div className="sn">
-                <Counter target={s.num} suffix={s.unit} />
-              </div>
-              <div className="sl">{s.label}</div>
-            </motion.div>
+    <section id="stats" className="lx-stats" ref={scope}>
+      <span className="lx-stats-wash" aria-hidden="true" />
+      <span className="lx-stats-motif" aria-hidden="true" />
+
+      <div className="lx-ct-wide lx-stats-inner">
+        <Reveal className="lx-stats-grid" stagger={0.08} start="top 88%">
+          {stats.map((s) => (
+            <div className="lx-stats-item" key={s.label}>
+              <span className="lx-stats-num lx-foil">
+                <CountUp to={s.num} className="lx-stats-val" />
+                <span className="lx-stats-unit">{s.unit}</span>
+              </span>
+              <span className="lx-stats-label">{s.label}</span>
+            </div>
           ))}
-        </div>
+        </Reveal>
+
+        <Reveal className="lx-stats-foot" from="up" delay={0.1}>
+          <span className="lx-orn" aria-hidden="true"><i /><b /><i /></span>
+          <p className="lx-stats-note">
+            Four decades. One promise — pure vegetarian, every single time.
+          </p>
+        </Reveal>
       </div>
     </section>
   )

@@ -1,0 +1,285 @@
+/* ═══════════════════════════════════════════════════════════════
+   PERSONALITIES — "Our Honour"
+   A gallery wall of 3:4 portrait tiles. Each tile is a photograph
+   under a deep scrim with a gold frame inset that draws itself in
+   on hover. Namespaced `lx-pers-*`; the legacy `.pers-*` rules in
+   src/index.css still serve the National Events subsection and are
+   deliberately left untouched.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-pers {
+  /* Scrim + hairline colours composed from tokens, never hard-coded. */
+  --lx-pers-scrim-1: color-mix(in srgb, var(--lx-green-950) 92%, transparent);
+  --lx-pers-scrim-2: color-mix(in srgb, var(--lx-green-950) 62%, transparent);
+  --lx-pers-scrim-3: color-mix(in srgb, var(--lx-green-950) 18%, transparent);
+  --lx-pers-rule: color-mix(in srgb, var(--lx-gold-500) 22%, transparent);
+  --lx-pers-rule-lit: color-mix(in srgb, var(--lx-gold-300) 82%, transparent);
+  --lx-pers-r: var(--lx-r);
+  --lx-pers-inset: 9px;
+}
+
+/* The legacy sheet still carries `#personalities { padding; background }` at ID
+   specificity, which would out-rank `.lx-sec--ivory`. Re-assert the token
+   values at matching weight. */
+#personalities.lx-pers {
+  padding-block: var(--lx-pad);
+  padding-inline: 0;
+  background: var(--lx-ivory);
+}
+
+.lx-pers-inner { position: relative; z-index: 1; }
+
+/* ── Two very soft gold washes behind the wall ── */
+.lx-pers-wash { z-index: 0; }
+.lx-pers-wash--a {
+  top: clamp(-90px, -6vw, -40px); left: clamp(-160px, -10vw, -80px);
+  width: clamp(320px, 42vw, 620px); aspect-ratio: 1;
+  opacity: .8;
+}
+.lx-pers-wash--b {
+  bottom: clamp(-120px, -8vw, -60px); right: clamp(-180px, -12vw, -90px);
+  width: clamp(300px, 38vw, 560px); aspect-ratio: 1;
+  opacity: .62;
+}
+
+/* ═══ THE WALL ═══ */
+
+.lx-pers-grid {
+  list-style: none;
+  margin: clamp(44px, 5vw, 76px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(12px, 1.5vw, 22px);
+}
+
+.lx-pers-cell { min-width: 0; }
+
+/* TiltCard: .lx-tilt-scene is the outer cell, .lx-tilt.lx-pers-card the plane. */
+.lx-pers-cell .lx-tilt-scene { height: 100%; }
+
+.lx-pers-card {
+  position: relative;
+  height: 100%;
+  border-radius: var(--lx-pers-r);
+  background: var(--lx-green-950);
+  box-shadow: var(--lx-sh-2);
+  transition: transform .5s var(--lx-e-out), box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-pers-card:hover { box-shadow: var(--lx-sh-4), var(--lx-sh-gold); }
+
+/* Clip the shared specular glare to the tile's corners. */
+.lx-pers-card > .lx-glare { border-radius: var(--lx-pers-r); }
+
+.lx-pers-fig {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: inherit;
+  display: block;
+  /* Must stay 3D or it flattens the tilt plane's Z-space and the chip and
+     name plate stop parallaxing against the photograph. */
+  transform-style: preserve-3d;
+}
+
+/* ── Photograph ── */
+/* Its own overflow box: putting `overflow:hidden` on the tilt plane itself
+   would force transform-style back to flat and kill the Z parallax. */
+.lx-pers-shot {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  display: block;
+  background: var(--lx-green-900);
+}
+
+.lx-pers-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 22%;
+  display: block;
+  transform: scale(1.005);
+  transition: transform .85s var(--lx-e-out), filter .6s var(--lx-e-out);
+  filter: saturate(.94) contrast(1.02);
+}
+.lx-pers-card:hover .lx-pers-img { transform: scale(1.06); filter: saturate(1.04) contrast(1.04); }
+
+.lx-pers-scrim {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      var(--lx-pers-scrim-1) 0%,
+      var(--lx-pers-scrim-2) 26%,
+      var(--lx-pers-scrim-3) 52%,
+      transparent 74%
+    );
+  transition: opacity var(--lx-d) var(--lx-e-out);
+}
+.lx-pers-card:hover .lx-pers-scrim { opacity: .94; }
+
+/* ── The gold frame that draws itself in ── */
+.lx-pers-frame {
+  position: absolute; inset: var(--lx-pers-inset);
+  z-index: 3;
+  pointer-events: none;
+  border-radius: calc(var(--lx-pers-r) - var(--lx-pers-inset) + 2px);
+  box-shadow: inset 0 0 0 1px var(--lx-pers-rule);
+  transition: box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-pers-frame::before,
+.lx-pers-frame::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  transition: transform .46s var(--lx-e-out);
+}
+/* horizontals sweep out from the left … */
+.lx-pers-frame::before {
+  border-top: 1px solid var(--lx-pers-rule-lit);
+  border-bottom: 1px solid var(--lx-pers-rule-lit);
+  transform: scaleX(0); transform-origin: left center;
+}
+/* … then the verticals drop in and close it */
+.lx-pers-frame::after {
+  border-left: 1px solid var(--lx-pers-rule-lit);
+  border-right: 1px solid var(--lx-pers-rule-lit);
+  transform: scaleY(0); transform-origin: center top;
+}
+.lx-pers-card:hover .lx-pers-frame { box-shadow: inset 0 0 0 1px transparent; }
+.lx-pers-card:hover .lx-pers-frame::before { transform: scaleX(1); }
+.lx-pers-card:hover .lx-pers-frame::after { transform: scaleY(1); transition-delay: .15s; }
+
+/* ── Category chip (floats forward on Z inside the tilt) ── */
+.lx-pers-tagwrap {
+  position: absolute;
+  top: calc(var(--lx-pers-inset) + 8px);
+  left: calc(var(--lx-pers-inset) + 8px);
+  right: calc(var(--lx-pers-inset) + 8px);
+  z-index: 4;
+  pointer-events: none;
+  display: flex;
+}
+.lx-pers-tag {
+  display: inline-flex; align-items: center; gap: .45em;
+  max-width: 100%;
+  padding: 5px 11px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  color: var(--lx-gold-300);
+  border-radius: var(--lx-r-pill);
+  background: color-mix(in srgb, var(--lx-green-950) 55%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 40%, transparent);
+  opacity: 0;
+  transform: translateY(-7px);
+  transition: opacity var(--lx-d) var(--lx-e-out), transform var(--lx-d) var(--lx-e-out);
+}
+/* A whitespace-only label is not rendered as a flex item, so the one entry
+   with an empty tag shows its icon alone with no dangling gap. */
+.lx-pers-tag svg { flex: none; font-size: .9em; }
+.lx-pers-card:hover .lx-pers-tag { opacity: 1; transform: translateY(0); }
+
+/* ── Name plate on the scrim ── */
+.lx-pers-meta {
+  position: absolute;
+  left: calc(var(--lx-pers-inset) + 9px);
+  right: calc(var(--lx-pers-inset) + 9px);
+  bottom: calc(var(--lx-pers-inset) + 10px);
+  z-index: 4;
+  display: flex; flex-direction: column; gap: 4px;
+  transform: translateZ(18px);
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.lx-pers-name {
+  font-family: var(--lx-display);
+  font-size: clamp(1.02rem, 1.2vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -.005em;
+  color: var(--lx-ivory);
+  overflow-wrap: break-word;
+  text-shadow: 0 1px 10px color-mix(in srgb, var(--lx-green-950) 70%, transparent);
+}
+.lx-pers-role {
+  font-family: var(--lx-sans);
+  font-size: clamp(.58rem, .62vw, .68rem);
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  line-height: 1.42;
+  color: var(--lx-gold-300);
+  overflow-wrap: break-word;
+  text-shadow: 0 1px 8px color-mix(in srgb, var(--lx-green-950) 70%, transparent);
+}
+
+/* ═══ CLOSING QUOTE ═══ */
+
+.lx-pers-quote {
+  margin: clamp(50px, 6vw, 86px) auto 0;
+  max-width: 58ch;
+  padding: clamp(28px, 3.4vw, 46px) clamp(22px, 4vw, 56px);
+  display: flex; flex-direction: column; align-items: center; gap: clamp(16px, 2vw, 24px);
+  text-align: center;
+  background: var(--lx-ivory-2);
+  border-radius: var(--lx-r-lg);
+  box-shadow: inset 0 0 0 1px var(--lx-pers-rule);
+}
+.lx-pers-quote p {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.12rem, 2.1vw, 1.62rem);
+  line-height: 1.5;
+  letter-spacing: -.005em;
+  color: var(--lx-ink-2);
+  text-wrap: balance;
+}
+.lx-pers-dia {
+  width: 8px; height: 8px; flex: none;
+  background: var(--lx-grad-gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lx-gold-500) 14%, transparent);
+}
+
+/* ═══ RESPONSIVE — portraits stay narrow, they never drop to one column ═══ */
+
+@media (max-width: 1200px) {
+  .lx-pers-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .lx-pers-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .lx-pers {
+    --lx-pers-r: var(--lx-r-sm);
+    --lx-pers-inset: 7px;
+  }
+  .lx-pers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+  .lx-pers-name { font-size: 1rem; }
+  .lx-pers-role { font-size: .58rem; letter-spacing: .12em; }
+  .lx-pers-tag { padding: 4px 9px; letter-spacing: .07em; }
+}
+
+/* ── Touch: nothing important may hide behind hover ── */
+@media (hover: none), (pointer: coarse) {
+  .lx-pers-tag { opacity: 1; transform: none; }
+  .lx-pers-frame::before { transform: scaleX(1); }
+  .lx-pers-frame::after { transform: scaleY(1); }
+  .lx-pers-frame { box-shadow: inset 0 0 0 1px transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-pers-img { transform: none; }
+  .lx-pers-card:hover .lx-pers-img { transform: none; }
+  .lx-pers-tag { opacity: 1; transform: none; }
+  .lx-pers-frame::before { transform: scaleX(1); }
+  .lx-pers-frame::after { transform: scaleY(1); }
+}

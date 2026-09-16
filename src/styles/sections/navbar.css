@@ -1,0 +1,542 @@
+/* ═══════════════════════════════════════════════════════════════
+   NAVBAR + TOPBAR  ·  "Heritage Luxe"
+   ---------------------------------------------------------------
+   .lx-top   — announcement strip. Scrolls away with the page.
+   .lx-nav   — sticky header. Transparent over the hero, frosted
+               ivory once scrolled. GSAP drives `--lx-navh`, which
+               feeds BOTH `height` and the negative `margin-bottom`,
+               so compressing the bar never moves the page.
+   .lx-nav-panel — full-screen mobile overlay (portaled to <body>).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* The header floats over the hero, so the hero can reserve room with
+   `padding-top: var(--lx-nav-overlap)` if its content sits high. */
+:root { --lx-nav-overlap: 86px; }
+@media (max-width: 900px) { :root { --lx-nav-overlap: 76px; } }
+@media (max-width: 560px) { :root { --lx-nav-overlap: 68px; } }
+
+/* ═══════════════════ TOP BAR ═══════════════════ */
+
+.lx-top {
+  position: relative;
+  z-index: 2;
+  background: var(--lx-grad-green);
+  font-family: var(--lx-sans);
+  box-shadow: inset 0 -1px 0 rgba(200, 162, 74, .26);
+}
+
+/* faint gold sheen sweeping the strip */
+.lx-top::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(200, 162, 74, .10) 48%, transparent);
+}
+
+.lx-top-in {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lx-gut);
+  min-height: 36px;
+  padding-block: 8px;
+}
+
+.lx-top-side {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  font-size: var(--lx-t-xs);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, .74);
+  white-space: nowrap;
+}
+.lx-top-side--end { justify-content: flex-end; }
+
+.lx-top-lbl {
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--lx-gold-400);
+}
+
+.lx-top-tel {
+  position: relative;
+  font-weight: 500;
+  letter-spacing: .05em;
+  color: var(--lx-paper);
+  text-decoration: none;
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-top-tel::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 1px;
+  background: var(--lx-grad-gold);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--lx-d) var(--lx-e-out);
+}
+.lx-top-tel:hover { color: var(--lx-gold-300); }
+.lx-top-tel:hover::after { transform: scaleX(1); transform-origin: left center; }
+
+.lx-top-sep {
+  flex: none;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(222, 187, 107, .6);
+}
+
+.lx-top-leaf {
+  display: inline-flex;
+  flex: none;
+  font-size: .78em;
+  color: var(--lx-gold-400);
+}
+
+.lx-top-pledge {
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 500;
+  color: rgba(255, 255, 255, .78);
+}
+
+/* mobile: one centred ticker, never two lines */
+.lx-top-mq { padding-block: 9px; }
+.lx-top-mqi {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .8);
+  white-space: nowrap;
+}
+.lx-top-mq .lx-top-tel { flex: none; font-size: var(--lx-t-xs); }
+
+/* ═══════════════════ STICKY HEADER ═══════════════════ */
+
+.lx-nav {
+  --lx-navh-rest: 86px;
+  --lx-navh-tight: 66px;
+  --lx-navh: var(--lx-navh-rest);
+
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  height: var(--lx-navh);
+  /* zero flow height → the bar floats over the hero */
+  margin-bottom: calc(-1 * var(--lx-navh));
+  font-family: var(--lx-sans);
+  isolation: isolate;
+}
+
+/* The legacy sheet styles the bare <nav> tag (sticky white bar + green
+   border). Both of our <nav> elements must opt out of it. */
+.lx-nav .lx-nav-nav,
+.lx-nav-panel .lx-nav-panel-nav {
+  position: static;
+  height: auto;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0;
+  box-shadow: none;
+  z-index: auto;
+  min-width: 0;
+}
+
+/* — scrim: keeps light type legible over any hero photograph — */
+.lx-nav-scrim {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 210%;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 35, 15, .62) 0%,
+    rgba(6, 35, 15, .34) 46%,
+    rgba(6, 35, 15, 0) 100%
+  );
+}
+
+/* — skin: the frosted ivory bar that fades in past ~80px — */
+.lx-nav-skin {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: var(--lx-ivory);
+  background: color-mix(in srgb, var(--lx-ivory) 84%, transparent);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: var(--lx-sh-2);
+}
+.lx-nav-skin::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-gold-500) 16%,
+    var(--lx-gold-400) 50%,
+    var(--lx-gold-500) 84%,
+    transparent
+  );
+}
+
+.lx-nav-in {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(12px, 2vw, 34px);
+}
+
+/* ── Logo lockup ── */
+.lx-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: clamp(9px, 1vw, 14px);
+  min-width: 0;
+  text-decoration: none;
+}
+
+.lx-nav-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.lx-nav-mark img {
+  display: block;
+  height: clamp(34px, calc(var(--lx-navh) * .6), 54px);
+  width: auto;
+  object-fit: contain;
+}
+
+.lx-nav-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  line-height: 1;
+}
+.lx-nav-name b {
+  font-family: var(--lx-display);
+  font-size: clamp(1.02rem, 1.42vw, 1.38rem);
+  font-weight: 600;
+  letter-spacing: -.005em;
+  white-space: nowrap;
+  color: var(--lx-paper);
+  text-shadow: 0 1px 12px rgba(6, 35, 15, .5);
+  transition: color var(--lx-d) ease, text-shadow var(--lx-d) ease;
+}
+.lx-nav-name i {
+  font-style: normal;
+  font-size: .565rem;
+  font-weight: 600;
+  letter-spacing: .21em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--lx-gold-300);
+  transition: color var(--lx-d) ease;
+}
+.lx-nav.is-solid .lx-nav-name b { color: var(--lx-green-900); text-shadow: none; }
+.lx-nav.is-solid .lx-nav-name i { color: var(--lx-gold-600); }
+
+/* ── Centre links ── */
+.lx-nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 1.9vw, 30px);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lx-nav-link {
+  display: inline-block;
+  padding: 8px 0;
+  font-size: .725rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, .82);
+  text-shadow: 0 1px 10px rgba(6, 35, 15, .45);
+  transition: color var(--lx-d-fast) ease, text-shadow var(--lx-d) ease;
+}
+.lx-nav-link:hover { color: var(--lx-gold-300); }
+.lx-nav.is-solid .lx-nav-link { color: var(--lx-ink-3); text-shadow: none; }
+.lx-nav.is-solid .lx-nav-link:hover,
+.lx-nav.is-solid .lx-nav-link.is-active { color: var(--lx-green-800); }
+.lx-nav-link.is-active { color: var(--lx-paper); }
+
+.lx-nav-lbl {
+  position: relative;
+  display: inline-block;
+}
+/* underline wipes in from the left, out to the right */
+.lx-nav-lbl::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--lx-grad-gold);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform .5s var(--lx-e-out);
+}
+.lx-nav-link:hover .lx-nav-lbl::after,
+.lx-nav-link.is-active .lx-nav-lbl::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* gold dot for the section currently in view — absolute, so it costs
+   no horizontal space and the row never reflows */
+.lx-nav-dot {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  width: 4px; height: 4px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: var(--lx-grad-gold);
+  opacity: 0;
+  transform: scale(.25);
+  transition: opacity var(--lx-d) var(--lx-e-out), transform var(--lx-d) var(--lx-e-out);
+}
+.lx-nav-link.is-active .lx-nav-dot { opacity: 1; transform: scale(1); }
+
+/* ── Right rail ── */
+.lx-nav-cta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: end;
+}
+.lx-nav-book { letter-spacing: .12em; }
+
+/* ── Hamburger ── */
+.lx-nav-burger {
+  position: relative;
+  display: none;
+  flex: none;
+  width: 44px; height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--lx-paper);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .34);
+  transition: box-shadow var(--lx-d) ease, background var(--lx-d) ease, color var(--lx-d) ease;
+}
+.lx-nav.is-solid .lx-nav-burger {
+  color: var(--lx-green-900);
+  box-shadow: inset 0 0 0 1px rgba(200, 162, 74, .5);
+}
+.lx-nav-burger:hover { background: rgba(200, 162, 74, .14); }
+
+.lx-nav-burger i {
+  position: absolute;
+  left: 50%;
+  width: 19px; height: 1.6px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+  transition: transform .5s var(--lx-e-out), opacity .24s ease, width .4s var(--lx-e-out);
+}
+.lx-nav-burger i:nth-child(1) { top: 15px; }
+.lx-nav-burger i:nth-child(2) { top: 21.2px; }
+.lx-nav-burger i:nth-child(3) { top: 27.4px; }
+.lx-nav-burger.is-open i:nth-child(1) { transform: translateX(-50%) translateY(6.2px) rotate(45deg); }
+.lx-nav-burger.is-open i:nth-child(2) { opacity: 0; width: 0; }
+.lx-nav-burger.is-open i:nth-child(3) { transform: translateX(-50%) translateY(-6.2px) rotate(-45deg); }
+
+/* ═══════════════════ MOBILE OVERLAY ═══════════════════ */
+
+.lx-nav-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 940;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 4vh, 40px);
+  padding: clamp(16px, 4vw, 30px) clamp(20px, 6vw, 46px) clamp(26px, 5vh, 44px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  visibility: hidden;
+  background: var(--lx-grad-green);
+  box-shadow: -1px 0 0 rgba(200, 162, 74, .35), var(--lx-sh-4);
+  font-family: var(--lx-sans);
+}
+.lx-nav-panel-wash {
+  top: -140px;
+  right: -120px;
+  width: 340px; height: 340px;
+  opacity: .9;
+}
+
+.lx-nav-panel-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: clamp(10px, 2vh, 18px);
+  box-shadow: inset 0 -1px 0 rgba(222, 187, 107, .22);
+}
+.lx-nav-panel-top .lx-nav-burger { display: grid; place-items: center; }
+.lx-nav-logo--panel { pointer-events: none; }
+.lx-nav-name--compact b { font-size: 1.06rem; }
+.lx-nav-panel .lx-nav-mark img { height: 40px; }
+
+.lx-nav-panel .lx-nav-panel-nav {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: center;
+  gap: clamp(2px, 1.1vh, 10px);
+}
+
+.lx-nav-plink {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: clamp(5px, 1vh, 9px) 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.5rem, 6.4vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  color: rgba(255, 255, 255, .9);
+  transition: color var(--lx-d-fast) ease, transform var(--lx-d) var(--lx-e-out);
+}
+.lx-nav-plink:hover,
+.lx-nav-plink:active { color: var(--lx-gold-300); transform: translateX(6px); }
+.lx-nav-plink.is-active { color: var(--lx-gold-300); }
+
+.lx-nav-pnum {
+  flex: none;
+  font-family: var(--lx-sans);
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  color: var(--lx-gold-500);
+  opacity: .75;
+}
+.lx-nav-plink.is-active .lx-nav-pnum { opacity: 1; }
+
+.lx-nav-panel-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(12px, 2.4vh, 20px);
+}
+.lx-nav-panel-foot .lx-orn { max-width: 130px; }
+/* GSAP moves this on Y, so it must not stay `display:inline` */
+.lx-nav-panel-cta { display: block; }
+
+.lx-nav-panel-tel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+.lx-nav-panel-tel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  letter-spacing: .05em;
+  color: rgba(255, 255, 255, .86);
+  text-decoration: none;
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-nav-panel-tel a svg { font-size: .72em; color: var(--lx-gold-400); }
+.lx-nav-panel-tel a:hover { color: var(--lx-gold-300); }
+
+.lx-nav-panel-veg {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .5);
+}
+.lx-nav-panel-veg svg { color: var(--lx-gold-400); flex: none; }
+
+/* ═══════════════════ RESPONSIVE ═══════════════════ */
+
+/* Eight uppercase, letterspaced links stop fitting below ~1080px. */
+@media (max-width: 1079px) {
+  .lx-nav-nav { display: none; }
+  .lx-nav-burger { display: grid; place-items: center; }
+  .lx-nav-in { grid-template-columns: minmax(0, 1fr) auto; }
+}
+
+@media (max-width: 900px) {
+  .lx-nav { --lx-navh-rest: 76px; --lx-navh-tight: 62px; }
+}
+
+@media (max-width: 720px) {
+  .lx-nav-name i { letter-spacing: .16em; font-size: .53rem; }
+}
+
+@media (max-width: 560px) {
+  .lx-nav { --lx-navh-rest: 68px; --lx-navh-tight: 58px; }
+  .lx-nav-name b { font-size: .96rem; }
+  .lx-nav-name i { display: none; }
+  .lx-nav-book { display: none; }
+  .lx-nav-panel-nav { justify-content: flex-start; padding-top: clamp(8px, 3vh, 26px); }
+}
+
+@media (max-width: 380px) {
+  .lx-nav-name b { font-size: .88rem; }
+}
+
+/* Short landscape phones: let the overlay scroll rather than squash. */
+@media (max-height: 560px) {
+  .lx-nav-panel-nav { justify-content: flex-start; }
+  .lx-nav-plink { font-size: 1.32rem; }
+}
+
+/* ═══════════════════ REDUCED MOTION ═══════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-nav-lbl::after,
+  .lx-nav-dot,
+  .lx-nav-burger i,
+  .lx-top-tel::after { transition: none !important; }
+}

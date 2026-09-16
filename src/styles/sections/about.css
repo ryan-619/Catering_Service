@@ -1,0 +1,307 @@
+/* ═══════════════════════════════════════════════════════════════
+   ABOUT — editorial two-column story on ivory.
+   Left: two overlapping real photographs + gold-foil seal.
+   Right: eyebrow / ornament / split headline / copy / feature index.
+   The `#about.lx-about` compound is deliberate: the legacy sheet
+   still owns `#about` by id, so a plain class cannot outrank it.
+   ═══════════════════════════════════════════════════════════════ */
+
+#about.lx-about {
+  padding-block: var(--lx-pad);
+  background:
+    radial-gradient(76% 52% at 88% 0%, rgba(200, 162, 74, .11), transparent 62%),
+    radial-gradient(64% 46% at -6% 100%, rgba(27, 123, 52, .07), transparent 62%),
+    var(--lx-ivory);
+}
+
+.lx-about-wash {
+  width: clamp(260px, 34vw, 520px);
+  height: clamp(260px, 34vw, 520px);
+  top: -10%;
+  right: -8%;
+  opacity: .55;
+}
+
+.lx-about-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+  gap: clamp(46px, 6vw, 104px);
+  align-items: center;
+}
+
+/* ─────────────────────────────────────────────
+   LEFT — photo composition
+   ───────────────────────────────────────────── */
+
+.lx-about-media {
+  position: relative;
+  margin-block-end: clamp(22px, 4vw, 44px);
+}
+
+.lx-about-fig {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--lx-r-lg);
+  background: var(--lx-ivory-2);
+  box-shadow: var(--lx-sh-3);
+}
+.lx-about-fig::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(200, 162, 74, .32);
+  pointer-events: none;
+}
+
+.lx-about-fig--lg {
+  width: 76%;
+  aspect-ratio: 4 / 5;
+  transform: rotate(-1.2deg);
+}
+
+.lx-about-fig--sm {
+  position: absolute;
+  z-index: 2;
+  right: -3%;
+  bottom: -8%;
+  width: 47%;
+  aspect-ratio: 4 / 3;
+  transform: rotate(2.2deg);
+  /* the outer spread is an ivory photo-mount so the small print reads
+     as a separate object sitting on top of the large one */
+  box-shadow: var(--lx-sh-4), 0 0 0 clamp(6px, .9vw, 11px) var(--lx-ivory);
+}
+
+/* The element GSAP clip-wipes. Kept separate from the rotated frame and
+   from the parallax image so no two tweens fight over one transform, and
+   extended 40px above the frame because Reveal's `mask` preset also drifts
+   its target down 40px — without the overhang that drift would flash a
+   sliver of empty frame along the top edge mid-wipe. */
+.lx-about-wipe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -40px;
+  height: calc(100% + 40px);
+  overflow: hidden;
+}
+
+.lx-about-img {
+  position: absolute;
+  left: 0;
+  top: -12%;
+  width: 100%;
+  height: 124%;
+  display: block;
+  object-fit: cover;
+  /* a wide source in a portrait frame crops to a narrow slice — bias it
+     left so the chef's station, not empty banqueting, fills the frame */
+  object-position: 40% 50%;
+  will-change: transform;
+}
+.lx-about-fig--sm .lx-about-img { object-position: 50% 48%; }
+
+/* ── gold-foil seal over the seam of the two frames ── */
+.lx-about-sealpos {
+  position: absolute;
+  z-index: 4;
+  left: 58%;
+  top: 72%;
+  transform: translate(-50%, -50%);
+}
+
+.lx-about-seal {
+  position: relative;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  gap: 2px;
+  width: clamp(92px, 12.5vw, 142px);
+  height: clamp(92px, 12.5vw, 142px);
+  padding: 4px;
+  text-align: center;
+  border-radius: 50%;
+  background: var(--lx-grad-gold);
+  box-shadow: var(--lx-sh-gold), 0 2px 6px rgba(20, 23, 15, .18);
+}
+.lx-about-seal-ring {
+  position: absolute;
+  inset: clamp(5px, .7vw, 8px);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(6, 35, 15, .28);
+  pointer-events: none;
+}
+.lx-about-seal-num {
+  font-family: var(--lx-display);
+  font-size: clamp(1.55rem, 3.1vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.01em;
+  color: var(--lx-green-950);
+}
+.lx-about-seal-lbl {
+  font-family: var(--lx-sans);
+  font-size: clamp(.5rem, .82vw, .58rem);
+  font-weight: 600;
+  line-height: 1.42;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: rgba(6, 35, 15, .74);
+}
+
+/* ─────────────────────────────────────────────
+   RIGHT — the story
+   ───────────────────────────────────────────── */
+
+.lx-about-copy { position: relative; }
+
+/* oversized Devanagari watermark, clipped to its own box so it can
+   never push the page sideways */
+.lx-about-markwrap {
+  position: absolute;
+  z-index: 0;
+  inset: -6% -2% auto -2%;
+  height: 62%;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.lx-about-mark {
+  position: absolute;
+  right: 0;
+  top: -.16em;
+  font-size: clamp(4.2rem, 11.5vw, 9.5rem);
+  line-height: .88;
+  white-space: nowrap;
+  color: var(--lx-gold-600);
+  opacity: .075;
+}
+
+.lx-about-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lx-about-orn { margin-block: -4px; }
+
+/* trimmed a shade below the global --lx-t-h2 so each headline line still
+   fits on ONE row inside the narrower story column — the per-line mask
+   reveal falls apart the moment a line wraps */
+.lx-about-h {
+  margin-block-start: 2px;
+  font-size: clamp(1.72rem, 3.3vw, 2.78rem);
+}
+/* line 2 — "Since 1982" — gold italic */
+.lx-about-h .lx-line:nth-child(2) {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: .005em;
+  color: var(--lx-gold-600);
+  padding-bottom: .14em;
+  padding-right: .06em;
+}
+
+.lx-about-p { margin: 0; }
+.lx-about-p strong {
+  font-weight: 600;
+  color: var(--lx-green-800);
+}
+
+/* ── feature index: two columns of hairline rows ── */
+.lx-about-feats {
+  width: 100%;
+  margin: clamp(8px, 1.4vw, 16px) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(20px, 3vw, 44px);
+}
+
+.lx-about-feat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: clamp(10px, 1.3vw, 14px);
+  border-bottom: 1px solid var(--lx-line);
+}
+
+.lx-about-tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--lx-gold-700);
+  background: var(--lx-gold-100);
+  box-shadow: inset 0 0 0 1px rgba(200, 162, 74, .45);
+  transition: background var(--lx-d) var(--lx-e-out), color var(--lx-d) var(--lx-e-out);
+}
+.lx-about-tick svg { width: 11px; height: 11px; }
+
+.lx-about-feat-t {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--lx-ink-2);
+}
+
+.lx-about-feat:hover .lx-about-tick {
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+}
+
+.lx-about-cta { margin-block-start: clamp(14px, 2vw, 26px); }
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .lx-about-grid { gap: clamp(40px, 5vw, 64px); }
+}
+
+@media (max-width: 960px) {
+  .lx-about-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(44px, 8vw, 72px);
+  }
+  .lx-about-media {
+    width: 100%;
+    max-width: 620px;
+    margin-inline: auto;
+    margin-block-end: clamp(30px, 6vw, 52px);
+  }
+  .lx-about-markwrap { inset: -4% 0 auto 0; height: 46%; }
+  .lx-about-mark { font-size: clamp(4.2rem, 16vw, 8rem); }
+}
+
+@media (max-width: 640px) {
+  .lx-about-fig--lg { width: 82%; }
+  .lx-about-fig--sm { width: 50%; right: 0; bottom: -6%; }
+  .lx-about-sealpos { left: 56%; top: 70%; }
+  .lx-about-seal { width: clamp(88px, 24vw, 108px); height: clamp(88px, 24vw, 108px); }
+  .lx-about-seal-num { font-size: clamp(1.35rem, 6vw, 1.7rem); }
+  .lx-about-seal-lbl { font-size: .5rem; letter-spacing: .1em; }
+}
+
+@media (max-width: 540px) {
+  .lx-about-feats { grid-template-columns: minmax(0, 1fr); }
+  .lx-about-cta { width: 100%; }
+  .lx-about-cta .lx-btn { flex: 1 1 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-about-img { transform: none !important; }
+}

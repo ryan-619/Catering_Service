@@ -1,0 +1,225 @@
+/* ═══════════════════════════════════════════════════════════════
+   CTA  ·  #cta  ·  full-bleed dark-green band, gold wash + hairlines
+   Every rule is written as `#cta.lx-cta …` so it outranks the legacy
+   `#cta h2 / #cta p / #cta::before` rules still living in src/index.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+#cta.lx-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: var(--lx-pad);
+  background: var(--lx-grad-green);
+  color: var(--lx-paper);
+  text-align: center;
+
+  /* rhythm knobs shared by the decorative layers */
+  --lx-cta-hair: color-mix(in srgb, var(--lx-gold-500) 46%, transparent);
+}
+
+/* retire the legacy stock-photo overlay */
+#cta.lx-cta::before { content: none; }
+
+/* ── gold hairlines, top + bottom ─────────────────────────── */
+
+.lx-cta-hair {
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  z-index: 2;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-cta-hair) 18%,
+    var(--lx-gold-400) 50%,
+    var(--lx-cta-hair) 82%,
+    transparent
+  );
+}
+.lx-cta-hair--top { top: 0; }
+.lx-cta-hair--bot { bottom: 0; }
+
+/* ── large gold radial wash (GSAP scrubs this on Y) ───────── */
+
+.lx-cta-wash {
+  position: absolute;
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: min(1560px, 160%);
+  aspect-ratio: 1.55 / 1;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--lx-gold-500) 30%, transparent) 0%,
+    color-mix(in srgb, var(--lx-gold-600) 13%, transparent) 40%,
+    transparent 70%
+  );
+  filter: blur(58px);
+}
+
+/* ── faint repeating diamond lattice ──────────────────────── */
+
+.lx-cta-motif {
+  position: absolute;
+  inset: -8% 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.85;
+  will-change: transform;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 25px,
+      color-mix(in srgb, var(--lx-gold-400) 9%, transparent) 25px 26px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 25px,
+      color-mix(in srgb, var(--lx-gold-400) 9%, transparent) 25px 26px
+    ),
+    radial-gradient(
+      circle,
+      color-mix(in srgb, var(--lx-gold-300) 16%, transparent) 1.1px,
+      transparent 1.2px
+    );
+  background-size: auto, auto, 50px 50px;
+  background-position: 0 0, 0 0, 25px 25px;
+  -webkit-mask-image: radial-gradient(ellipse 78% 68% at 50% 50%, #000 12%, transparent 76%);
+  mask-image: radial-gradient(ellipse 78% 68% at 50% 50%, #000 12%, transparent 76%);
+}
+
+/* ── ghost marquee behind the copy ────────────────────────── */
+
+.lx-cta-mq {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  translate: 0 -54%;
+  z-index: -1;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.14;
+}
+.lx-cta-mq-word {
+  font-family: var(--lx-display);
+  font-size: clamp(3.2rem, 9.5vw, 7.5rem);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--lx-gold-300);
+}
+.lx-cta-mq-dot {
+  flex: none;
+  width: clamp(7px, 0.8vw, 10px);
+  aspect-ratio: 1;
+  margin-inline: clamp(18px, 2.4vw, 34px);
+  background: var(--lx-gold-400);
+  transform: rotate(45deg);
+}
+
+/* ── the copy stack ───────────────────────────────────────── */
+
+#cta.lx-cta .lx-cta-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+#cta.lx-cta .lx-eyebrow { color: var(--lx-gold-400); }
+.lx-cta-orn { margin-block: 14px 22px; }
+
+/* headline — three SplitHeadings stacked so the middle phrase can be
+   italic gold while each line still keeps its own word-by-word reveal */
+#cta.lx-cta .lx-cta-title {
+  margin: 0;
+  max-width: 100%;
+  font-family: var(--lx-display);
+  font-size: var(--lx-t-h2);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  color: var(--lx-paper);
+  text-wrap: balance;
+}
+#cta.lx-cta .lx-cta-title-l { display: block; }
+#cta.lx-cta .lx-cta-title-em {
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--lx-gold-400);
+}
+
+#cta.lx-cta .lx-cta-sub {
+  max-width: 52ch;
+  margin: clamp(18px, 2.2vw, 26px) auto 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.72;
+  color: color-mix(in srgb, var(--lx-paper) 72%, transparent);
+  text-wrap: pretty;
+}
+
+#cta.lx-cta .lx-cta-actions {
+  justify-content: center;
+  margin-top: clamp(26px, 3.4vw, 40px);
+}
+
+#cta.lx-cta .lx-cta-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: none;
+  margin: clamp(22px, 2.6vw, 32px) auto 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-gold-300) 62%, transparent);
+}
+#cta.lx-cta .lx-cta-note i {
+  flex: none;
+  width: 5px;
+  aspect-ratio: 1;
+  background: var(--lx-gold-500);
+  transform: rotate(45deg);
+}
+
+/* ── responsive ───────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .lx-cta-wash { width: min(1100px, 190%); filter: blur(46px); }
+  .lx-cta-mq { opacity: 0.11; }
+}
+
+@media (max-width: 640px) {
+  #cta.lx-cta { padding-block: var(--lx-pad-sm); }
+  #cta.lx-cta .lx-cta-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: min(340px, 100%);
+    gap: 12px;
+  }
+  #cta.lx-cta .lx-cta-actions .lx-btn { width: 100%; }
+  #cta.lx-cta .lx-cta-note { letter-spacing: 0.1em; }
+  .lx-cta-motif { background-size: auto, auto, 40px 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-cta-wash,
+  .lx-cta-motif { will-change: auto; }
+}

@@ -1,0 +1,409 @@
+/* ═══════════════════════════════════════════════════════════════
+   FOUNDER — "The Visionaries Behind LTCS"
+   Dark green ground, gold wash behind each portrait, a slow dashed
+   gold ring orbiting the frame, and the quote as the hero moment.
+   All colour / type / depth / easing comes from tokens.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-fd { isolation: isolate; }
+
+/* ── Section header ─────────────────────────────────────────── */
+
+.lx-fd-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  margin-bottom: clamp(52px, 7.5vw, 104px);
+}
+
+.lx-fd-eyebrow {
+  margin: 0;
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+}
+
+.lx-fd-ornwrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.lx-fd-intro {
+  max-width: 34ch;
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.62rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.48;
+  color: color-mix(in srgb, var(--lx-paper) 74%, transparent);
+}
+
+/* ── Row ────────────────────────────────────────────────────── */
+
+.lx-fd-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  gap: clamp(34px, 5.5vw, 86px);
+  align-items: center;
+}
+
+.lx-fd-row--rev .lx-fd-media { grid-column: 2; grid-row: 1; }
+.lx-fd-row--rev .lx-fd-body  { grid-column: 1; grid-row: 1; }
+
+/* ── Portrait ───────────────────────────────────────────────── */
+
+.lx-fd-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding-block: clamp(8px, 1.6vw, 18px) clamp(42px, 5vw, 58px);
+}
+
+.lx-fd-wash {
+  top: 50%;
+  left: 50%;
+  width: min(128%, 560px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -52%);
+  filter: blur(78px);
+}
+
+.lx-fd-stage {
+  position: relative;
+  z-index: 1;
+  width: min(100%, clamp(228px, 32vw, 386px));
+  aspect-ratio: 1;
+}
+
+/* rotating dashed gold ring (GSAP drives the rotation) */
+.lx-fd-ring {
+  position: absolute;
+  inset: -7.5%;
+  width: auto;
+  height: auto;
+  color: var(--lx-gold-400);
+  opacity: .58;
+  pointer-events: none;
+  z-index: 2;
+}
+.lx-fd-ring circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: .85;
+  stroke-dasharray: 1.7 7.4;
+  stroke-linecap: round;
+}
+
+.lx-fd-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow:
+    var(--lx-sh-green),
+    0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 46%, transparent),
+    0 0 0 11px color-mix(in srgb, var(--lx-gold-500) 8%, transparent);
+}
+.lx-fd-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--lx-green-950) 55%, transparent),
+    transparent 58%
+  );
+}
+
+.lx-fd-img {
+  position: absolute;
+  left: 0;
+  top: -10%;
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  will-change: transform;
+}
+
+/* experience badge straddling the bottom of the ring */
+.lx-fd-exp {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 52%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: clamp(11px, 1.5vw, 15px) clamp(20px, 2.6vw, 30px);
+  border-radius: var(--lx-r);
+  text-align: center;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--lx-green-950) 80%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    var(--lx-sh-green),
+    inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 36%, transparent);
+}
+.lx-fd-exp-num {
+  font-family: var(--lx-display);
+  font-size: clamp(1.5rem, 2.7vw, 2.05rem);
+  font-weight: 600;
+  line-height: 1;
+}
+.lx-fd-exp-lbl {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-paper) 62%, transparent);
+}
+
+/* ── Content column ─────────────────────────────────────────── */
+
+.lx-fd-body { position: relative; z-index: 1; }
+
+.lx-fd-tag {
+  background: color-mix(in srgb, var(--lx-gold-500) 14%, transparent);
+  color: var(--lx-gold-300);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 40%, transparent);
+}
+
+.lx-fd-name {
+  margin: clamp(16px, 2vw, 22px) 0 0;
+  font-family: var(--lx-display);
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -.015em;
+  color: var(--lx-paper);
+}
+
+.lx-fd-nick {
+  margin: 6px 0 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.1rem, 1.9vw, 1.45rem);
+  font-style: italic;
+  color: var(--lx-gold-400);
+}
+
+.lx-fd-role {
+  margin: clamp(10px, 1.4vw, 14px) 0 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-paper) 55%, transparent);
+}
+
+.lx-fd-story {
+  max-width: 54ch;
+  margin: clamp(18px, 2.4vw, 26px) 0 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.82;
+  color: color-mix(in srgb, var(--lx-paper) 72%, transparent);
+}
+
+/* ── The quote — hero moment ────────────────────────────────── */
+
+.lx-fd-quote {
+  position: relative;
+  max-width: 56ch;
+  margin: clamp(30px, 4vw, 46px) 0 0;
+  padding: clamp(24px, 3vw, 34px) clamp(22px, 2.6vw, 32px) clamp(20px, 2.4vw, 26px) clamp(26px, 3.2vw, 40px);
+  border-radius: var(--lx-r-lg);
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--lx-gold-500) 9%, transparent),
+    color-mix(in srgb, var(--lx-gold-500) 3%, transparent) 62%
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 17%, transparent);
+}
+/* gold left rule */
+.lx-fd-quote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: clamp(18px, 2.4vw, 26px);
+  bottom: clamp(18px, 2.4vw, 26px);
+  width: 2px;
+  border-radius: var(--lx-r-pill);
+  background: var(--lx-grad-gold);
+}
+
+.lx-fd-qmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  transform: translate(-14%, -46%);
+  font-family: var(--lx-display);
+  font-size: clamp(5.5rem, 11vw, 10rem);
+  line-height: 1;
+  color: var(--lx-gold-400);
+  opacity: .16;
+  pointer-events: none;
+  user-select: none;
+}
+
+.lx-fd-qtext {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.28rem, 2.5vw, 1.92rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.42;
+  letter-spacing: -.005em;
+  color: color-mix(in srgb, var(--lx-gold-100) 94%, transparent);
+}
+
+.lx-fd-qby {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(16px, 2vw, 22px);
+}
+.lx-fd-qrule {
+  width: clamp(28px, 4vw, 46px);
+  height: 1px;
+  flex: none;
+  background: linear-gradient(90deg, var(--lx-gold-500), transparent);
+}
+.lx-fd-qname {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--lx-gold-400);
+}
+.lx-fd-qlbl {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: .04em;
+  color: color-mix(in srgb, var(--lx-paper) 46%, transparent);
+}
+
+/* ── Stats ──────────────────────────────────────────────────── */
+
+.lx-fd-stats {
+  --fd-stat-gap: clamp(20px, 3.4vw, 40px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fd-stat-gap);
+  margin-top: clamp(26px, 3.2vw, 38px);
+}
+
+.lx-fd-stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.lx-fd-stat + .lx-fd-stat::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--fd-stat-gap) / -2);
+  top: 2px;
+  bottom: 2px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--lx-gold-500) 70%, transparent) 45%,
+    transparent
+  );
+}
+
+.lx-fd-stat-v {
+  font-family: var(--lx-display);
+  font-size: clamp(1.65rem, 3.2vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1;
+}
+.lx-fd-stat-l {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 500;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-paper) 52%, transparent);
+}
+
+/* ── Divider between the two founders ───────────────────────── */
+
+.lx-fd-divwrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-block: clamp(56px, 8vw, 110px);
+}
+.lx-fd-div { max-width: clamp(210px, 42vw, 470px); }
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+  .lx-fd-row { gap: clamp(28px, 4.5vw, 54px); }
+  .lx-fd-story { max-width: none; }
+}
+
+/* Stack: photo first, everything centred */
+@media (max-width: 900px) {
+  .lx-fd-row,
+  .lx-fd-row--rev { grid-template-columns: minmax(0, 1fr); }
+  .lx-fd-row--rev .lx-fd-media,
+  .lx-fd-row--rev .lx-fd-body { grid-column: 1; grid-row: auto; }
+
+  .lx-fd-media { padding-bottom: clamp(48px, 9vw, 62px); }
+  .lx-fd-stage { width: min(100%, clamp(220px, 58vw, 320px)); }
+
+  .lx-fd-body { text-align: center; }
+  .lx-fd-story,
+  .lx-fd-quote { margin-inline: auto; }
+  .lx-fd-stats { justify-content: center; }
+
+  .lx-fd-quote { text-align: left; }
+  .lx-fd-qby { justify-content: flex-start; }
+}
+
+@media (max-width: 560px) {
+  .lx-fd-quote {
+    padding: clamp(22px, 6vw, 28px) clamp(18px, 5vw, 24px) clamp(18px, 4vw, 22px) clamp(20px, 5.5vw, 26px);
+  }
+  .lx-fd-qmark { transform: translate(-6%, -42%); }
+  /* fixed 3-up grid so the gold rules never break across a wrap */
+  .lx-fd-stats {
+    --fd-stat-gap: clamp(15px, 4.6vw, 24px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .lx-fd-stat { align-items: center; text-align: center; }
+  .lx-fd-stat-v { font-size: clamp(1.22rem, 5.4vw, 1.75rem); }
+  .lx-fd-stat-l { letter-spacing: .11em; }
+  .lx-fd-exp { padding-inline: clamp(16px, 5vw, 22px); }
+}
+
+/* ═══ REDUCED MOTION — ring holds still, nothing scrubs ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .lx-fd-img { transform: none !important; }
+}

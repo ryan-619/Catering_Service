@@ -1,0 +1,687 @@
+/* ═══════════════════════════════════════════════════════════════
+   QUOTE MODAL  ·  <QuoteModal/>  ·  portal → document.body
+   Two-part panel: deep-green rail (brand mark, reassurance, phones)
+   + ivory form. Below 760px the rail collapses to a header strip.
+   The legacy `.qmodal/.qbox/.fr/.f2col` rules in src/index.css are
+   simply no longer referenced — nothing here reuses those names.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-qm {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 3vw, 40px);
+  background: color-mix(in srgb, var(--lx-green-950) 76%, transparent);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  overscroll-behavior: contain;
+}
+
+/* ── panel ─────────────────────────────────────────────────── */
+
+.lx-qm-panel {
+  --lx-qm-h: 52px;
+  --lx-qm-pad: clamp(22px, 3.4vw, 42px);
+
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 960px);
+  max-height: min(92vh, 880px);
+  display: grid;
+  grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: clamp(var(--lx-r-lg), 2.4vw, var(--lx-r-xl));
+  background: var(--lx-ivory);
+  box-shadow:
+    var(--lx-sh-4),
+    0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 34%, transparent);
+  outline: none;
+}
+@supports (max-height: 92dvh) {
+  .lx-qm-panel { max-height: min(92dvh, 880px); }
+}
+.lx-qm-panel:focus-visible {
+  box-shadow:
+    var(--lx-sh-4),
+    0 0 0 2px var(--lx-gold-500);
+}
+
+/* ── close ─────────────────────────────────────────────────── */
+
+.lx-qm-x {
+  position: absolute;
+  top: clamp(10px, 1.6vw, 18px);
+  right: clamp(10px, 1.6vw, 18px);
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.86rem;
+  color: var(--lx-green-800);
+  background: var(--lx-paper);
+  box-shadow: var(--lx-sh-1), inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 34%, transparent);
+  transition:
+    background var(--lx-d-fast) ease,
+    color var(--lx-d-fast) ease,
+    transform var(--lx-d-fast) var(--lx-e-out);
+}
+.lx-qm-x:hover {
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+  transform: rotate(90deg) scale(1.06);
+}
+
+/* ═══ LEFT RAIL ════════════════════════════════════════════ */
+
+.lx-qm-rail {
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  padding: var(--lx-qm-pad) clamp(18px, 2.2vw, 30px);
+  color: var(--lx-paper);
+  background: var(--lx-grad-green);
+  box-shadow: inset -1px 0 0 color-mix(in srgb, var(--lx-gold-500) 30%, transparent);
+  overflow: hidden;
+}
+/* faint gold wash + lattice so the rail is not a flat block */
+.lx-qm-rail::before {
+  content: "";
+  position: absolute;
+  inset: auto -30% -40% -30%;
+  aspect-ratio: 1 / 1;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--lx-gold-500) 26%, transparent), transparent 66%);
+  filter: blur(46px);
+}
+.lx-qm-rail::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.6;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 22px, color-mix(in srgb, var(--lx-gold-300) 8%, transparent) 22px 23px),
+    repeating-linear-gradient(-45deg, transparent 0 22px, color-mix(in srgb, var(--lx-gold-300) 8%, transparent) 22px 23px);
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 72%);
+  mask-image: linear-gradient(180deg, #000, transparent 72%);
+}
+
+.lx-qm-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.lx-qm-mark img {
+  display: block;
+  flex: none;
+  width: auto;
+  height: 46px;
+  object-fit: contain;
+}
+.lx-qm-mark-tx {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.lx-qm-mark-tx b {
+  font-family: var(--lx-display);
+  font-size: 1.16rem;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.005em;
+  color: var(--lx-paper);
+}
+.lx-qm-mark-tx i {
+  font-style: normal;
+  font-family: var(--lx-sans);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lx-gold-400);
+}
+
+.lx-qm-rail-mid .lx-orn {
+  max-width: 116px;
+  justify-content: flex-start;
+  margin-bottom: 16px;
+}
+.lx-qm-assure {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: 1.24rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.42;
+  color: color-mix(in srgb, var(--lx-gold-100) 92%, transparent);
+}
+.lx-qm-leaf {
+  flex: none;
+  margin-top: 0.42em;
+  font-size: 0.7rem;
+  color: var(--lx-green-400);
+}
+
+.lx-qm-phones {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lx-qm-phones-k {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-paper) 52%, transparent);
+}
+.lx-qm-phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 7px 14px 7px 12px;
+  border-radius: var(--lx-r-pill);
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: var(--lx-gold-300);
+  background: color-mix(in srgb, var(--lx-paper) 7%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 32%, transparent);
+  transition:
+    background var(--lx-d-fast) ease,
+    color var(--lx-d-fast) ease,
+    transform var(--lx-d-fast) var(--lx-e-out);
+}
+.lx-qm-phone svg { flex: none; font-size: 0.66rem; opacity: 0.85; }
+.lx-qm-phone:hover {
+  color: var(--lx-green-950);
+  background: var(--lx-grad-gold);
+  transform: translateX(3px);
+}
+
+/* ═══ RIGHT BODY ═══════════════════════════════════════════ */
+
+.lx-qm-body {
+  position: relative;
+  min-height: 0;
+  padding: var(--lx-qm-pad);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--lx-grad-ivory);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--lx-gold-500) 55%, transparent) transparent;
+}
+.lx-qm-body::-webkit-scrollbar { width: 8px; }
+.lx-qm-body::-webkit-scrollbar-thumb {
+  border-radius: var(--lx-r-pill);
+  background: color-mix(in srgb, var(--lx-gold-500) 48%, transparent);
+}
+
+.lx-qm-head {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: clamp(18px, 2.2vw, 26px);
+  padding-right: 46px;
+}
+.lx-qm-title {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  color: var(--lx-ink);
+}
+.lx-qm-sub {
+  margin: 0;
+  max-width: 44ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--lx-ink-3);
+}
+
+/* ── error banner ── */
+.lx-qm-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: var(--lx-r-sm);
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--lx-saffron-dp);
+  background: color-mix(in srgb, var(--lx-saffron) 13%, var(--lx-paper));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-saffron-dp) 34%, transparent);
+}
+.lx-qm-alert::before {
+  content: "!";
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--lx-paper);
+  background: var(--lx-saffron-dp);
+}
+
+/* ═══ FORM ═════════════════════════════════════════════════ */
+
+.lx-qm-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 16px;
+}
+
+.lx-qm-f {
+  position: relative;
+  min-width: 0;
+  animation: lx-qm-rise 0.5s var(--lx-e-out) both;
+  animation-delay: calc(var(--i, 0) * 42ms + 110ms);
+}
+.lx-qm-f--wide { grid-column: 1 / -1; }
+
+@keyframes lx-qm-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── control ── */
+.lx-qm-in {
+  width: 100%;
+  height: var(--lx-qm-h);
+  margin: 0;
+  padding: 21px 15px 7px;
+  border: 0;
+  border-radius: var(--lx-r-sm);
+  outline: none;
+  font-family: var(--lx-sans);
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--lx-ink);
+  background: var(--lx-paper);
+  box-shadow: inset 0 0 0 1px var(--lx-line);
+  transition: box-shadow var(--lx-d-fast) var(--lx-e-out), background var(--lx-d-fast) ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.lx-qm-in::placeholder {
+  color: transparent;
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-qm-f:focus-within .lx-qm-in::placeholder { color: var(--lx-ink-4); }
+.lx-qm-in:hover { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 46%, var(--lx-line)); }
+
+/* gold focus ring */
+.lx-qm-in:focus {
+  background: var(--lx-paper);
+  box-shadow:
+    inset 0 0 0 1.5px var(--lx-gold-500),
+    0 0 0 4px color-mix(in srgb, var(--lx-gold-500) 20%, transparent);
+}
+
+/* select + date + number chrome */
+select.lx-qm-in {
+  padding-right: 38px;
+  cursor: pointer;
+  color: var(--lx-ink);
+}
+.lx-qm-f--sel[data-filled="off"] select.lx-qm-in { color: var(--lx-ink-4); }
+.lx-qm-caret {
+  position: absolute;
+  top: calc(var(--lx-qm-h) / 2 + 1px);
+  right: 15px;
+  width: 12px;
+  height: 8px;
+  translate: 0 -50%;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--lx-gold-600);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--lx-d-fast) var(--lx-e-out);
+}
+.lx-qm-f--sel:focus-within .lx-qm-caret { transform: rotate(180deg); }
+
+input[type="date"].lx-qm-in { padding-right: 12px; }
+input[type="date"].lx-qm-in::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.55;
+  filter: saturate(0);
+}
+input[type="number"].lx-qm-in { -moz-appearance: textfield; }
+input[type="number"].lx-qm-in::-webkit-outer-spin-button,
+input[type="number"].lx-qm-in::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* textarea */
+.lx-qm-f--area .lx-qm-in {
+  height: auto;
+  min-height: 108px;
+  padding-top: 25px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+/* ── floating label ── */
+.lx-qm-lb {
+  position: absolute;
+  top: calc(var(--lx-qm-h) / 2);
+  left: 15px;
+  transform: translateY(-50%);
+  transform-origin: 0 50%;
+  pointer-events: none;
+  font-family: var(--lx-sans);
+  font-size: 0.86rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  color: var(--lx-ink-4);
+  transition:
+    top var(--lx-d-fast) var(--lx-e-out),
+    transform var(--lx-d-fast) var(--lx-e-out),
+    font-size var(--lx-d-fast) var(--lx-e-out),
+    letter-spacing var(--lx-d-fast) var(--lx-e-out),
+    color var(--lx-d-fast) ease;
+}
+/* resting position inside a textarea sits at the top, not the middle */
+.lx-qm-f--area .lx-qm-lb { top: 24px; transform: none; }
+
+/* floated state — filled, focused, or a control that always shows chrome */
+.lx-qm-f[data-filled="on"] .lx-qm-lb,
+.lx-qm-f:focus-within .lx-qm-lb,
+.lx-qm-f--sel .lx-qm-lb,
+.lx-qm-lb--fixed {
+  top: 9px;
+  transform: none;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--lx-ink-4);
+}
+.lx-qm-f:focus-within .lx-qm-lb { color: var(--lx-gold-700); }
+
+.lx-qm-req {
+  font-family: var(--lx-sans);
+  font-weight: 700;
+  color: var(--lx-gold-600);
+}
+
+/* ── invalid ── */
+.lx-qm-f[data-bad="on"] .lx-qm-in {
+  background: color-mix(in srgb, var(--lx-saffron) 7%, var(--lx-paper));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--lx-saffron-dp) 62%, transparent);
+}
+.lx-qm-f[data-bad="on"] .lx-qm-in:focus {
+  box-shadow:
+    inset 0 0 0 1.5px var(--lx-saffron-dp),
+    0 0 0 4px color-mix(in srgb, var(--lx-saffron) 22%, transparent);
+}
+.lx-qm-fe {
+  margin: 6px 0 0;
+  padding-left: 2px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--lx-saffron-dp);
+}
+
+/* ── actions ── */
+.lx-qm-act {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 4px;
+  animation: lx-qm-rise 0.5s var(--lx-e-out) both;
+  animation-delay: calc(var(--i, 0) * 42ms + 110ms);
+}
+.lx-qm-submit { width: 100%; }
+.lx-qm-submit > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65em;
+}
+.lx-qm-submit[disabled] {
+  cursor: progress;
+  opacity: 0.82;
+}
+.lx-qm-submit[disabled]::after { transform: translateY(101%); }
+
+.lx-qm-spin {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--lx-green-950) 26%, transparent);
+  border-top-color: var(--lx-green-950);
+  animation: lx-qm-spin 0.72s linear infinite;
+}
+@keyframes lx-qm-spin { to { transform: rotate(360deg); } }
+
+.lx-qm-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  padding: 13px 22px;
+  border-radius: var(--lx-r-pill);
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: none;
+  color: var(--lx-green-700);
+  background: color-mix(in srgb, var(--lx-green-500) 8%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--lx-green-600) 30%, transparent);
+  transition:
+    background var(--lx-d-fast) ease,
+    color var(--lx-d-fast) ease,
+    box-shadow var(--lx-d-fast) ease;
+}
+.lx-qm-wa svg { flex: none; font-size: 1.05em; }
+.lx-qm-wa:hover {
+  color: var(--lx-paper);
+  background: var(--lx-green-600);
+  box-shadow: inset 0 0 0 1.5px var(--lx-green-600);
+}
+
+.lx-qm-note {
+  margin: 2px 0 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--lx-ink-4);
+}
+
+/* ═══ SUCCESS ══════════════════════════════════════════════ */
+
+.lx-qm-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: clamp(14px, 3vw, 34px) 0 6px;
+  text-align: center;
+}
+
+.lx-qm-tick {
+  width: clamp(76px, 12vw, 96px);
+  height: auto;
+  margin-bottom: 4px;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(var(--lx-sh-gold));
+}
+.lx-qm-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.lx-qm-tick-ring {
+  stroke: var(--lx-gold-500);
+  stroke-width: 2;
+}
+.lx-qm-tick-check {
+  stroke: var(--lx-gold-600);
+  stroke-width: 4.5;
+}
+
+.lx-qm-done-h {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  color: var(--lx-green-800);
+}
+.lx-qm-done-p {
+  margin: 0;
+  max-width: 38ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--lx-ink-3);
+}
+.lx-qm-done-eta { margin: 0; }
+.lx-qm-done-act { margin-top: 6px; }
+
+/* the success block gets the whole body, vertically centred */
+.lx-qm-panel.is-done .lx-qm-body {
+  display: grid;
+  align-content: safe center;
+  justify-items: center;
+}
+
+/* ═══ RESPONSIVE ═══════════════════════════════════════════ */
+
+/* 761–880px: the rail is still there but the body is narrow — one column
+   reads far better than two 170px-wide fields. */
+@media (min-width: 761px) and (max-width: 880px) {
+  .lx-qm-panel { grid-template-columns: 240px minmax(0, 1fr); }
+  .lx-qm-form { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .lx-qm-assure { font-size: 1.08rem; }
+}
+
+@media (max-width: 760px) {
+  .lx-qm { padding: 0; place-items: end center; }
+
+  .lx-qm-panel {
+    width: 100%;
+    max-height: 94vh;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    border-radius: var(--lx-r-lg) var(--lx-r-lg) 0 0;
+  }
+  @supports (max-height: 94dvh) {
+    .lx-qm-panel { max-height: 94dvh; }
+  }
+
+  /* rail → slim header strip */
+  .lx-qm-rail {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 16px clamp(16px, 4vw, 26px) 15px;
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--lx-gold-500) 34%, transparent);
+  }
+  .lx-qm-rail::before { inset: -70% -20% auto -20%; }
+  .lx-qm-rail::after { opacity: 0.4; }
+
+  .lx-qm-mark { padding-right: 46px; }
+  .lx-qm-mark img { height: 36px; }
+  .lx-qm-mark-tx b { font-size: 1rem; }
+
+  .lx-qm-rail-mid .lx-orn { display: none; }
+  .lx-qm-assure {
+    font-size: 0.92rem;
+    font-style: normal;
+    font-family: var(--lx-sans);
+    font-weight: 300;
+    line-height: 1.45;
+    color: color-mix(in srgb, var(--lx-paper) 76%, transparent);
+  }
+  .lx-qm-leaf { margin-top: 0.3em; }
+
+  .lx-qm-phones { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .lx-qm-phones-k { width: 100%; font-size: 0.62rem; }
+  .lx-qm-phone { padding: 6px 12px; font-size: var(--lx-t-xs); }
+  .lx-qm-phone:hover { transform: none; }
+
+  .lx-qm-x { top: 14px; right: 14px; width: 36px; height: 36px; }
+}
+
+@media (max-width: 560px) {
+  .lx-qm-form { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .lx-qm-head { padding-right: 0; }
+  .lx-qm-done-p { max-width: none; }
+}
+
+@media (max-width: 400px) {
+  .lx-qm-mark-tx i { font-size: 0.54rem; letter-spacing: 0.12em; }
+  .lx-qm-phone span { font-size: 0.74rem; }
+}
+
+/* short viewports on phones: let the body take the scrolling, never the page */
+@media (max-width: 760px) and (max-height: 620px) {
+  .lx-qm-panel { max-height: 100vh; border-radius: 0; }
+  .lx-qm { padding: 0; place-items: stretch; }
+  .lx-qm-rail { gap: 12px; }
+}
+
+/* ═══ REDUCED MOTION ═══════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-qm-f,
+  .lx-qm-act {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .lx-qm-draw { stroke-dashoffset: 0; }
+  .lx-qm-x:hover { transform: none; }
+  .lx-qm-phone:hover { transform: none; }
+}

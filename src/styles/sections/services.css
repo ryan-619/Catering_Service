@@ -1,0 +1,266 @@
+/* ═══════════════════════════════════════════════════════════════
+   SERVICES  ·  #services  ·  three tall editorial photo cards
+   The `#services.lx-srv` compounds exist purely to outrank the
+   legacy id-scoped rules still living in src/index.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+#services.lx-srv {
+  padding-block: var(--lx-pad);
+  background: var(--lx-ivory);
+  color: var(--lx-ink);
+  position: relative;
+  overflow: clip;
+}
+
+/* kill the legacy "LTCS" watermark pseudo-element */
+#services.lx-srv::before { content: none; }
+
+.lx-srv-wash {
+  top: -14%;
+  right: -12%;
+  width: clamp(260px, 42vw, 620px);
+  aspect-ratio: 1;
+}
+
+.lx-srv .lx-head { margin-bottom: clamp(38px, 4.8vw, 68px); }
+
+/* ── grid ─────────────────────────────────────────────────── */
+
+.lx-srv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 28px);
+}
+
+.lx-srv-cell { height: 100%; }
+
+/* ── card ─────────────────────────────────────────────────── */
+
+.lx-srv-card {
+  position: relative;
+  height: 100%;
+  border-radius: var(--lx-r-lg);
+  overflow: hidden;
+  background: var(--lx-green-950);
+  box-shadow: var(--lx-sh-3), inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 16%, transparent);
+  transition: box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-srv-card:hover {
+  box-shadow: var(--lx-sh-4), inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 40%, transparent);
+}
+/* the shared gold hairline is the card's first child — lift it over the photo */
+.lx-srv-card.lx-topline::before { z-index: 4; }
+
+.lx-srv-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  min-height: clamp(420px, 44vw, 556px);
+  padding: clamp(20px, 2.2vw, 30px);
+  outline: none;
+}
+.lx-srv-inner:focus-visible {
+  outline: 2px solid var(--lx-gold-400);
+  outline-offset: -10px;
+  border-radius: var(--lx-r);
+}
+
+/* ── photography + scrim ──────────────────────────────────── */
+
+.lx-srv-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  overflow: hidden;
+}
+.lx-srv-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.001);
+  transition: transform 1.05s var(--lx-e-out);
+}
+.lx-srv-inner:hover .lx-srv-media img,
+.lx-srv-inner:focus-visible .lx-srv-media img { transform: scale(1.06); }
+
+.lx-srv-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom,
+      color-mix(in srgb, var(--lx-green-950) 52%, transparent) 0%,
+      transparent 32%),
+    linear-gradient(to top,
+      color-mix(in srgb, var(--lx-green-950) 95%, transparent) 0%,
+      color-mix(in srgb, var(--lx-green-950) 82%, transparent) 24%,
+      color-mix(in srgb, var(--lx-green-950) 42%, transparent) 54%,
+      color-mix(in srgb, var(--lx-green-950) 10%, transparent) 78%,
+      transparent 100%);
+  transition: opacity var(--lx-d) var(--lx-e-out);
+}
+.lx-srv-inner:hover .lx-srv-scrim { opacity: .94; }
+
+/* ── glass tag + outlined index ───────────────────────────── */
+
+.lx-srv-tag {
+  position: absolute;
+  top: clamp(16px, 1.8vw, 24px);
+  left: clamp(16px, 1.9vw, 26px);
+  z-index: 3;
+}
+
+.lx-srv-idx {
+  position: absolute;
+  top: clamp(10px, 1.4vw, 18px);
+  right: clamp(14px, 1.8vw, 24px);
+  z-index: 3;
+  pointer-events: none;
+  font-family: var(--lx-display);
+  font-size: clamp(2.7rem, 4.4vw, 3.9rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--lx-gold-300) 55%, transparent);
+  transition: -webkit-text-stroke-color var(--lx-d) ease, transform var(--lx-d) var(--lx-e-out);
+}
+.lx-srv-inner:hover .lx-srv-idx,
+.lx-srv-inner:focus-visible .lx-srv-idx {
+  -webkit-text-stroke-color: var(--lx-gold-400);
+  transform: translateY(-3px);
+}
+@supports not (-webkit-text-stroke: 1px currentColor) {
+  .lx-srv-idx { color: color-mix(in srgb, var(--lx-gold-300) 30%, transparent); }
+}
+
+/* ── body: name always visible, list drops in on hover ────── */
+
+.lx-srv-body { position: relative; z-index: 2; }
+
+.lx-srv-name {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.5rem, 2.1vw, 2.05rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.012em;
+  color: var(--lx-paper);
+}
+
+.lx-srv-drop {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows .62s var(--lx-e-out);
+}
+.lx-srv-drop > * { min-height: 0; overflow: hidden; }
+
+.lx-srv-rule {
+  display: block;
+  height: 1px;
+  margin: 14px 0 13px;
+  background: linear-gradient(90deg, var(--lx-gold-500), transparent 82%);
+}
+
+.lx-srv-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+}
+.lx-srv-list li {
+  position: relative;
+  padding-left: 15px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 300;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--lx-paper) 82%, transparent);
+}
+.lx-srv-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .58em;
+  width: 5px;
+  height: 5px;
+  background: var(--lx-grad-gold);
+  transform: rotate(45deg);
+}
+
+/* Hover-capable pointers only: collapse the list, slide it up on
+   hover/focus. Touch devices keep it open so nothing is unreachable. */
+@media (hover: hover) and (pointer: fine) {
+  .lx-srv-drop { grid-template-rows: 0fr; }
+  .lx-srv-list {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .38s ease, transform .6s var(--lx-e-out);
+  }
+  .lx-srv-rule {
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .55s var(--lx-e-out);
+  }
+  .lx-srv-inner:hover .lx-srv-drop,
+  .lx-srv-inner:focus-visible .lx-srv-drop { grid-template-rows: 1fr; }
+
+  .lx-srv-inner:hover .lx-srv-list,
+  .lx-srv-inner:focus-visible .lx-srv-list { opacity: 1; transform: none; }
+
+  .lx-srv-inner:hover .lx-srv-rule,
+  .lx-srv-inner:focus-visible .lx-srv-rule { transform: scaleX(1); }
+}
+
+/* ── reassurance + ghost CTA ──────────────────────────────── */
+
+.lx-srv-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: clamp(18px, 3vw, 40px);
+  margin-top: clamp(32px, 4vw, 54px);
+  padding-top: clamp(22px, 2.6vw, 34px);
+  border-top: 1px solid var(--lx-line);
+}
+.lx-srv-note {
+  margin: 0;
+  max-width: 52ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--lx-ink-3);
+}
+
+/* ── responsive ───────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .lx-srv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* the odd card out goes full-bleed landscape instead of orphaned */
+  .lx-srv-cell:last-child { grid-column: 1 / -1; }
+  .lx-srv-cell:last-child .lx-srv-inner { min-height: clamp(340px, 42vw, 420px); }
+  .lx-srv-cell:last-child .lx-srv-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 460px;
+  }
+}
+
+@media (max-width: 680px) {
+  .lx-srv-grid { grid-template-columns: minmax(0, 1fr); }
+  .lx-srv-cell:last-child { grid-column: auto; }
+  .lx-srv-cell:last-child .lx-srv-inner { min-height: clamp(380px, 82vw, 460px); }
+  .lx-srv-cell:last-child .lx-srv-list { grid-template-columns: minmax(0, 1fr); max-width: none; }
+  .lx-srv-inner { min-height: clamp(380px, 86vw, 460px); }
+  .lx-srv-foot { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .lx-srv-idx { font-size: 2.4rem; }
+}

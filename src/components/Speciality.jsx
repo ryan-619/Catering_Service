@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { FaLeaf, FaSeedling, FaRecycle, FaFlask, FaBan } from 'react-icons/fa'
-import { motion } from 'framer-motion'
+import { gsap, prefersReducedMotion } from '../lib/gsapSetup'
+import { useGsapContext } from '../lib/useGsap'
 
 const specialities = [
   {
@@ -31,46 +32,61 @@ const specialities = [
 ]
 
 export default function Speciality() {
-  return (
-    <section id="speciality">
-      <motion.div
-        className="speciality-header"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
-        <span className="speciality-label">Our Speciality</span>
-      </motion.div>
+  const scope = useGsapContext((self, root) => {
+    if (prefersReducedMotion()) return
 
-      <div className="speciality-strip">
-        {specialities.map((s, i) => (
-          <Fragment key={i}>
-            <motion.div
-              className="speciality-item"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -4 }}
-            >
-              <motion.div
-                className="speciality-icon"
-                whileHover={{ rotate: 10, scale: 1.15 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                {s.icon}
-              </motion.div>
-              <div className="speciality-text">
-                <div className="speciality-title">{s.title}</div>
-                <div className="speciality-desc">{s.desc}</div>
+    const row = root.querySelector('.lx-spc-row')
+    if (!row) return
+
+    /* fresh config per tween — ScrollTrigger annotates the object it is given */
+    const trig = () => ({ trigger: row, start: 'top 90%', once: true })
+
+    gsap.from(root.querySelectorAll('.lx-spc-label'), {
+      y: 18, opacity: 0, duration: 0.7, ease: 'power3.out', scrollTrigger: trig(),
+    })
+
+    gsap.from(row.querySelectorAll('.lx-spc-text'), {
+      y: 16, opacity: 0, duration: 0.65, stagger: 0.07, delay: 0.14,
+      ease: 'power3.out', scrollTrigger: trig(),
+    })
+
+    /* the one "wow": each gold ring pops in with a short spring */
+    gsap.from(row.querySelectorAll('.lx-spc-icon'), {
+      scale: 0.35, opacity: 0, duration: 0.8, stagger: 0.07, delay: 0.06,
+      ease: 'back.out(2.4)', scrollTrigger: trig(),
+    })
+
+    gsap.from(row.querySelectorAll('.lx-spc-rule'), {
+      scaleY: 0, opacity: 0, duration: 0.6, stagger: 0.07, delay: 0.2,
+      ease: 'power2.out', scrollTrigger: trig(),
+    })
+  }, [])
+
+  return (
+    <section id="speciality" className="lx-spc" ref={scope}>
+      <span className="lx-spc-glow" aria-hidden="true" />
+
+      <div className="lx-ct-wide">
+        <div className="lx-spc-head">
+          <span className="lx-eyebrow lx-eyebrow--center lx-spc-label">Our Speciality</span>
+        </div>
+
+        <div className="lx-spc-row">
+          {specialities.map((s, i) => (
+            <Fragment key={i}>
+              <div className="lx-spc-item">
+                <span className="lx-spc-icon" aria-hidden="true">{s.icon}</span>
+                <div className="lx-spc-text">
+                  <div className="lx-spc-title">{s.title}</div>
+                  <div className="lx-spc-desc">{s.desc}</div>
+                </div>
               </div>
-            </motion.div>
-            {i < specialities.length - 1 && (
-              <div className="speciality-divider" />
-            )}
-          </Fragment>
-        ))}
+              {i < specialities.length - 1 && (
+                <span className="lx-spc-rule" aria-hidden="true" />
+              )}
+            </Fragment>
+          ))}
+        </div>
       </div>
     </section>
   )

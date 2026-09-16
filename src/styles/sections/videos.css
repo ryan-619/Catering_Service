@@ -1,0 +1,375 @@
+/* ═══════════════════════════════════════════════════════════════
+   VIDEO GALLERY — "Our Events in Motion"
+   A cinematic stage on deep green: one wide frame with a gold
+   hairline and a large soft shadow, magnetic arrows parked outside
+   it, and a strip of three wide stills beneath with a gold underline
+   that slides to the active one.
+   Namespaced `lx-vid-*`. The shared `.lx-arrow` / `.lx-dots` skins
+   from ui.css are reused, never redefined.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-vid {
+  /* Every colour below is composed from tokens — nothing invented. */
+  --lx-vid-hair: color-mix(in srgb, var(--lx-gold-500) 42%, transparent);
+  --lx-vid-hair-soft: color-mix(in srgb, var(--lx-gold-500) 16%, transparent);
+  --lx-vid-scrim-1: color-mix(in srgb, var(--lx-green-950) 92%, transparent);
+  --lx-vid-scrim-2: color-mix(in srgb, var(--lx-green-950) 60%, transparent);
+  --lx-vid-scrim-3: color-mix(in srgb, var(--lx-green-950) 20%, transparent);
+  --lx-vid-scrim-4: color-mix(in srgb, var(--lx-green-950) 38%, transparent);
+  --lx-vid-disc: clamp(58px, 6.4vw, 94px);
+  --lx-vid-r: var(--lx-r-lg);
+}
+
+/* The legacy sheet still carries `#videos { padding; background }` at ID
+   specificity, which would out-rank `.lx-sec--dark`. Re-assert at ID weight. */
+#videos.lx-vid {
+  padding-block: var(--lx-pad);
+  padding-inline: 0;
+  background: var(--lx-grad-green);
+  color: var(--lx-ivory);
+}
+
+.lx-vid-inner { position: relative; z-index: 1; }
+
+/* ── Two gold washes, counter-drifting on scrub ── */
+.lx-vid-wash { z-index: 0; }
+.lx-vid-wash--a {
+  top: clamp(-120px, -7vw, -50px);
+  left: clamp(-190px, -12vw, -90px);
+  width: clamp(320px, 44vw, 660px); aspect-ratio: 1;
+  opacity: .9;
+}
+.lx-vid-wash--b {
+  bottom: clamp(-150px, -9vw, -70px);
+  right: clamp(-200px, -13vw, -100px);
+  width: clamp(300px, 38vw, 580px); aspect-ratio: 1;
+  opacity: .6;
+}
+
+/* ═══ THE STAGE ═══ */
+
+/* The horizontal padding is the gutter the arrows live in, so they sit
+   genuinely outside the frame instead of over the photograph. */
+.lx-vid-stage-wrap {
+  position: relative;
+  margin-top: clamp(38px, 5vw, 72px);
+  padding-inline: clamp(0px, 5.6vw, 88px);
+}
+
+.lx-vid-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--lx-vid-r);
+  overflow: hidden;
+  background: var(--lx-green-950);
+  box-shadow:
+    0 34px 92px color-mix(in srgb, var(--lx-green-950) 62%, transparent),
+    0 10px 28px color-mix(in srgb, var(--lx-green-950) 46%, transparent);
+}
+
+/* Hairline lives on the stage, not the crossfading frame, so it stays lit
+   through a switch instead of blinking with the media. */
+.lx-vid-stage::after {
+  content: "";
+  position: absolute; inset: 0; z-index: 6;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--lx-vid-hair);
+}
+
+.lx-vid-frame { position: absolute; inset: 0; }
+
+.lx-vid-shot {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 44%;
+  display: block;
+}
+
+/* Footage is mixed-aspect (some of it shot portrait on a phone), so it is
+   contained on the dark ground rather than cropped. */
+.lx-vid-media {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  background: var(--lx-green-950);
+}
+
+.lx-vid-scrim {
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      var(--lx-vid-scrim-1) 0%,
+      var(--lx-vid-scrim-2) 27%,
+      var(--lx-vid-scrim-3) 56%,
+      var(--lx-vid-scrim-4) 100%
+    ),
+    radial-gradient(118% 88% at 50% 40%, transparent 36%, var(--lx-vid-scrim-4) 100%);
+}
+
+/* ── Play button: the hit area is the whole still, the visual is the disc ── */
+.lx-vid-play {
+  position: absolute; inset: 0; z-index: 3;
+  display: grid; place-items: center;
+  padding: 0 0 clamp(54px, 7vw, 86px);
+  border: 0; background: none; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.lx-vid-play:focus-visible { outline-offset: -10px; border-radius: var(--lx-vid-r); }
+
+.lx-vid-play-ring,
+.lx-vid-play-disc { grid-area: 1 / 1; }
+
+.lx-vid-play-ring {
+  position: relative;
+  width: var(--lx-vid-disc); height: var(--lx-vid-disc);
+  pointer-events: none;
+}
+/* Two rings, half a cycle apart — one slow breath outward, nothing more. */
+.lx-vid-play-ring::before,
+.lx-vid-play-ring::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--lx-gold-300) 78%, transparent);
+  animation: lx-vid-pulse 2.9s var(--lx-e-io) infinite;
+}
+.lx-vid-play-ring::after { animation-delay: 1.45s; }
+
+@keyframes lx-vid-pulse {
+  0%   { transform: scale(1);    opacity: .8; }
+  70%  { opacity: 0; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+
+.lx-vid-play-disc {
+  position: relative;
+  width: var(--lx-vid-disc); height: var(--lx-vid-disc);
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+  font-size: clamp(.95rem, 1.5vw, 1.3rem);
+  padding-left: .14em; /* optical centring of the triangle */
+  box-shadow:
+    var(--lx-sh-gold),
+    inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-100) 62%, transparent);
+  transition: transform var(--lx-d) var(--lx-e-out), box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-vid-play:hover .lx-vid-play-disc {
+  transform: scale(1.08);
+  box-shadow:
+    0 18px 48px color-mix(in srgb, var(--lx-gold-600) 46%, transparent),
+    inset 0 0 0 1px var(--lx-gold-100);
+}
+.lx-vid-play:active .lx-vid-play-disc { transform: scale(.96); }
+
+/* ── Caption over the still ── */
+.lx-vid-caption {
+  position: absolute; z-index: 4;
+  left: clamp(18px, 3vw, 52px);
+  right: clamp(18px, 3vw, 52px);
+  bottom: clamp(16px, 2.6vw, 42px);
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: clamp(7px, .9vw, 13px);
+  pointer-events: none;
+}
+
+.lx-vid-badge { letter-spacing: .2em; font-variant-numeric: tabular-nums; }
+
+.lx-vid-title {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -.015em;
+  color: var(--lx-ivory);
+  text-shadow: 0 2px 20px color-mix(in srgb, var(--lx-green-950) 62%, transparent);
+}
+
+.lx-vid-desc {
+  margin: 0;
+  max-width: 46ch;
+  font-family: var(--lx-sans);
+  font-size: clamp(var(--lx-t-xs), 1.05vw, var(--lx-t-body));
+  font-weight: 300;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--lx-ivory) 76%, transparent);
+  text-shadow: 0 1px 14px color-mix(in srgb, var(--lx-green-950) 60%, transparent);
+}
+
+/* ── Arrows: shared .lx-arrow skin, re-parked into the stage gutter ── */
+.lx-vid-arrow.lx-arrow--prev { left: 0; }
+.lx-vid-arrow.lx-arrow--next { right: 0; }
+
+/* ═══ THUMBNAIL STRIP ═══ */
+
+.lx-vid-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(10px, 1.6vw, 24px);
+  margin-top: clamp(26px, 3.2vw, 44px);
+}
+
+/* The button itself never transforms: Reveal's stagger writes an inline
+   transform onto it, and framer's sliding underline measures against it. All
+   hover/active movement happens on `.lx-vid-t-inner`. */
+.lx-vid-t {
+  position: relative;
+  display: block;
+  width: 100%; min-width: 0;
+  margin: 0; padding: 0 0 12px;
+  border: 0; background: none;
+  color: inherit; font: inherit; text-align: left;
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+
+.lx-vid-t-inner { display: block; transition: transform var(--lx-d) var(--lx-e-out); }
+.lx-vid-t:hover .lx-vid-t-inner { transform: translateY(-4px); }
+.lx-vid-t.is-on .lx-vid-t-inner { transform: translateY(-8px); }
+.lx-vid-t.is-on:hover .lx-vid-t-inner { transform: translateY(-10px); }
+
+.lx-vid-t-shot {
+  position: relative; display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--lx-r);
+  overflow: hidden;
+  background: var(--lx-green-900);
+  box-shadow: inset 0 0 0 1px var(--lx-vid-hair-soft);
+  transition: box-shadow var(--lx-d) var(--lx-e-out);
+}
+
+.lx-vid-t-shot img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 44%;
+  display: block;
+  opacity: .74;
+  filter: grayscale(.66) brightness(.62) saturate(.55);
+  transition:
+    filter .55s var(--lx-e-out),
+    opacity var(--lx-d) var(--lx-e-out),
+    transform .8s var(--lx-e-out);
+}
+.lx-vid-t:hover .lx-vid-t-shot img {
+  opacity: 1;
+  filter: grayscale(.1) brightness(.92) saturate(.96);
+  transform: scale(1.05);
+}
+/* Later than the hover rule and equal in weight, so the active tile stays fully
+   lit — while the hover `transform` above still applies on top of it. */
+.lx-vid-t.is-on .lx-vid-t-shot img { opacity: 1; filter: none; }
+.lx-vid-t.is-on .lx-vid-t-shot {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 58%, transparent),
+    0 18px 44px color-mix(in srgb, var(--lx-green-950) 52%, transparent);
+}
+
+.lx-vid-t-play {
+  position: absolute; right: 10px; bottom: 10px;
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  font-size: .58rem;
+  color: var(--lx-green-950);
+  background: var(--lx-grad-gold);
+  box-shadow: var(--lx-sh-gold);
+  opacity: 0; transform: translateY(7px);
+  transition: opacity var(--lx-d) ease, transform var(--lx-d) var(--lx-e-out);
+}
+.lx-vid-t:hover .lx-vid-t-play,
+.lx-vid-t.is-on .lx-vid-t-play { opacity: 1; transform: none; }
+
+.lx-vid-t-label {
+  display: flex; align-items: baseline; gap: .65em;
+  margin-top: 13px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--lx-ivory) 52%, transparent);
+  transition: color var(--lx-d) ease;
+}
+.lx-vid-t-label em {
+  flex: none;
+  font-style: normal;
+  font-size: var(--lx-t-xs); font-weight: 600;
+  letter-spacing: .2em;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--lx-gold-400) 62%, transparent);
+  transition: color var(--lx-d) ease;
+}
+.lx-vid-t:hover .lx-vid-t-label { color: color-mix(in srgb, var(--lx-ivory) 84%, transparent); }
+.lx-vid-t.is-on .lx-vid-t-label { color: var(--lx-ivory); }
+.lx-vid-t.is-on .lx-vid-t-label em { color: var(--lx-gold-400); }
+
+/* The sliding gold underline (framer layoutId="activeBar"). */
+.lx-vid-t-bar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 2px;
+  border-radius: var(--lx-r-pill);
+  background: var(--lx-grad-gold);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--lx-gold-500) 48%, transparent);
+}
+
+/* ═══ COUNTER — gold pills, matching the shared .lx-dots skin ═══ */
+
+.lx-vid-dots { margin-top: clamp(20px, 2.4vw, 32px); }
+
+.lx-vid-dot {
+  width: 8px; height: 8px;
+  padding: 0; border: 0;
+  border-radius: var(--lx-r-pill);
+  background: color-mix(in srgb, var(--lx-gold-400) 32%, transparent);
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+  transition: width var(--lx-d) var(--lx-e-out), background var(--lx-d) ease;
+}
+.lx-vid-dot:hover { background: color-mix(in srgb, var(--lx-gold-400) 60%, transparent); }
+.lx-vid-dot.is-on { width: 30px; background: var(--lx-grad-gold); }
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 900px) {
+  /* No room for a gutter — the arrows come inside and float over the corners
+     of the frame, where the white disc still reads against the photography. */
+  .lx-vid-stage-wrap { padding-inline: 0; }
+  .lx-vid-arrow { width: 44px; height: 44px; margin-top: -22px; }
+  .lx-vid-arrow.lx-arrow--prev { left: 10px; }
+  .lx-vid-arrow.lx-arrow--next { right: 10px; }
+}
+
+@media (max-width: 620px) {
+  /* 16:9 gets too short to hold a disc and a caption at phone widths. */
+  .lx-vid-stage { aspect-ratio: 4 / 3; }
+  .lx-vid-play { padding-bottom: clamp(64px, 20vw, 96px); }
+  .lx-vid-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* Three across would leave 100px-wide tiles, so the strip becomes a snap
+     rail that scrolls inside its own box — the page never scrolls sideways. */
+  .lx-vid-strip {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 66%;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-bottom: 14px;
+  }
+  .lx-vid-strip::-webkit-scrollbar { display: none; }
+  .lx-vid-t { scroll-snap-align: center; }
+  /* A vertical lift inside a horizontally scrolling box would clip. */
+  .lx-vid-t:hover .lx-vid-t-inner,
+  .lx-vid-t.is-on .lx-vid-t-inner,
+  .lx-vid-t.is-on:hover .lx-vid-t-inner { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-vid-play-ring { display: none; }
+}

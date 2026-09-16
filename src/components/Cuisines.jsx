@@ -1,7 +1,17 @@
-import { useState } from 'react'
-import { FaFire, FaLeaf, FaStar, FaPizzaSlice, FaCrown, FaGlassCheers, FaCookie, FaSeedling, FaTimes, FaWhatsapp } from 'react-icons/fa'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
+import {
+  FaFire, FaLeaf, FaStar, FaPizzaSlice, FaCrown, FaGlassCheers,
+  FaCookie, FaSeedling, FaTimes, FaWhatsapp, FaArrowRight,
+} from 'react-icons/fa'
+import { gsap, prefersReducedMotion } from '../lib/gsapSetup'
+import { useGsapContext } from '../lib/useGsap'
+import Reveal from './ui/Reveal'
+import SectionHead from './ui/SectionHead'
+import SplitHeading from './ui/SplitHeading'
+import TiltCard from './ui/TiltCard'
+import MagneticButton from './ui/MagneticButton'
 
 const cuisines = [
   {
@@ -155,182 +165,305 @@ const menuCategories = [
   { icon: '🌍', name: 'Regional Food Experiences', items: ['Amritsari Kulcha', 'Sarson Ka Saag & Makki Ki Roti', 'Dal Baati Churma', 'Gujarati Dhokla', 'Khandvi'] },
 ]
 
+const WA_NUMBER = '919936485155'
+
 export default function Cuisines({ onBookNow }) {
   const [selected, setSelected] = useState(null)
+  // Wikimedia URLs rot. A tile whose photo 404s is removed rather than left
+  // showing a torn-image glyph in the middle of a luxury grid.
+  const [broken, setBroken] = useState(() => new Set())
+
+  const closeRef = useRef(null)
+  const lastTrigger = useRef(null)
+
+  const markBroken = useCallback((src) => {
+    setBroken((prev) => {
+      if (prev.has(src)) return prev
+      const next = new Set(prev)
+      next.add(src)
+      return next
+    })
+  }, [])
+
+  const close = useCallback(() => setSelected(null), [])
+
+  const open = useCallback((c, e) => {
+    lastTrigger.current = e?.currentTarget || null
+    setSelected(c)
+  }, [])
+
+  /* ── Engineered motion: each card photo drifts inside its own 4:3 frame.
+        The lens wrapper is what GSAP moves, so the CSS hover zoom on the
+        <img> never fights the scrubbed transform. ── */
+  const scope = useGsapContext((ctx, root) => {
+    if (prefersReducedMotion()) return
+    gsap.utils.toArray('.lx-cuis-lens', root).forEach((lens) => {
+      gsap.fromTo(
+        lens,
+        { yPercent: -4.5 },
+        {
+          yPercent: 4.5,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: lens.parentElement || lens,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.6,
+          },
+        }
+      )
+    })
+  }, [])
+
+  const modalWa = selected
+    ? `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hello! Please share your ${selected.name} menu details.`)}`
+    : ''
+
+  /* ── Escape to close + hand the scroll back to Lenis when we let go ── */
+  useEffect(() => {
+    if (!selected) return
+    const onKey = (e) => { if (e.key === 'Escape') close() }
+    window.addEventListener('keydown', onKey)
+    window.lxLenis?.stop()
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.lxLenis?.start()
+      document.body.style.overflow = prev
+    }
+  }, [selected, close])
+
+  useEffect(() => {
+    if (selected) {
+      const t = setTimeout(() => closeRef.current?.focus(), 80)
+      return () => clearTimeout(t)
+    }
+    lastTrigger.current?.focus?.()
+  }, [selected])
+
+  const spring = prefersReducedMotion()
+    ? { duration: 0.01 }
+    : { type: 'spring', stiffness: 280, damping: 26, mass: 0.9 }
+
+  const modal = (
+    <AnimatePresence>
+      {selected && (
+        <motion.div
+          className="lx-cuis-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.26 }}
+          onClick={close}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${selected.name} signature dishes`}
+        >
+          <motion.div
+            className="lx-cuis-sheet"
+            style={{ '--lx-cuis-tint': selected.badgeColor }}
+            initial={{ opacity: 0, scale: 0.92, y: 34 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 24 }}
+            transition={spring}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="lx-cuis-sheet-head">
+              <div className="lx-cuis-sheet-text">
+                <span className="lx-cuis-sheet-badge">
+                  <i aria-hidden="true">{selected.badgeIcon}</i>
+                  {selected.badge}
+                </span>
+                <h3 className="lx-cuis-sheet-title">{selected.name} Cuisine</h3>
+                <p className="lx-cuis-sheet-desc">{selected.desc}</p>
+              </div>
+              <button
+                ref={closeRef}
+                type="button"
+                className="lx-cuis-x"
+                onClick={close}
+                aria-label="Close dish list"
+                data-cursor="hot"
+              >
+                <FaTimes />
+              </button>
+            </header>
+
+            <div className="lx-cuis-sheet-body">
+              <span className="lx-eyebrow lx-cuis-sheet-sub">Our Signature Dishes</span>
+
+              <div className="lx-cuis-dishes">
+                {selected.dishes.map((dish, i) => (
+                  broken.has(dish.img) ? null : (
+                    <motion.figure
+                      className="lx-cuis-dish"
+                      key={dish.name}
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: prefersReducedMotion() ? 0 : i * 0.06, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <img
+                        src={dish.img}
+                        alt={dish.name}
+                        loading="lazy"
+                        decoding="async"
+                        onError={() => markBroken(dish.img)}
+                      />
+                      <span className="lx-cuis-dish-scrim" aria-hidden="true" />
+                      <figcaption className="lx-cuis-dish-name">{dish.name}</figcaption>
+                    </motion.figure>
+                  )
+                ))}
+              </div>
+            </div>
+
+            <footer className="lx-cuis-sheet-foot">
+              <p className="lx-cuis-veg">
+                <FaLeaf aria-hidden="true" />
+                All dishes are <strong>100% Pure Vegetarian</strong>
+              </p>
+              <div className="lx-cuis-foot-actions">
+                <a
+                  className="lx-btn lx-btn--wa lx-btn--sm"
+                  href={modalWa}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor="hot"
+                >
+                  <span><FaWhatsapp /> Ask About This Menu</span>
+                </a>
+                <button type="button" className="lx-btn lx-btn--ghost lx-btn--sm" onClick={close}>
+                  <span>Close</span>
+                </button>
+              </div>
+            </footer>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
 
   return (
-    <section id="cuisines">
-      <div className="ct">
-        <FadeUp>
-          <div className="cuisines-header">
-            <span className="ey">What We Serve</span>
-            <span className="gline"></span>
-            <h2 className="st">Explore Our Signature Cuisines</h2>
-            <p className="cuisines-subtitle">
-              Click on any cuisine to explore the dishes we offer.
-              From authentic Indian delicacies to international favorites.
-            </p>
-          </div>
-        </FadeUp>
+    <section id="cuisines" ref={scope} className="lx-sec lx-sec--ivory lx-cuis">
+      <span className="lx-wash lx-wash--gold lx-cuis-wash lx-cuis-wash--a" aria-hidden="true" />
+      <span className="lx-wash lx-wash--green lx-cuis-wash lx-cuis-wash--b" aria-hidden="true" />
 
-        <Stagger className="cuisines-grid">
+      <div className="lx-ct">
+        <SectionHead
+          eyebrow="What We Serve"
+          title={'Explore Our\nSignature Cuisines'}
+          lead="Click on any cuisine to explore the dishes we offer. From authentic Indian delicacies to international favorites."
+          className="lx-cuis-head"
+        />
+
+        <Reveal stagger={0.08} className="lx-cuis-grid">
           {cuisines.map((c) => (
-            <StaggerItem key={c.name}>
-              <div
-                className="cuisine-card"
-                onClick={() => setSelected(c)}
-                style={{ cursor: 'pointer' }}
+            <TiltCard key={c.name} max={6} className="lx-cuis-tilt">
+              <article
+                className="lx-cuis-card lx-topline"
+                style={{ '--lx-cuis-tint': c.badgeColor }}
+                role="button"
+                tabIndex={0}
+                aria-label={`${c.name} — view dishes`}
+                data-cursor="hot"
+                onClick={(e) => open(c, e)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(c, e) }
+                }}
               >
-                <div className="cuisine-img-wrap">
-                  <img src={c.img} alt={c.name} className="cuisine-img" loading="lazy" />
-                  <div className="cuisine-gradient"></div>
-                  <span className="cuisine-badge" style={{ background: c.badgeColor }}>
-                    <span className="cuisine-badge-icon">{c.badgeIcon}</span>
+                <div className="lx-cuis-shot">
+                  <span className="lx-cuis-lens">
+                    {broken.has(c.img) ? (
+                      <span className="lx-cuis-fallback" aria-hidden="true" />
+                    ) : (
+                      <img
+                        src={c.img}
+                        alt={c.name}
+                        className="lx-cuis-img"
+                        loading="lazy"
+                        decoding="async"
+                        onError={() => markBroken(c.img)}
+                      />
+                    )}
+                  </span>
+                  <span className="lx-cuis-scrim" aria-hidden="true" />
+                  <span className="lx-cuis-badge lx-tilt-layer">
+                    <i aria-hidden="true">{c.badgeIcon}</i>
                     {c.badge}
                   </span>
                 </div>
-                <div className="cuisine-body">
-                  <h3 className="cuisine-name">{c.name}</h3>
-                  <p className="cuisine-desc">{c.desc}</p>
-                  <div className="cuisine-explore">
-                    Explore Dishes →
-                  </div>
+
+                <div className="lx-cuis-body">
+                  <h3 className="lx-cuis-name">{c.name}</h3>
+                  <p className="lx-cuis-desc">{c.desc}</p>
+                  <span className="lx-cuis-go">
+                    View Dishes
+                    <FaArrowRight aria-hidden="true" />
+                  </span>
                 </div>
-              </div>
-            </StaggerItem>
+              </article>
+            </TiltCard>
           ))}
-        </Stagger>
+        </Reveal>
 
-        {/* Full Menu */}
-        <FadeUp>
-          <div className="menu-block">
-            <div className="menu-block-head">
-              <span className="ey">The Full Spread</span>
-              <span className="gline"></span>
-              <h3 className="menu-block-title">A Glimpse of Our Menu</h3>
-            </div>
+        {/* ── The full spread ── */}
+        <div className="lx-cuis-menu">
+          <div className="lx-cuis-menu-head">
+            <Reveal from="up" duration={0.8}>
+              <span className="lx-eyebrow lx-eyebrow--center">The Full Spread</span>
+            </Reveal>
+            <Reveal from="zoom" duration={0.7} delay={0.05}>
+              <span className="lx-orn" aria-hidden="true"><i /><b /><i /></span>
+            </Reveal>
+            <SplitHeading as="h3" className="lx-h2 lx-cuis-menu-title">
+              A Glimpse of Our Menu
+            </SplitHeading>
+          </div>
 
-            <div className="menu-grid">
-              {menuCategories.map((cat, i) => (
-                <motion.div
-                  className="menu-card"
-                  key={cat.name}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.4, delay: (i % 3) * 0.08 }}
-                >
-                  <div className="menu-card-head">
-                    <span className="menu-card-icon" aria-hidden="true">{cat.icon}</span>
-                    <h4 className="menu-card-title">{cat.name}</h4>
-                  </div>
-                  <ul className="menu-card-list">
-                    {cat.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </motion.div>
-              ))}
-            </div>
+          <Reveal stagger={0.05} className="lx-cuis-menu-grid">
+            {menuCategories.map((cat) => (
+              <article className="lx-cuis-mcard lx-topline" key={cat.name}>
+                <div className="lx-cuis-mcard-head">
+                  <span className="lx-cuis-mcard-icon" aria-hidden="true">{cat.icon}</span>
+                  <h4 className="lx-cuis-mcard-title">{cat.name}</h4>
+                </div>
+                <ul className="lx-cuis-mcard-list">
+                  {cat.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            ))}
+          </Reveal>
 
-            <div className="menu-cta">
-              <h4 className="menu-cta-title">Request Our Complete Menu</h4>
-              <p className="menu-cta-desc">
+          <Reveal from="up" delay={0.05}>
+            <div className="lx-cuis-cta">
+              <span className="lx-cuis-cta-orn" aria-hidden="true"><i /><b /><i /></span>
+              <h4 className="lx-cuis-cta-title">Request Our Complete Menu</h4>
+              <p className="lx-cuis-cta-desc">
                 Customized menus available for Weddings, Corporate Events,
                 Social Gatherings &amp; Special Celebrations.
               </p>
-              <div className="menu-cta-actions">
-                <button className="btn btn-y" onClick={onBookNow}>
+              <div className="lx-btn-row lx-cuis-cta-row">
+                <MagneticButton variant="gold" onClick={onBookNow}>
                   Request Complete Menu
-                </button>
-                <a
-                  href="https://wa.me/919936485155?text=Hello! Please share your complete catering menu."
+                </MagneticButton>
+                <MagneticButton
+                  variant="wa"
+                  href={`https://wa.me/${WA_NUMBER}?text=Hello! Please share your complete catering menu.`}
                   target="_blank"
                   rel="noreferrer"
-                  className="btn btn-wa"
                 >
                   <FaWhatsapp /> WhatsApp Us
-                </a>
+                </MagneticButton>
               </div>
             </div>
-          </div>
-        </FadeUp>
+          </Reveal>
+        </div>
       </div>
 
-      {/* Cuisine Modal */}
-      <AnimatePresence>
-        {selected && (
-          <motion.div
-            className="cuisine-modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
-          >
-            <motion.div
-              className="cuisine-modal-box"
-              initial={{ opacity: 0, scale: 0.85, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.85, y: 40 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Modal Header */}
-              <div
-                className="cuisine-modal-header"
-                style={{ background: selected.badgeColor }}
-              >
-                <div>
-                  <div className="cuisine-modal-badge">
-                    {selected.badgeIcon} {selected.badge}
-                  </div>
-                  <h3 className="cuisine-modal-title">{selected.name} Cuisine</h3>
-                  <p className="cuisine-modal-desc">{selected.desc}</p>
-                </div>
-                <button
-                  className="cuisine-modal-close"
-                  onClick={() => setSelected(null)}
-                >
-                  <FaTimes />
-                </button>
-              </div>
-
-              {/* Dishes Grid */}
-              <div className="cuisine-modal-body">
-                <p className="cuisine-modal-subtitle">Our Signature Dishes</p>
-                <div className="cuisine-dishes-grid">
-                  {selected.dishes.map((dish, i) => (
-                    <motion.div
-                      className="cuisine-dish-card"
-                      key={dish.name}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.07, duration: 0.4 }}
-                    >
-                      <div className="cuisine-dish-img-wrap">
-                        <img src={dish.img} alt={dish.name} loading="lazy" />
-                        <div className="cuisine-dish-overlay"></div>
-                      </div>
-                      <div className="cuisine-dish-name">{dish.name}</div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Modal Footer */}
-              <div className="cuisine-modal-footer">
-                <p>All dishes are <strong>100% Pure Vegetarian</strong></p>
-                <button
-                  className="btn btn-g"
-                  onClick={() => setSelected(null)}
-                >
-                  Close
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {typeof document !== 'undefined' && createPortal(modal, document.body)}
     </section>
   )
 }

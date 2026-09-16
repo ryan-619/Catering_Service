@@ -1,12 +1,18 @@
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useCallback } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, Autoplay } from 'swiper/modules'
-import { FaExpand, FaTimes, FaChevronLeft, FaChevronRight, FaPlay } from 'react-icons/fa'
+import { FaExpand, FaChevronLeft, FaChevronRight, FaPlay } from 'react-icons/fa'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import { FadeUp } from './AnimatedSection'
+
+import { gsap, prefersReducedMotion } from '../lib/gsapSetup'
+import { useGsapContext } from '../lib/useGsap'
+import Reveal from './ui/Reveal'
+import SectionHead from './ui/SectionHead'
+import SplitHeading from './ui/SplitHeading'
+import TiltCard from './ui/TiltCard'
+import Lightbox from './ui/Lightbox'
 
 import rm1 from '../assets/rammandir/rm1.jpg'
 import rm2 from '../assets/rammandir/rm2.jpg'
@@ -71,14 +77,19 @@ const samitiCards = [
   { img: s17, name: 'Prakash Javadekar',    title: 'Chairperson, National Tiger Conservation Authority of India' },
 ]
 
-const asImages = (arr) => arr.map((src) => ({ src, type: 'image' }))
-const asVideos = (arr) => arr.map((src) => ({ src, type: 'video' }))
+// `cap` is optional supporting text the shared Lightbox prints under the frame.
+const asImages = (arr, cap) => arr.map((src) => ({ src, type: 'image', cap }))
+const asVideos = (arr, cap) => arr.map((src) => ({ src, type: 'video', cap }))
 
 // Each subsection keeps its photos and videos in separate collections so the
 // two carousels stay independent of one another.
+//
+// `badge` is deliberately place + a neutral label: the images carry no verified
+// date, so nothing here claims one.
 const subsections = [
   {
     key: 'samiti',
+    badge: 'Bharatiya Janata Party · National Event',
     title: 'Privileged to Serve at Rashtriya Karyakari Samiti at BJP',
     desc: 'Entrusted with catering for the national executive committee — serving pure vegetarian meals at a gathering of national significance.',
     cards: samitiCards,
@@ -87,244 +98,275 @@ const subsections = [
   },
   {
     key: 'ram-mandir',
+    badge: 'Ayodhya · National Event',
     title: 'Blessed to Serve at Ram Mandir',
     desc: 'A moment of devotion and honour — preparing and serving prasad and meals at Shri Ram Janmabhoomi, Ayodhya.',
     photos: asImages([
       rm1, rm2, rm3, rm4, rm5, rm6, rm7, rm8, rm9,
       rm10, rm11, rm12, rm13, rm14, rm15, rm16, rm17, rm18,
-    ]),
-    videos: asVideos([rmv1, rmv2, rmv3]),
+    ], 'Shri Ram Janmabhoomi, Ayodhya'),
+    videos: asVideos([rmv1, rmv2, rmv3], 'Shri Ram Janmabhoomi, Ayodhya'),
   },
 ]
 
+/* Stable identity — Reveal keys its effect on the stagger object. `grid:'auto'`
+   lets GSAP read the real column count so the wave travels diagonally. */
+const GRID_STAGGER = { each: 0.03, from: 'start', grid: 'auto' }
+
+/** Small gold-uppercase label that opens each block inside a subsection. */
+function BlockHead({ label, count }) {
+  return (
+    <div className="lx-ne-block-head">
+      <span className="lx-ne-block-title">{label}</span>
+      <span className="lx-ne-block-rule" aria-hidden="true" />
+      {count && <span className="lx-ne-block-count">{count}</span>}
+    </div>
+  )
+}
+
 /**
  * One carousel of media. `navKey` must be unique per instance — Swiper resolves
- * navigation elements with document-wide selectors, so a shared class would
- * make every carousel on the page respond to the same pair of arrows.
+ * navigation and pagination with document-wide selectors, so a shared class
+ * would make every carousel on the page answer the same pair of arrows.
  */
-function MediaCarousel({ items, navKey, onOpen }) {
+function MediaCarousel({ items, navKey, perView = 4, onOpen, calm }) {
   if (!items.length) return null
 
   return (
-    <div className="gallery-swiper-wrap ne-carousel">
-      <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={16}
-        slidesPerView={1}
-        navigation={{
-          prevEl: `.ne-prev-${navKey}`,
-          nextEl: `.ne-next-${navKey}`,
-        }}
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 2800, disableOnInteraction: false }}
-        loop={items.length > 1}
-        breakpoints={{
-          480: { slidesPerView: 2, spaceBetween: 12 },
-          768: { slidesPerView: 3, spaceBetween: 16 },
-          1024: { slidesPerView: 4, spaceBetween: 20 },
-        }}
-        className="gallery-swiper"
-      >
-        {items.map((item, i) => (
-          <SwiperSlide key={i}>
-            <div className="gallery-slide" onClick={() => onOpen(items, i)}>
-              {item.type === 'video' ? (
-                <video
-                  src={item.src}
-                  muted
-                  playsInline
-                  preload="metadata"
-                  className="gallery-slide-video"
-                />
-              ) : (
-                <img src={item.src} alt={`Event ${i + 1}`} loading="lazy" />
-              )}
-              <div className="gallery-slide-overlay">
-                {item.type === 'video' ? (
-                  <FaPlay className="gallery-slide-icon" />
-                ) : (
-                  <FaExpand className="gallery-slide-icon" />
-                )}
-              </div>
-              {item.type === 'video' && (
-                <span className="gallery-slide-badge">
-                  <FaPlay /> Video
-                </span>
-              )}
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className="lx-ne-carousel">
+      <div className="lx-swiper-wrap lx-ne-stage">
+        <div className="lx-ne-clip">
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            spaceBetween={14}
+            slidesPerView={1}
+            navigation={{
+              prevEl: `.lx-ne-prev-${navKey}`,
+              nextEl: `.lx-ne-next-${navKey}`,
+            }}
+            pagination={{ clickable: true, el: `.lx-ne-dots-${navKey}` }}
+            autoplay={calm ? false : { delay: 4200, disableOnInteraction: false, pauseOnMouseEnter: true }}
+            loop={items.length > perView + 1}
+            breakpoints={{
+              480: { slidesPerView: 2, spaceBetween: 12 },
+              768: { slidesPerView: Math.min(3, perView), spaceBetween: 14 },
+              1024: { slidesPerView: perView, spaceBetween: 18 },
+            }}
+            className="lx-swiper lx-ne-swiper"
+          >
+            {items.map((item, i) => (
+              <SwiperSlide key={item.src}>
+                <button
+                  type="button"
+                  className={`lx-ne-tile ${item.type === 'video' ? 'lx-ne-tile--video' : ''}`}
+                  onClick={() => onOpen(items, i)}
+                  data-cursor="hot"
+                  aria-label={item.type === 'video' ? `Play film ${i + 1}` : `Enlarge photograph ${i + 1}`}
+                >
+                  <span className="lx-ne-tile-shot">
+                    {item.type === 'video' ? (
+                      <video
+                        src={item.src}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        className="lx-ne-tile-media"
+                      />
+                    ) : (
+                      <img
+                        src={item.src}
+                        alt={`Event ${i + 1}`}
+                        className="lx-ne-tile-media"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    <span className="lx-ne-tile-veil" aria-hidden="true" />
+                    <span className="lx-ne-tile-frame" aria-hidden="true" />
+                  </span>
 
-      <button className={`ne-prev-${navKey} gallery-nav-btn`} aria-label="Previous">
-        <FaChevronLeft />
-      </button>
-      <button className={`ne-next-${navKey} gallery-nav-btn gallery-nav-next`} aria-label="Next">
-        <FaChevronRight />
-      </button>
+                  <span className="lx-ne-tile-expand" aria-hidden="true"><FaExpand /></span>
+
+                  {item.type === 'video' && (
+                    <span className="lx-ne-tile-play" aria-hidden="true"><FaPlay /></span>
+                  )}
+                </button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        <button
+          type="button"
+          className={`lx-arrow lx-arrow--prev lx-ne-prev-${navKey}`}
+          aria-label="Previous"
+        >
+          <FaChevronLeft />
+        </button>
+        <button
+          type="button"
+          className={`lx-arrow lx-arrow--next lx-ne-next-${navKey}`}
+          aria-label="Next"
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+
+      <div className={`lx-dots lx-ne-dots-${navKey}`} />
     </div>
   )
 }
 
 export default function NationalEvents() {
-  const [lightbox, setLightbox] = useState(null)
+  // Read once: the media query result does not change mid-session in practice,
+  // and a stable value keeps Swiper from re-initialising.
+  const [calm] = useState(() => prefersReducedMotion())
 
-  const openLightbox = (items, index) => setLightbox({ items, index })
-  const closeLightbox = () => setLightbox(null)
+  const [lb, setLb] = useState({ items: [], index: null })
 
-  const prevItem = useCallback(() => {
-    setLightbox((prev) =>
-      prev && { ...prev, index: (prev.index - 1 + prev.items.length) % prev.items.length }
-    )
+  const openLightbox = useCallback((items, index) => setLb({ items, index }), [])
+  const closeLightbox = useCallback(() => setLb((s) => ({ ...s, index: null })), [])
+  const changeIndex = useCallback((next) => {
+    setLb((s) => ({ ...s, index: typeof next === 'function' ? next(s.index) : next }))
   }, [])
 
-  const nextItem = useCallback(() => {
-    setLightbox((prev) =>
-      prev && { ...prev, index: (prev.index + 1) % prev.items.length }
-    )
+  const scope = useGsapContext((ctx, el) => {
+    if (prefersReducedMotion()) return
+
+    // 1 — the two gold washes drift against the scroll, very slowly.
+    const drift = (sel, to) =>
+      gsap.fromTo(el.querySelectorAll(sel), { yPercent: -to }, {
+        yPercent: to, ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.9 },
+      })
+    drift('.lx-ne-wash--a', 8)
+    drift('.lx-ne-wash--b', -6)
+
+    // 2 — each subsection's gold rule draws itself across as it arrives.
+    el.querySelectorAll('.lx-ne-rule').forEach((rule) => {
+      gsap.fromTo(rule, { scaleX: 0 }, {
+        scaleX: 1, duration: 1.05, ease: 'power3.out',
+        scrollTrigger: { trigger: rule, start: 'top 92%', once: true },
+      })
+    })
   }, [])
-
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') prevItem()
-      if (e.key === 'ArrowRight') nextItem()
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [prevItem, nextItem])
-
-  const current = lightbox ? lightbox.items[lightbox.index] : null
 
   return (
-    <section id="national-events">
-      <div className="ct">
+    <section id="national-events" className="lx-sec lx-ne" ref={scope}>
+      <span className="lx-wash lx-wash--gold lx-ne-wash lx-ne-wash--a" aria-hidden="true" />
+      <span className="lx-wash lx-wash--green lx-ne-wash lx-ne-wash--b" aria-hidden="true" />
 
-        <FadeUp>
-          <div className="ne-header">
-            <span className="ey">National Recognition</span>
-            <span className="gline"></span>
-            <h2 className="st">Trusted at National-Level Events</h2>
-            <p className="ne-subtitle">
-              Chosen to cater at gatherings of national and spiritual importance —
-              a responsibility we carry with devotion and pride.
-            </p>
-          </div>
-        </FadeUp>
+      <div className="lx-ct-wide lx-ne-inner">
+        <SectionHead
+          className="lx-ne-head"
+          eyebrow={<span className="lx-foil">National Recognition</span>}
+          title="Trusted at National-Level Events"
+          lead="Chosen to cater at gatherings of national and spiritual importance — a responsibility we carry with devotion and pride."
+        />
 
-        {subsections.map((sub) => (
-          <FadeUp key={sub.key}>
-            <div className="ne-sub" id={sub.key}>
-              <div className="ne-sub-head">
-                <span className="ne-sub-line"></span>
-                <h3 className="ne-sub-title">{sub.title}</h3>
-                <p className="ne-sub-desc">{sub.desc}</p>
-              </div>
+        <div className="lx-ne-subs">
+          {subsections.map((sub) => (
+            <article className="lx-ne-sub" id={sub.key} key={sub.key}>
+              <span className="lx-ne-corner lx-ne-corner--tl" aria-hidden="true" />
+              <span className="lx-ne-corner lx-ne-corner--br" aria-hidden="true" />
+
+              <header className="lx-ne-sub-head">
+                <span className="lx-ne-rule" aria-hidden="true" />
+
+                <Reveal from="up" duration={0.8}>
+                  <span className="lx-chip lx-ne-badge">
+                    <i className="lx-ne-badge-dia" aria-hidden="true" />
+                    {sub.badge}
+                  </span>
+                </Reveal>
+
+                <div className="lx-ne-sub-grid">
+                  <SplitHeading as="h3" className="lx-ne-sub-title" stagger={0.035}>
+                    {sub.title}
+                  </SplitHeading>
+
+                  <Reveal from="up" delay={0.1}>
+                    <p className="lx-ne-sub-desc">{sub.desc}</p>
+                  </Reveal>
+                </div>
+              </header>
 
               {sub.cards?.length > 0 && (
-                <div className="ne-block">
-                  <h4 className="ne-block-title">Dignitaries We Served</h4>
-                  <div className="pers-grid ne-cards-grid">
+                <div className="lx-ne-block">
+                  <BlockHead label="Dignitaries We Served" count={`${sub.cards.length} Portraits`} />
+
+                  <Reveal
+                    as="ul"
+                    role="list"
+                    className="lx-ne-grid"
+                    from="up"
+                    duration={0.85}
+                    stagger={GRID_STAGGER}
+                  >
                     {sub.cards.map((c, i) => (
-                      <div className="pers-card" key={`${c.name}-${i}`}>
-                        <div className="pers-img-wrap">
-                          <img src={c.img} alt={c.name} className="pers-img" loading="lazy" />
-                          <div className="pers-overlay">
-                            <div className="pers-overlay-content">
-                              <div className="pers-overlay-name">{c.name}</div>
-                              <div className="pers-overlay-title">{c.title}</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="pers-body">
-                          <div className="pers-name">{c.name}</div>
-                          <div className="pers-title">{c.title}</div>
-                        </div>
-                      </div>
+                      <li className="lx-ne-cell" key={`${c.name}-${i}`}>
+                        <TiltCard max={6} scale={1.012} glare innerClassName="lx-ne-card" data-cursor="hot">
+                          <figure className="lx-ne-fig">
+                            <span className="lx-ne-shot">
+                              <img src={c.img} alt={c.name} className="lx-ne-img" loading="lazy" decoding="async" />
+                              <span className="lx-ne-shot-veil" aria-hidden="true" />
+                            </span>
+                            <figcaption className="lx-ne-plate lx-tilt-layer">
+                              <span className="lx-ne-name">{c.name}</span>
+                              <span className="lx-ne-role">{c.title}</span>
+                            </figcaption>
+                          </figure>
+                        </TiltCard>
+                      </li>
                     ))}
-                  </div>
+                  </Reveal>
                 </div>
               )}
 
               {sub.photos.length > 0 && (
-                <div className="ne-block">
-                  <h4 className="ne-block-title">Photos</h4>
-                  <MediaCarousel
-                    items={sub.photos}
-                    navKey={`${sub.key}-photos`}
-                    onOpen={openLightbox}
-                  />
+                <div className="lx-ne-block">
+                  <BlockHead label="Photos" count={`${sub.photos.length} Photographs`} />
+                  <Reveal from="up" duration={0.9}>
+                    <MediaCarousel
+                      items={sub.photos}
+                      navKey={`${sub.key}-photos`}
+                      perView={4}
+                      onOpen={openLightbox}
+                      calm={calm}
+                    />
+                  </Reveal>
                 </div>
               )}
 
               {sub.videos.length > 0 && (
-                <div className="ne-block">
-                  <h4 className="ne-block-title">Videos</h4>
-                  <MediaCarousel
-                    items={sub.videos}
-                    navKey={`${sub.key}-videos`}
-                    onOpen={openLightbox}
-                  />
+                <div className="lx-ne-block">
+                  <BlockHead label="Videos" count={`${sub.videos.length} Films`} />
+                  <Reveal from="up" duration={0.9}>
+                    <MediaCarousel
+                      items={sub.videos}
+                      navKey={`${sub.key}-videos`}
+                      perView={3}
+                      onOpen={openLightbox}
+                      calm={calm}
+                    />
+                  </Reveal>
                 </div>
               )}
 
               {!sub.cards?.length && sub.photos.length === 0 && sub.videos.length === 0 && (
-                <p className="ne-empty">Photos and videos from this event are coming soon.</p>
+                <p className="lx-ne-empty">Photos and videos from this event are coming soon.</p>
               )}
-            </div>
-          </FadeUp>
-        ))}
-
+            </article>
+          ))}
+        </div>
       </div>
 
-      <AnimatePresence>
-        {current && (
-          <motion.div
-            className="gallery-lightbox"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeLightbox}
-          >
-            <motion.div
-              className="gallery-lightbox-inner"
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.85, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button className="gallery-lightbox-close" onClick={closeLightbox}>
-                <FaTimes />
-              </button>
-              <button className="gallery-lightbox-prev" onClick={prevItem}>
-                <FaChevronLeft />
-              </button>
-              {current.type === 'video' ? (
-                <video
-                  key={current.src}
-                  src={current.src}
-                  controls
-                  autoPlay
-                  playsInline
-                  className="gallery-lightbox-img"
-                />
-              ) : (
-                <img
-                  src={current.src}
-                  alt={`Event ${lightbox.index + 1}`}
-                  className="gallery-lightbox-img"
-                />
-              )}
-              <button className="gallery-lightbox-next" onClick={nextItem}>
-                <FaChevronRight />
-              </button>
-              <div className="gallery-lightbox-counter">
-                {lightbox.index + 1} / {lightbox.items.length}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Lightbox
+        items={lb.items}
+        index={lb.index}
+        onClose={closeLightbox}
+        onIndexChange={changeIndex}
+      />
     </section>
   )
 }

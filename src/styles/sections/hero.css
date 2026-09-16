@@ -1,0 +1,455 @@
+/* ═══════════════════════════════════════════════════════════════
+   HERO — cinematic, full-viewport. "Heritage Luxe"
+   Layer order (z): photos 0 · scrim 1 · vignette 1 · ornament 2 ·
+   copy 3 · stats/cue 4 · service strip 5.
+   The section is selected as `#hero.lx-hero` because the legacy
+   sheet still styles `#hero` at id specificity.
+   ═══════════════════════════════════════════════════════════════ */
+
+#hero.lx-hero {
+  --lx-hero-strip: 62px;   /* height reserved for the pinned service band */
+  --lx-hero-nav: 70px;     /* sticky navbar height */
+  --lx-hero-cue: clamp(66px, 9vh, 104px);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  /* Explicit: the legacy sheet sets `#hero{align-items:center}` at id
+     specificity, which would collapse the stretched background layers. */
+  align-items: stretch;
+  justify-items: stretch;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 0;
+  min-height: calc(100vh - var(--lx-hero-nav));
+  min-height: calc(100svh - var(--lx-hero-nav));
+  background: var(--lx-green-950);
+  color: var(--lx-paper);
+  perspective: var(--lx-persp);
+}
+
+/* ═══ 1 · PHOTO LAYER ═══ */
+
+.lx-hero-bg {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 0;
+  /* Pushed back on Z and scaled to compensate, so the pointer parallax is a
+     genuine perspective shift rather than a flat slide. */
+  transform: translateZ(-70px) scale(1.065);
+}
+
+.lx-hero-slides {
+  position: absolute;
+  inset: -4% -2%;
+  will-change: transform;
+}
+
+.lx-hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+/* Without JS (or with reduced motion) exactly one photo shows. */
+.lx-hero-slide:first-child { opacity: 1; }
+
+.lx-hero-img {
+  position: absolute;
+  top: -2%;
+  left: -2%;
+  width: 104%;
+  height: 104%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
+}
+
+/* Two-stop scrim: heavy deep green bottom-left, opening up top-right so the
+   photography keeps some air while white copy still clears contrast. */
+.lx-hero-scrim {
+  grid-area: 1 / 1;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(32deg,
+      color-mix(in srgb, var(--lx-green-950) 78%, transparent) 0%,
+      color-mix(in srgb, var(--lx-green-950) 62%, transparent) 34%,
+      color-mix(in srgb, var(--lx-green-900) 40%, transparent) 66%,
+      color-mix(in srgb, var(--lx-green-900) 25%, transparent) 100%);
+}
+
+.lx-hero-vig {
+  grid-area: 1 / 1;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(130% 96% at 50% 42%,
+      transparent 42%,
+      color-mix(in srgb, var(--lx-green-950) 30%, transparent) 78%,
+      color-mix(in srgb, var(--lx-green-950) 58%, transparent) 100%);
+}
+
+/* ═══ 2 · GOLD ORNAMENT (fastest parallax layer) ═══ */
+
+.lx-hero-ornw {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  transform: translateZ(55px) scale(.95);
+}
+
+.lx-hero-orn {
+  position: absolute;
+  top: 50%;
+  right: clamp(-150px, -5vw, -40px);
+  width: clamp(260px, 30vw, 430px);
+  aspect-ratio: 1;
+  transform: translateY(-52%);
+  will-change: transform;
+}
+
+.lx-hero-orn .lx-wash {
+  inset: 6%;
+  opacity: .8;
+}
+
+.lx-hero-orn-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--lx-gold-400) 34%, transparent);
+}
+.lx-hero-orn-ring--in {
+  inset: 13%;
+  border-color: color-mix(in srgb, var(--lx-gold-300) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 12%, transparent);
+}
+
+.lx-hero-orn-gem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15%;
+  aspect-ratio: 1;
+  margin: -7.5% 0 0 -7.5%;
+  background: var(--lx-grad-gold);
+  opacity: .55;
+  transform: rotate(45deg);
+  box-shadow: 0 0 0 10px color-mix(in srgb, var(--lx-gold-500) 10%, transparent);
+}
+
+/* ═══ 3 · COPY ═══ */
+
+.lx-hero-body {
+  grid-area: 1 / 1;
+  align-self: center;
+  z-index: 3;
+  width: 100%;
+  padding-block: clamp(56px, 8vh, 112px)
+                 calc(var(--lx-hero-strip) + var(--lx-hero-cue));
+}
+
+.lx-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* Wide enough that "Unforgettable Flavours." holds one line at the top of
+     the --lx-t-hero clamp; the lede keeps its own reading measure below. */
+  max-width: min(1010px, 100%);
+  will-change: transform;
+}
+
+#hero.lx-hero .lx-eyebrow { color: var(--lx-gold-300); }
+#hero.lx-hero .lx-eyebrow::before {
+  background: linear-gradient(90deg, transparent, var(--lx-gold-400));
+}
+
+.lx-hero-rule {
+  display: block;
+  width: clamp(130px, 24vw, 260px);
+  height: 1px;
+  margin: 18px 0 clamp(16px, 2.4vw, 26px);
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg,
+    var(--lx-gold-400),
+    color-mix(in srgb, var(--lx-gold-500) 45%, transparent) 62%,
+    transparent);
+}
+
+.lx-hero-title {
+  font-family: var(--lx-display);
+  font-size: var(--lx-t-hero);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -.022em;
+  color: var(--lx-paper);
+  text-shadow: 0 2px 30px color-mix(in srgb, var(--lx-green-950) 60%, transparent);
+}
+/* "Unforgettable" keeps its italic gold emphasis from the original headline. */
+.lx-hero-title .lx-line:nth-child(2) .lx-word:first-child {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--lx-gold-300);
+}
+
+.lx-hero-deva {
+  margin-top: clamp(14px, 2vw, 22px);
+  font-size: clamp(.98rem, 1.8vw, 1.22rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--lx-gold-100) 88%, transparent);
+  text-shadow: 0 2px 18px color-mix(in srgb, var(--lx-green-950) 60%, transparent);
+}
+
+.lx-hero-lede {
+  margin-top: clamp(12px, 1.6vw, 18px);
+  max-width: 50ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.74;
+  color: color-mix(in srgb, var(--lx-paper) 80%, transparent);
+  text-shadow: 0 2px 18px color-mix(in srgb, var(--lx-green-950) 55%, transparent);
+}
+
+.lx-hero-cta { margin-top: clamp(26px, 3.6vw, 40px); }
+/* GSAP owns transform on these (entrance + magnetic pull); leaving the shared
+   CSS transform transition on would smear every tick. */
+.lx-hero-cta .lx-btn {
+  transition: box-shadow var(--lx-d) var(--lx-e-out), color var(--lx-d-fast) ease;
+}
+.lx-hero-cta .lx-btn > span { display: inline-flex; align-items: center; gap: .6em; }
+
+/* ═══ 4 · FLOATING STATS ═══ */
+
+.lx-hero-stats {
+  position: absolute;
+  z-index: 4;
+  right: clamp(20px, 4vw, 66px);
+  bottom: calc(var(--lx-hero-strip) + clamp(22px, 3.4vw, 46px));
+  display: flex;
+  gap: clamp(12px, 1.4vw, 18px);
+}
+
+.lx-hero-stat {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--lx-r);
+  padding: clamp(14px, 1.5vw, 20px) clamp(18px, 2vw, 28px);
+  text-align: center;
+  min-width: clamp(132px, 12vw, 166px);
+}
+.lx-hero-stat::after {
+  content: "";
+  position: absolute;
+  inset: auto 26% 0 26%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lx-gold-400), transparent);
+}
+
+.lx-hero-stat-n {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-family: var(--lx-display);
+  font-size: clamp(2.1rem, 3vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.lx-hero-stat-suf { font-size: .52em; margin-left: .06em; }
+
+.lx-hero-stat-l {
+  margin-top: 8px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-paper) 76%, transparent);
+}
+
+/* ═══ 5 · SCROLL CUE ═══ */
+
+.lx-hero-cue {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: calc(var(--lx-hero-strip) + clamp(16px, 2.4vw, 30px));
+  transform: translateX(-50%);
+}
+
+.lx-hero-cue-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.lx-hero-cue-label {
+  font-family: var(--lx-sans);
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-gold-300) 82%, transparent);
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-hero-cue-in:hover .lx-hero-cue-label { color: var(--lx-gold-300); }
+
+.lx-hero-cue-line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--lx-gold-400) 60%, transparent),
+    transparent);
+}
+.lx-hero-cue-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--lx-gold-300);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--lx-gold-400) 70%, transparent);
+}
+
+/* ═══ 6 · SERVICE STRIP ═══ */
+
+.lx-hero-strip {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.lx-hero-strip-in {
+  position: relative;
+  padding-block: clamp(15px, 1.6vw, 21px);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--lx-green-900) 90%, transparent),
+    color-mix(in srgb, var(--lx-green-950) 96%, transparent));
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+}
+.lx-hero-strip-in::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--lx-gold-500) 55%, transparent) 16%,
+    var(--lx-gold-400) 50%,
+    color-mix(in srgb, var(--lx-gold-500) 55%, transparent) 84%,
+    transparent);
+}
+
+.lx-hero-strip-row {
+  --lx-hero-gap: clamp(20px, 3.4vw, 54px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--lx-hero-gap);
+}
+
+.lx-hero-strip-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: .7em;
+  white-space: nowrap;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--lx-paper) 86%, transparent);
+}
+.lx-hero-strip-item svg {
+  flex: none;
+  font-size: .95em;
+  color: var(--lx-gold-400);
+}
+
+/* Gold hairline dividers between the desktop items. */
+.lx-hero-strip-row .lx-hero-strip-item + .lx-hero-strip-item::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--lx-hero-gap) / -2);
+  top: 50%;
+  width: 1px;
+  height: 15px;
+  transform: translateY(-50%);
+  background: linear-gradient(180deg, transparent, var(--lx-gold-500), transparent);
+}
+
+/* Ticker separator (mobile) */
+.lx-hero-strip-dot {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  background: var(--lx-grad-gold);
+  transform: rotate(45deg);
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+  .lx-hero-orn { width: clamp(220px, 34vw, 320px); }
+  .lx-hero-stat { min-width: 128px; }
+}
+
+/* The ornament would crowd the copy once the column narrows. */
+@media (max-width: 900px) {
+  .lx-hero-ornw { display: none; }
+  /* The stats are still on screen down to 767px, and a centred cue runs into
+     them here — anchor it to the gutter instead so the two cannot collide. */
+  .lx-hero-cue { left: var(--lx-gut); transform: none; }
+  .lx-hero-cue-in { align-items: flex-start; padding-left: 0; }
+}
+
+@media (max-width: 767px) {
+  #hero.lx-hero { --lx-hero-strip: 54px; }
+  /* Stats would sit on top of the copy at this width. */
+  .lx-hero-stats { display: none; }
+  .lx-hero-strip-in { padding-block: 14px; }
+  .lx-hero-lede { max-width: 46ch; }
+}
+
+@media (max-width: 560px) {
+  .lx-hero-title { line-height: 1.06; }
+  .lx-hero-cta {
+    align-self: stretch;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lx-hero-cta .lx-btn { width: 100%; }
+  .lx-hero-cue-label { font-size: .58rem; letter-spacing: .28em; }
+  .lx-hero-cue-line { height: 30px; }
+}
+
+/* Landscape phones: give the copy the room the chrome would eat. */
+@media (max-height: 620px) and (orientation: landscape) {
+  #hero.lx-hero { --lx-hero-cue: 58px; }
+  .lx-hero-body { padding-block: 56px calc(var(--lx-hero-strip) + 58px); }
+  .lx-hero-cue { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-hero-slide { opacity: 0; }
+  .lx-hero-slide:first-child { opacity: 1; }
+  .lx-hero-cue-dot { display: none; }
+}

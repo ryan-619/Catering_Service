@@ -1,0 +1,285 @@
+/* ═══════════════════════════════════════════════════════════════
+   GRATITUDE  ·  the closing grace note
+   ---------------------------------------------------------------
+   The last block before the footer. Deep forest ground so it reads
+   as a deliberate ending rather than one more content section, a
+   soft gold halo behind the card, a hairline frame with corner
+   ticks around it, and a rule + signature underneath that closes
+   the document.
+
+   .lx-grat        — the section box (id-qualified: the legacy sheet
+                     still owns `#gratitude`, and an id outranks a
+                     class, so the box is reclaimed once here).
+   .lx-grat-stage  — positioning context for halo + frame.
+   .lx-grat-shot   — the clip-path wipe wrapper (GSAP animates it).
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-grat {
+  /* local scale knobs — media queries override these, not the rules */
+  --lx-grat-w: 560px;
+  --lx-grat-mat: clamp(10px, 1.7vw, 20px);
+  --lx-grat-tick: clamp(14px, 2.2vw, 20px);
+  --lx-grat-hair: color-mix(in srgb, var(--lx-gold-400) 40%, transparent);
+  --lx-grat-hair-soft: color-mix(in srgb, var(--lx-gold-400) 18%, transparent);
+}
+
+/* The legacy rule sets `#gratitude` padding + cream background by id.
+   Re-declare the whole box here, id-qualified, to take ownership. */
+#gratitude.lx-grat {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  border: 0;
+  padding-block: clamp(64px, 8vw, 128px);
+  background: var(--lx-grad-green);
+  color: var(--lx-paper);
+}
+
+/* Gold hairline along the top edge — the seam with the section above. */
+#gratitude.lx-grat::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-gold-600) 16%,
+    var(--lx-gold-300) 50%,
+    var(--lx-gold-600) 84%,
+    transparent
+  );
+  opacity: .5;
+}
+
+/* Vignette so the centre lifts and the edges fall away into the footer. */
+.lx-grat-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      72% 58% at 50% 42%,
+      color-mix(in srgb, var(--lx-green-700) 34%, transparent) 0%,
+      transparent 68%
+    ),
+    radial-gradient(
+      100% 70% at 50% 108%,
+      color-mix(in srgb, var(--lx-green-950) 70%, transparent) 0%,
+      transparent 70%
+    );
+}
+
+.lx-grat .lx-ct {
+  position: relative;
+  z-index: 1;
+}
+
+/* ═══════════════════ HEAD ═══════════════════ */
+
+.lx-grat-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 18px);
+  text-align: center;
+  margin-bottom: clamp(34px, 4.4vw, 58px);
+}
+
+.lx-grat-eyebrow {
+  color: var(--lx-gold-400);
+}
+
+.lx-grat-orn {
+  max-width: 150px;
+  transform-origin: 50% 50%;
+}
+
+.lx-grat-line {
+  max-width: 34ch;
+  margin: 0;
+  font-family: var(--lx-display), var(--lx-deva);
+  font-size: clamp(1.18rem, 2.2vw, 1.72rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: .005em;
+  color: color-mix(in srgb, var(--lx-paper) 78%, transparent);
+  text-wrap: balance;
+}
+
+/* Devanagari has no true italic — keep it upright and give it its own
+   face so it does not get synthetically obliqued next to the Cormorant. */
+.lx-grat-deva {
+  font-family: var(--lx-deva);
+  font-style: normal;
+  font-weight: 500;
+  font-size: .92em;
+  color: var(--lx-gold-300);
+  white-space: nowrap;
+}
+
+/* ═══════════════════ STAGE ═══════════════════ */
+
+.lx-grat-stage {
+  position: relative;
+  width: 100%;
+  max-width: var(--lx-grat-w);
+  margin-inline: auto;
+}
+
+/* Soft gold halo behind the card. */
+.lx-grat-halo {
+  position: absolute;
+  inset: -26% -24%;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 50%;
+  filter: blur(58px);
+  will-change: transform;
+  background: radial-gradient(
+    56% 52% at 50% 48%,
+    color-mix(in srgb, var(--lx-gold-400) 46%, transparent) 0%,
+    color-mix(in srgb, var(--lx-gold-600) 24%, transparent) 42%,
+    color-mix(in srgb, var(--lx-gold-700) 9%, transparent) 62%,
+    transparent 78%
+  );
+}
+
+/* The hairline frame — a thin gold rule with a barely-there mat inside it. */
+.lx-grat-frame {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: var(--lx-grat-mat);
+  border-radius: var(--lx-r-lg);
+  background: color-mix(in srgb, var(--lx-green-950) 46%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--lx-grat-hair),
+    inset 0 0 0 7px color-mix(in srgb, var(--lx-green-950) 30%, transparent),
+    inset 0 0 0 8px var(--lx-grat-hair-soft),
+    var(--lx-sh-4);
+}
+
+/* Corner ticks — the "certificate" read. */
+.lx-grat-tick {
+  position: absolute;
+  z-index: 2;
+  width: var(--lx-grat-tick);
+  height: var(--lx-grat-tick);
+  pointer-events: none;
+  border: 0 solid var(--lx-gold-400);
+}
+.lx-grat-tick--tl { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: var(--lx-r-lg); }
+.lx-grat-tick--tr { top: -1px; right: -1px; border-top-width: 2px; border-right-width: 2px; border-top-right-radius: var(--lx-r-lg); }
+.lx-grat-tick--bl { bottom: -1px; left: -1px; border-bottom-width: 2px; border-left-width: 2px; border-bottom-left-radius: var(--lx-r-lg); }
+.lx-grat-tick--br { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: var(--lx-r-lg); }
+
+/* Wipe wrapper — GSAP animates clip-path here, scale on the image inside. */
+.lx-grat-shot {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--lx-r);
+  background: color-mix(in srgb, var(--lx-green-950) 80%, transparent);
+  box-shadow: inset 0 0 0 1px var(--lx-grat-hair-soft);
+  clip-path: inset(0% 0% 0% 0%);
+}
+
+/* No CSS transition on this element: GSAP animates its transform during the
+   reveal, and a `transition: transform` here would fight every tween frame.
+   The hover response lives on the frame's box-shadow instead. */
+.lx-grat-card {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1400 / 1436;
+  object-fit: cover;
+  border-radius: var(--lx-r);
+  will-change: transform;
+}
+
+/* A whisper of warmth on hover — the hairline brightens, nothing moves. */
+@media (hover: hover) and (pointer: fine) {
+  .lx-grat-frame {
+    transition: box-shadow var(--lx-d-slow) var(--lx-e-out);
+  }
+  .lx-grat-frame:hover {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-300) 62%, transparent),
+      inset 0 0 0 7px color-mix(in srgb, var(--lx-green-950) 30%, transparent),
+      inset 0 0 0 8px color-mix(in srgb, var(--lx-gold-400) 30%, transparent),
+      var(--lx-sh-4),
+      0 0 46px color-mix(in srgb, var(--lx-gold-500) 22%, transparent);
+  }
+}
+
+/* ═══════════════════ FOOT ═══════════════════ */
+
+.lx-grat-foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 1.8vw, 20px);
+  margin-top: clamp(34px, 4.4vw, 58px);
+}
+
+.lx-grat-rule {
+  width: 100%;
+  max-width: 220px;
+  height: 1px;
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-gold-500) 32%,
+    var(--lx-gold-300) 50%,
+    var(--lx-gold-500) 68%,
+    transparent
+  );
+  opacity: .92;
+}
+
+.lx-grat-sign {
+  margin: 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  text-align: center;
+  color: color-mix(in srgb, var(--lx-gold-300) 70%, transparent);
+}
+
+/* ═══════════════════ RESPONSIVE ═══════════════════ */
+
+@media (max-width: 900px) {
+  .lx-grat { --lx-grat-w: 500px; }
+  .lx-grat-halo { filter: blur(42px); }
+}
+
+@media (max-width: 560px) {
+  .lx-grat { --lx-grat-w: 100%; --lx-grat-mat: 9px; --lx-grat-tick: 13px; }
+  #gratitude.lx-grat { padding-block: clamp(54px, 13vw, 78px); }
+  .lx-grat-frame { border-radius: var(--lx-r); }
+  .lx-grat-tick--tl, .lx-grat-tick--tr,
+  .lx-grat-tick--bl, .lx-grat-tick--br { border-radius: 0; }
+  .lx-grat-tick--tl { border-top-left-radius: var(--lx-r); }
+  .lx-grat-tick--tr { border-top-right-radius: var(--lx-r); }
+  .lx-grat-tick--bl { border-bottom-left-radius: var(--lx-r); }
+  .lx-grat-tick--br { border-bottom-right-radius: var(--lx-r); }
+  .lx-grat-shot { border-radius: var(--lx-r-sm); }
+  .lx-grat-card { border-radius: var(--lx-r-sm); }
+  .lx-grat-line { font-size: clamp(1.06rem, 4.6vw, 1.28rem); }
+  .lx-grat-deva { white-space: normal; }
+  .lx-grat-sign { letter-spacing: .22em; }
+}
+
+/* GSAP already bails out of this section under reduced motion; these just
+   make sure nothing is left mid-tween if the preference flips at runtime. */
+@media (prefers-reduced-motion: reduce) {
+  .lx-grat-halo { transform: none !important; }
+  .lx-grat-shot { clip-path: inset(0% 0% 0% 0%) !important; }
+}

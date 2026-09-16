@@ -1,0 +1,373 @@
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER — the closing plate
+   Darkest forest green, a large Cormorant brand mark with a gold
+   period, gold-capped column headings on short gold rules, links
+   that wipe an underline left-to-right, and a hairlined bottom
+   bar carrying the copyright, the GSTIN and a back-to-top dial.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-ftr {
+  --lx-ftr-pad: clamp(56px, 6.4vw, 92px);
+  --lx-ftr-cols: 1.9fr 1fr 1fr 1.35fr;
+  --lx-ftr-gap: clamp(28px, 3.6vw, 60px);
+  --lx-ftr-muted: color-mix(in srgb, var(--lx-paper) 56%, transparent);
+  --lx-ftr-faint: color-mix(in srgb, var(--lx-paper) 34%, transparent);
+  --lx-ftr-edge: color-mix(in srgb, var(--lx-gold-400) 40%, transparent);
+  --lx-ftr-dial: 44px;
+}
+
+/* The legacy sheet styles the bare `footer` element; this class-qualified
+   rule takes the box back without touching anything else. */
+footer.lx-ftr {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding: var(--lx-ftr-pad) 0 0;
+  background: var(--lx-green-950);
+  color: var(--lx-paper);
+}
+
+/* ── Decorative wash, bottom-left ── */
+.lx-ftr-wash {
+  position: absolute;
+  inset: auto -10% -30% -20%;
+  height: 70%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(48% 70% at 16% 100%, color-mix(in srgb, var(--lx-gold-600) 16%, transparent), transparent 72%),
+    radial-gradient(44% 64% at 88% 96%, color-mix(in srgb, var(--lx-green-600) 16%, transparent), transparent 74%);
+}
+
+.lx-ftr-inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* ═══ COLUMNS ═══ */
+
+.lx-ftr-grid {
+  display: grid;
+  grid-template-columns: var(--lx-ftr-cols);
+  gap: var(--lx-ftr-gap);
+  padding-bottom: clamp(38px, 4.4vw, 62px);
+}
+
+/* ── Brand block ── */
+.lx-ftr-mark {
+  font-family: var(--lx-display);
+  font-size: clamp(2.2rem, 3.6vw, 3.1rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .015em;
+  color: var(--lx-paper);
+}
+.lx-ftr-mark span {
+  color: var(--lx-gold-400);
+  text-shadow: 0 0 22px color-mix(in srgb, var(--lx-gold-500) 55%, transparent);
+}
+
+.lx-ftr-since {
+  margin: 12px 0 16px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--lx-gold-400);
+}
+
+.lx-ftr-copy {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.78;
+  color: var(--lx-ftr-muted);
+  max-width: 42ch;
+}
+
+/* ── Socials: gold-ringed circles that fill on hover ── */
+.lx-ftr-soc {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+.lx-ftr-soc-link {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: .82rem;
+  color: var(--lx-gold-300);
+  text-decoration: none;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--lx-ftr-edge);
+  transition:
+    background var(--lx-d) var(--lx-e-out),
+    color var(--lx-d-fast) ease,
+    box-shadow var(--lx-d) var(--lx-e-out),
+    translate var(--lx-d) var(--lx-e-out);
+}
+.lx-ftr-soc-link:hover {
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+  box-shadow: var(--lx-sh-gold), inset 0 0 0 1px transparent;
+  translate: 0 -3px;
+}
+
+/* ── Column heading: small gold caps on a short gold rule ── */
+.lx-ftr-h {
+  position: relative;
+  margin: 0 0 24px;
+  padding-bottom: 12px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--lx-gold-400);
+}
+.lx-ftr-h::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--lx-gold-400), transparent);
+}
+
+/* ── Lists ── */
+.lx-ftr-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Services are statements, not destinations — a gold bullet, no anchor. */
+.lx-ftr-list--dots li {
+  position: relative;
+  padding-left: 18px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  color: var(--lx-ftr-muted);
+}
+.lx-ftr-list--dots li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  background: var(--lx-grad-gold);
+  transform: rotate(45deg);
+}
+
+/* ── Link: underline wipes in left-to-right, text shifts a few px right ── */
+.lx-ftr-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  color: var(--lx-ftr-muted);
+  text-decoration: none;
+  translate: 0 0;
+  transition: color var(--lx-d-fast) ease, translate var(--lx-d) var(--lx-e-out);
+}
+.lx-ftr-link > span {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+.lx-ftr-link > span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--lx-grad-gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--lx-d) var(--lx-e-out);
+}
+.lx-ftr-link:hover {
+  color: var(--lx-gold-300);
+  translate: 4px 0;
+}
+.lx-ftr-link:hover > span::after,
+.lx-ftr-link:focus-visible > span::after { transform: scaleX(1); }
+
+/* ── Contact lines ── */
+.lx-ftr-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.lx-ftr-ic {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-top: 3px;
+  border-radius: 50%;
+  font-size: .62rem;
+  color: var(--lx-gold-300);
+  background: color-mix(in srgb, var(--lx-gold-500) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 34%, transparent);
+}
+.lx-ftr-line-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--lx-ftr-muted);
+  min-width: 0;
+}
+.lx-ftr-line-body .lx-ftr-link { min-height: 32px; }
+
+/* ═══ HAIRLINE + BOTTOM BAR ═══ */
+
+.lx-ftr-rule {
+  display: block;
+  height: 1px;
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-gold-700) 10%,
+    var(--lx-gold-400) 50%,
+    var(--lx-gold-700) 90%,
+    transparent
+  );
+  opacity: .72;
+}
+
+/* The floating contact cluster (.lx-fab) is fixed to the bottom-right of the
+   viewport, and at full scroll it lands on top of this bar. Reserve room
+   underneath so the back-to-top dial stays reachable; only past ~1440px does
+   the container's own right margin clear the cluster on its own. */
+.lx-ftr-bot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 0 clamp(70px, 8vw, 92px);
+}
+@media (min-width: 1440px) {
+  .lx-ftr-bot { padding-bottom: 26px; }
+}
+
+.lx-ftr-legal {
+  margin: 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 300;
+  letter-spacing: .02em;
+  color: var(--lx-ftr-faint);
+}
+.lx-ftr-sep {
+  display: inline-block;
+  margin-inline: 8px;
+  color: color-mix(in srgb, var(--lx-gold-500) 52%, transparent);
+}
+.lx-ftr-gst {
+  color: color-mix(in srgb, var(--lx-gold-300) 72%, transparent);
+  white-space: nowrap;
+}
+
+.lx-ftr-bot-end {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.lx-ftr-made {
+  margin: 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 300;
+  color: color-mix(in srgb, var(--lx-paper) 22%, transparent);
+}
+
+/* ── Back to top ── */
+.lx-ftr-top {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--lx-ftr-dial);
+  height: var(--lx-ftr-dial);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: .78rem;
+  color: var(--lx-gold-300);
+  background: color-mix(in srgb, var(--lx-gold-500) 10%, transparent);
+  box-shadow: inset 0 0 0 1px var(--lx-ftr-edge);
+  transition:
+    background var(--lx-d) var(--lx-e-out),
+    color var(--lx-d-fast) ease,
+    box-shadow var(--lx-d) var(--lx-e-out),
+    translate var(--lx-d) var(--lx-e-out);
+}
+.lx-ftr-top:hover {
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+  box-shadow: var(--lx-sh-gold), inset 0 0 0 1px transparent;
+  translate: 0 -4px;
+}
+.lx-ftr-top:active { translate: 0 -1px; }
+.lx-ftr-top svg { display: block; }
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+  .lx-ftr { --lx-ftr-cols: repeat(3, minmax(0, 1fr)); }
+  /* The brand takes its own full-width row; the three link columns share the next. */
+  .lx-ftr-brand { grid-column: 1 / -1; }
+  .lx-ftr-copy { max-width: 58ch; }
+}
+
+@media (max-width: 760px) {
+  .lx-ftr { --lx-ftr-cols: repeat(2, minmax(0, 1fr)); --lx-ftr-gap: 30px; }
+}
+
+@media (max-width: 520px) {
+  .lx-ftr { --lx-ftr-cols: minmax(0, 1fr); --lx-ftr-dial: 42px; }
+  .lx-ftr-bot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .lx-ftr-bot-end {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .lx-ftr-sep { display: none; }
+  .lx-ftr-gst { display: block; margin-top: 4px; }
+}
+
+/* ═══ REDUCED MOTION ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .lx-ftr-rule { transform: none !important; }
+  .lx-ftr-link:hover,
+  .lx-ftr-soc-link:hover,
+  .lx-ftr-top:hover { translate: 0 0; }
+}

@@ -1,5 +1,9 @@
 import { FaLandmark, FaFlag, FaFilm, FaMusic } from 'react-icons/fa'
-import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
+import { gsap, prefersReducedMotion } from '../lib/gsapSetup'
+import { useGsapContext } from '../lib/useGsap'
+import Reveal from './ui/Reveal'
+import SectionHead from './ui/SectionHead'
+import TiltCard from './ui/TiltCard'
 import p1 from '../assets/p1.jpeg'
 import p2 from '../assets/p2.jpg'
 import p3 from '../assets/p3.jpeg'
@@ -47,51 +51,70 @@ const personalities = [
   { img: arunYogiraj, name: 'South Businessman', title: '', tag: <><FaLandmark /> Businessman</> },
 ]
 
+/* Module-level so the object identity is stable — Reveal keys its effect on it.
+   `grid:'auto'` lets GSAP read the real column count, so the wave travels
+   diagonally across the wall instead of straight left-to-right. */
+const GRID_STAGGER = { each: 0.035, from: 'start', grid: 'auto' }
+
 export default function Personalities() {
+  const scope = useGsapContext((ctx, el) => {
+    if (prefersReducedMotion()) return
+    const drift = (sel, to) => gsap.fromTo(sel, { yPercent: -to }, {
+      yPercent: to, ease: 'none',
+      scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.8 },
+    })
+    drift('.lx-pers-wash--a', 9)
+    drift('.lx-pers-wash--b', -7)
+  }, [])
+
   return (
-    <section id="personalities">
-      <div className="ct">
-        <FadeUp>
-          <div className="pers-header">
-            <span className="ey">Our Honour</span>
-            <span className="gline"></span>
-            <h2 className="st">Trusted by the Greatest</h2>
-            <p className="pers-subtitle">
-              Over the decades, LTCS has had the privilege of serving and being
-              associated with some of India's most celebrated personalities.
-            </p>
-          </div>
-        </FadeUp>
+    <section id="personalities" className="lx-sec lx-sec--ivory lx-pers" ref={scope}>
+      <span className="lx-wash lx-wash--gold lx-pers-wash lx-pers-wash--a" aria-hidden="true" />
+      <span className="lx-wash lx-wash--gold lx-pers-wash lx-pers-wash--b" aria-hidden="true" />
 
-        <Stagger className="pers-grid">
+      <div className="lx-ct-wide lx-pers-inner">
+        <SectionHead
+          eyebrow="Our Honour"
+          title="Trusted by the Greatest"
+          lead="Over the decades, LTCS has had the privilege of serving and being associated with some of India's most celebrated personalities."
+        />
+
+        <Reveal as="ul" role="list" className="lx-pers-grid" from="up" duration={0.9} stagger={GRID_STAGGER}>
           {personalities.map((p, i) => (
-            <StaggerItem key={i}>
-              <div className="pers-card">
-                <div className="pers-img-wrap">
-                  <img src={p.img} alt={p.name} className="pers-img" loading="lazy" />
-                  <div className="pers-overlay">
-                    <div className="pers-overlay-content">
-                      <div className="pers-tag">{p.tag}</div>
-                      <div className="pers-overlay-name">{p.name}</div>
-                      {p.title && <div className="pers-overlay-title">{p.title}</div>}
-                    </div>
-                  </div>
-                </div>
-                <div className="pers-body">
-                  <div className="pers-name">{p.name}</div>
-                  {p.title && <div className="pers-title">{p.title}</div>}
-                </div>
-              </div>
-            </StaggerItem>
-          ))}
-        </Stagger>
+            <li className="lx-pers-cell" key={i}>
+              <TiltCard max={8} scale={1.015} glare innerClassName="lx-pers-card" data-cursor="hot">
+                <figure className="lx-pers-fig">
+                  <span className="lx-pers-shot">
+                    <img src={p.img} alt={p.name} className="lx-pers-img" loading="lazy" decoding="async" />
+                    <span className="lx-pers-scrim" aria-hidden="true" />
+                  </span>
 
-        <FadeUp>
-          <div className="pers-bottom-quote">
-            <p>We are honoured to have served India's finest — a testament to our
-            commitment to quality, purity, and hospitality.</p>
-          </div>
-        </FadeUp>
+                  <span className="lx-pers-frame" aria-hidden="true" />
+
+                  <span className="lx-pers-tagwrap lx-tilt-layer">
+                    <span className="lx-pers-tag">{p.tag}</span>
+                  </span>
+
+                  <figcaption className="lx-pers-meta">
+                    <span className="lx-pers-name">{p.name}</span>
+                    {p.title && <span className="lx-pers-role">{p.title}</span>}
+                  </figcaption>
+                </figure>
+              </TiltCard>
+            </li>
+          ))}
+        </Reveal>
+
+        <Reveal from="up" delay={0.05}>
+          <blockquote className="lx-pers-quote">
+            <span className="lx-pers-dia" aria-hidden="true" />
+            <p>
+              We are honoured to have served India's finest — a testament to our
+              commitment to quality, purity, and hospitality.
+            </p>
+            <span className="lx-pers-dia" aria-hidden="true" />
+          </blockquote>
+        </Reveal>
       </div>
     </section>
   )

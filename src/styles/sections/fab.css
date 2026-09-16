@@ -1,0 +1,74 @@
+/* ═══ FLOATING CONTACT CLUSTER ═══ */
+
+.lx-fab {
+  position: fixed; z-index: 700;
+  right: clamp(14px, 2.4vw, 30px);
+  bottom: clamp(14px, 2.4vw, 30px);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+  visibility: hidden;
+}
+
+.lx-fab-items {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  pointer-events: none;
+}
+.lx-fab.is-open .lx-fab-items { pointer-events: auto; }
+
+.lx-fab-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 46px; padding: 0 18px 0 14px;
+  border: 0; border-radius: var(--lx-r-pill);
+  font-family: var(--lx-sans); font-size: .78rem; font-weight: 600;
+  letter-spacing: .06em; text-decoration: none; white-space: nowrap;
+  cursor: pointer;
+  background: var(--lx-paper); color: var(--lx-ink);
+  box-shadow: var(--lx-sh-3), inset 0 0 0 1px rgba(20,23,15,.06);
+  opacity: 0; transform: translateY(14px) scale(.9);
+  transition: opacity .32s var(--lx-e-out), transform .32s var(--lx-e-out), box-shadow var(--lx-d-fast);
+}
+.lx-fab-btn svg { font-size: 1rem; flex: none; }
+.lx-fab.is-open .lx-fab-btn { opacity: 1; transform: none; }
+.lx-fab.is-open .lx-fab-btn:nth-child(1) { transition-delay: .12s; }
+.lx-fab.is-open .lx-fab-btn:nth-child(2) { transition-delay: .06s; }
+.lx-fab.is-open .lx-fab-btn:nth-child(3) { transition-delay: 0s; }
+.lx-fab-btn:hover { transform: translateX(-3px); box-shadow: var(--lx-sh-4); }
+
+.lx-fab-btn--wa { background: #1FA855; color: #fff; }
+.lx-fab-btn--call { background: var(--lx-green-800); color: #fff; }
+.lx-fab-btn--book { background: var(--lx-grad-gold); color: #241905; }
+
+.lx-fab-toggle {
+  position: relative;
+  display: grid; place-items: center;
+  width: 58px; height: 58px; flex: none;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: var(--lx-grad-green); color: var(--lx-gold-300);
+  font-size: 1.05rem;
+  box-shadow: var(--lx-sh-green), inset 0 0 0 1.5px rgba(222,187,107,.5);
+  transition: transform var(--lx-d) var(--lx-e-out), background var(--lx-d);
+}
+.lx-fab-toggle svg { position: relative; z-index: 2; transition: transform .45s var(--lx-e-out); }
+.lx-fab.is-open .lx-fab-toggle { background: var(--lx-grad-gold); color: #241905; }
+.lx-fab.is-open .lx-fab-toggle svg { transform: rotate(135deg); }
+.lx-fab-toggle:hover { transform: scale(1.06); }
+
+/* Attention ring — one slow breath, not a strobe. */
+.lx-fab-pulse {
+  position: absolute; inset: -3px; border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(200,162,74,.55);
+  animation: lx-fab-breathe 3.2s var(--lx-e-io) infinite;
+}
+.lx-fab.is-open .lx-fab-pulse { animation: none; }
+@keyframes lx-fab-breathe {
+  0%   { box-shadow: 0 0 0 0 rgba(200,162,74,.5); }
+  70%  { box-shadow: 0 0 0 16px rgba(200,162,74,0); }
+  100% { box-shadow: 0 0 0 0 rgba(200,162,74,0); }
+}
+
+@media (max-width: 560px) {
+  .lx-fab-toggle { width: 52px; height: 52px; }
+  .lx-fab-btn { height: 42px; font-size: .74rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lx-fab-pulse { animation: none; }
+}

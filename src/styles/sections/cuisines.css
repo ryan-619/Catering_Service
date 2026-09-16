@@ -1,0 +1,539 @@
+/* ═══════════════════════════════════════════════════════════════
+   CUISINES  ·  category grid + full-menu spread + dish sheet
+   All class names are namespaced `lx-cuis-*`.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-cuis { isolation: isolate; }
+
+.lx-cuis-wash { z-index: 0; }
+.lx-cuis-wash--a { top: -6%; right: -12%; width: clamp(260px, 34vw, 560px); aspect-ratio: 1; }
+.lx-cuis-wash--b { bottom: 6%; left: -14%; width: clamp(240px, 30vw, 500px); aspect-ratio: 1; }
+
+.lx-cuis .lx-ct { position: relative; z-index: 1; }
+
+.lx-cuis-head { margin-bottom: clamp(38px, 5vw, 66px); }
+
+/* ─────────────────────────────────────────────
+   CATEGORY GRID
+   ───────────────────────────────────────────── */
+
+.lx-cuis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
+  gap: clamp(18px, 2.3vw, 30px);
+}
+
+.lx-cuis-tilt { height: 100%; }
+.lx-cuis-tilt > .lx-tilt { position: relative; height: 100%; border-radius: var(--lx-r-lg); }
+.lx-cuis-tilt .lx-glare { border-radius: var(--lx-r-lg); }
+
+.lx-cuis-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+  background: var(--lx-paper);
+  border-radius: var(--lx-r-lg);
+  overflow: hidden;
+  box-shadow: var(--lx-sh-2), inset 0 0 0 1px rgba(20, 23, 15, .05);
+  transition: box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-cuis-card:hover,
+.lx-cuis-card:focus-visible {
+  box-shadow: var(--lx-sh-4), inset 0 0 0 1px rgba(200, 162, 74, .38);
+}
+.lx-cuis-card.lx-topline::before { z-index: 6; }
+
+/* ── 4:3 photo frame; the lens is what GSAP drifts ── */
+.lx-cuis-shot {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--lx-green-900);
+}
+.lx-cuis-lens {
+  position: absolute;
+  inset: -7% 0;
+  display: block;
+  will-change: transform;
+}
+.lx-cuis-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: 50% 55%;
+  transition: transform 1.05s var(--lx-e-out), filter var(--lx-d) ease;
+  filter: saturate(1.02);
+}
+.lx-cuis-card:hover .lx-cuis-img { transform: scale(1.075); filter: saturate(1.1); }
+
+.lx-cuis-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(120% 90% at 30% 20%, rgba(200, 162, 74, .28), transparent 62%),
+    var(--lx-grad-green);
+}
+
+.lx-cuis-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(6, 35, 15, .82) 0%,
+    rgba(6, 35, 15, .30) 40%,
+    rgba(6, 35, 15, .04) 72%,
+    transparent 100%
+  );
+}
+
+/* ── Glass badge, tinted by the category's own badgeColor ── */
+.lx-cuis-badge {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  max-width: calc(100% - 26px);
+  padding: 7px 14px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: var(--lx-r-pill);
+  background: rgba(6, 35, 15, .55);
+  background: color-mix(in srgb, var(--lx-cuis-tint, var(--lx-green-800)) 40%, rgba(6, 35, 15, .58));
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .26),
+    inset 0 0 0 1px color-mix(in srgb, var(--lx-cuis-tint, var(--lx-gold-400)) 62%, transparent),
+    0 6px 20px rgba(6, 35, 15, .32);
+}
+.lx-cuis-badge i { display: grid; place-items: center; font-size: .85em; font-style: normal; color: var(--lx-gold-300); }
+
+/* ── Body ── */
+.lx-cuis-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  padding: clamp(18px, 2vw, 24px) clamp(18px, 2vw, 24px) clamp(20px, 2.2vw, 26px);
+}
+.lx-cuis-name {
+  font-family: var(--lx-display);
+  font-size: clamp(1.32rem, 1.9vw, 1.62rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--lx-ink);
+}
+.lx-cuis-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 300;
+  line-height: 1.62;
+  color: var(--lx-ink-3);
+}
+.lx-cuis-go {
+  display: inline-flex;
+  align-items: center;
+  gap: .7em;
+  margin-top: auto;
+  padding-top: 14px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--lx-gold-700);
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-cuis-go svg {
+  font-size: .78em;
+  transition: transform var(--lx-d) var(--lx-e-out);
+}
+.lx-cuis-card:hover .lx-cuis-go { color: var(--lx-gold-600); }
+.lx-cuis-card:hover .lx-cuis-go svg { transform: translateX(7px); }
+
+/* ─────────────────────────────────────────────
+   THE FULL SPREAD
+   ───────────────────────────────────────────── */
+
+.lx-cuis-menu { margin-top: clamp(62px, 8vw, 116px); }
+
+.lx-cuis-menu-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+.lx-cuis-menu-title { text-align: center; }
+
+.lx-cuis-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+  gap: clamp(14px, 1.8vw, 22px);
+}
+
+.lx-cuis-mcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: clamp(20px, 2.2vw, 26px);
+  background: var(--lx-paper);
+  border-radius: var(--lx-r);
+  overflow: hidden;
+  box-shadow: var(--lx-sh-1), inset 0 0 0 1px var(--lx-line);
+  transition: box-shadow var(--lx-d) var(--lx-e-out), transform var(--lx-d) var(--lx-e-out);
+}
+.lx-cuis-mcard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--lx-sh-3), inset 0 0 0 1px rgba(200, 162, 74, .34);
+}
+
+.lx-cuis-mcard-head { display: flex; align-items: center; gap: 12px; }
+.lx-cuis-mcard-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  font-size: 1.12rem;
+  line-height: 1;
+  border-radius: 50%;
+  background: var(--lx-gold-100);
+  box-shadow: inset 0 0 0 1px rgba(200, 162, 74, .3);
+}
+.lx-cuis-mcard-title {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -.005em;
+  color: var(--lx-green-800);
+}
+
+.lx-cuis-mcard-list { list-style: none; display: flex; flex-direction: column; gap: 7px; margin: 0; padding: 0; }
+.lx-cuis-mcard-list li {
+  position: relative;
+  padding-left: 17px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--lx-ink-3);
+}
+.lx-cuis-mcard-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .55em;
+  width: 5px;
+  height: 5px;
+  background: var(--lx-grad-gold);
+  transform: rotate(45deg);
+}
+
+/* ── Menu CTA panel ── */
+.lx-cuis-cta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(34px, 4.4vw, 58px);
+  padding: clamp(34px, 5vw, 62px) clamp(20px, 4vw, 56px);
+  text-align: center;
+  border-radius: var(--lx-r-xl);
+  background: var(--lx-grad-green);
+  box-shadow: var(--lx-sh-green), inset 0 0 0 1px rgba(200, 162, 74, .28);
+  overflow: hidden;
+}
+.lx-cuis-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--lx-grad-gold);
+}
+.lx-cuis-cta-orn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; max-width: 170px; }
+.lx-cuis-cta-orn i {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lx-gold-500) 35%, var(--lx-gold-500) 65%, transparent);
+}
+.lx-cuis-cta-orn b { width: 7px; height: 7px; flex: none; background: var(--lx-grad-gold); transform: rotate(45deg); }
+
+.lx-cuis-cta-title {
+  font-family: var(--lx-display);
+  font-size: var(--lx-t-h3);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -.012em;
+  color: var(--lx-gold-300);
+}
+.lx-cuis-cta-desc {
+  max-width: 52ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, .74);
+}
+.lx-cuis-cta-row { justify-content: center; margin-top: 10px; }
+
+/* ═════════════════════════════════════════════
+   DISH SHEET (portalled to <body>)
+   ═════════════════════════════════════════════ */
+
+.lx-cuis-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 3vw, 40px);
+  background: rgba(6, 35, 15, .74);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+}
+
+.lx-cuis-sheet {
+  display: flex;
+  flex-direction: column;
+  width: min(1040px, 100%);
+  max-height: 88vh;
+  overflow: hidden;
+  border-radius: var(--lx-r-xl);
+  background: var(--lx-ivory);
+  box-shadow: 0 40px 120px rgba(6, 35, 15, .55), inset 0 0 0 1px rgba(200, 162, 74, .3);
+}
+
+/* ── Sticky header ── */
+.lx-cuis-sheet-head {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 26px);
+  padding: clamp(20px, 3vw, 34px) clamp(18px, 3.2vw, 38px);
+  color: #fff;
+  background: var(--lx-grad-green);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--lx-cuis-tint, var(--lx-green-800)) 34%, var(--lx-green-900)) 0%,
+    var(--lx-green-950) 100%
+  );
+}
+.lx-cuis-sheet-head::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: var(--lx-grad-gold);
+}
+.lx-cuis-sheet-text { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+
+.lx-cuis-sheet-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+  align-self: flex-start;
+  padding: 6px 14px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--lx-gold-300);
+  border-radius: var(--lx-r-pill);
+  background: rgba(255, 255, 255, .09);
+  box-shadow: inset 0 0 0 1px rgba(222, 187, 107, .38);
+}
+.lx-cuis-sheet-badge i { display: grid; place-items: center; font-style: normal; font-size: .9em; }
+
+.lx-cuis-sheet-title {
+  font-family: var(--lx-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.015em;
+  color: #fff;
+}
+.lx-cuis-sheet-desc {
+  max-width: 56ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 300;
+  line-height: 1.62;
+  color: rgba(255, 255, 255, .72);
+}
+
+.lx-cuis-x {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: .95rem;
+  color: var(--lx-gold-300);
+  background: rgba(255, 255, 255, .08);
+  box-shadow: inset 0 0 0 1px rgba(222, 187, 107, .34);
+  transition: background var(--lx-d-fast) ease, color var(--lx-d-fast) ease, transform var(--lx-d-fast) var(--lx-e-out);
+}
+.lx-cuis-x:hover { background: var(--lx-grad-gold); color: var(--lx-green-950); transform: rotate(90deg) scale(1.06); }
+
+/* ── Scrollable body ── */
+.lx-cuis-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: clamp(20px, 3vw, 34px) clamp(18px, 3.2vw, 38px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--lx-gold-400) transparent;
+}
+.lx-cuis-sheet-body::-webkit-scrollbar { width: 9px; }
+.lx-cuis-sheet-body::-webkit-scrollbar-track { background: transparent; }
+.lx-cuis-sheet-body::-webkit-scrollbar-thumb {
+  background: var(--lx-gold-400);
+  border-radius: var(--lx-r-pill);
+  border: 3px solid var(--lx-ivory);
+}
+
+.lx-cuis-sheet-sub { margin-bottom: 18px; }
+
+.lx-cuis-dishes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: clamp(10px, 1.4vw, 18px);
+}
+
+.lx-cuis-dish {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--lx-r);
+  background: var(--lx-green-900);
+  box-shadow: var(--lx-sh-1), inset 0 0 0 1px rgba(20, 23, 15, .06);
+  transition: box-shadow var(--lx-d) var(--lx-e-out), transform var(--lx-d) var(--lx-e-out);
+}
+.lx-cuis-dish:hover { transform: translateY(-3px); box-shadow: var(--lx-sh-3), inset 0 0 0 1px rgba(200, 162, 74, .4); }
+.lx-cuis-dish img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .9s var(--lx-e-out);
+}
+.lx-cuis-dish:hover img { transform: scale(1.07); }
+
+.lx-cuis-dish-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(6, 35, 15, .88) 0%, rgba(6, 35, 15, .34) 42%, transparent 70%);
+}
+.lx-cuis-dish-name {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 10px 13px 12px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(6, 35, 15, .6);
+}
+
+/* ── Footer ── */
+.lx-cuis-sheet-foot {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: clamp(14px, 2vw, 22px) clamp(18px, 3.2vw, 38px);
+  background: var(--lx-ivory-2);
+  box-shadow: inset 0 1px 0 var(--lx-line);
+}
+.lx-cuis-veg {
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 300;
+  color: var(--lx-ink-3);
+}
+.lx-cuis-veg svg { color: var(--lx-green-600); }
+.lx-cuis-veg strong { font-weight: 600; color: var(--lx-green-800); }
+.lx-cuis-foot-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .lx-cuis-wash--a, .lx-cuis-wash--b { display: none; }
+}
+
+@media (max-width: 760px) {
+  .lx-cuis-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .lx-cuis-menu-grid { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .lx-cuis-sheet { max-height: 92vh; border-radius: var(--lx-r-lg); }
+  .lx-cuis-sheet-head { align-items: flex-start; }
+  .lx-cuis-x { width: 40px; height: 40px; }
+  .lx-cuis-dishes { grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
+  .lx-cuis-sheet-foot { justify-content: center; text-align: center; }
+  .lx-cuis-foot-actions { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .lx-cuis-modal { padding: 0; place-items: end center; }
+  .lx-cuis-sheet { width: 100%; max-height: 94vh; border-radius: var(--lx-r-lg) var(--lx-r-lg) 0 0; }
+  .lx-cuis-grid { grid-template-columns: 1fr; }
+  .lx-cuis-menu-grid { grid-template-columns: 1fr; }
+  .lx-cuis-dishes { grid-template-columns: repeat(2, 1fr); }
+  .lx-cuis-cta-row { width: 100%; flex-direction: column; align-items: stretch; }
+  .lx-cuis-cta-row .lx-btn { width: 100%; }
+}
+
+/* ─────────────────────────────────────────────
+   REDUCED MOTION
+   ───────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-cuis-lens { transform: none !important; }
+  .lx-cuis-card:hover .lx-cuis-img,
+  .lx-cuis-dish:hover img { transform: none; }
+  .lx-cuis-card:hover .lx-cuis-go svg { transform: none; }
+  .lx-cuis-mcard:hover, .lx-cuis-dish:hover { transform: none; }
+  .lx-cuis-x:hover { transform: none; }
+}

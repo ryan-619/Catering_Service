@@ -1,0 +1,269 @@
+/* ═══════════════════════════════════════════════════════════════
+   CONTACT BAR — "Speak to us directly"
+   Four glass cards floating on deep forest green: Call Us,
+   WhatsApp, Our Office, Find Us. Gold ring above each card, a
+   tiny uppercase label, then the values as large tappable links.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Local knobs on the bare class so the media queries can override them
+   at equal specificity without fighting the id-qualified box rule. */
+.lx-cb {
+  --lx-cb-pad: clamp(56px, 6.6vw, 96px);
+  --lx-cb-gap: clamp(14px, 1.8vw, 24px);
+  --lx-cb-cols: repeat(4, minmax(0, 1fr));
+  --lx-cb-ring: 58px;
+  --lx-cb-face: color-mix(in srgb, var(--lx-paper) 6%, transparent);
+  --lx-cb-face-hi: color-mix(in srgb, var(--lx-paper) 10%, transparent);
+  --lx-cb-edge: color-mix(in srgb, var(--lx-paper) 13%, transparent);
+  --lx-cb-edge-hi: color-mix(in srgb, var(--lx-gold-400) 44%, transparent);
+  --lx-cb-muted: color-mix(in srgb, var(--lx-paper) 58%, transparent);
+}
+
+/* The legacy sheet owns `#contact-bar` by id (background + padding) and an id
+   outranks a class, so the band's own box is declared once, id-qualified.
+   Everything inside it is plain `lx-`. */
+#contact-bar.lx-cb {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: var(--lx-cb-pad);
+  background: var(--lx-grad-green);
+  color: var(--lx-paper);
+}
+
+/* ── Gold hairline along the top edge (GSAP scrubs scaleX 0 → 1) ── */
+.lx-cb-rule {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  z-index: 3;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--lx-gold-600) 14%,
+    var(--lx-gold-300) 50%,
+    var(--lx-gold-600) 86%,
+    transparent
+  );
+  opacity: .66;
+}
+
+/* ── Soft gold wash behind the cards (parallax on scrub) ── */
+.lx-cb-wash {
+  position: absolute;
+  inset: -12% -5%;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform;
+  background-repeat: no-repeat;
+  background-image:
+    radial-gradient(46% 62% at 18% 12%, color-mix(in srgb, var(--lx-gold-500) 20%, transparent), transparent 70%),
+    radial-gradient(52% 70% at 84% 88%, color-mix(in srgb, var(--lx-green-500) 18%, transparent), transparent 72%);
+}
+
+/* ── Layout ── */
+.lx-cb-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(34px, 4vw, 56px);
+}
+
+.lx-cb-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.lx-cb .lx-eyebrow { color: var(--lx-gold-400); }
+/* A definite width so the ornament's flex:1 rules do not collapse to the
+   diamond alone inside the shrink-to-fit Reveal wrapper. */
+.lx-cb-head .lx-orn { width: 190px; max-width: 60vw; }
+
+.lx-cb-title {
+  font-family: var(--lx-display);
+  font-size: var(--lx-t-h3);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--lx-paper);
+}
+
+.lx-cb-grid {
+  display: grid;
+  grid-template-columns: var(--lx-cb-cols);
+  gap: var(--lx-cb-gap);
+  align-items: stretch;
+}
+
+/* ── Card ──
+   GSAP writes `transform` on these (Reveal animates the grid's children),
+   so the hover lift uses the independent `translate` property instead —
+   an inline transform would otherwise win and kill the lift. */
+.lx-cb-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  padding: clamp(24px, 2.6vw, 34px) clamp(16px, 2vw, 26px);
+  text-align: center;
+  border-radius: var(--lx-r-lg);
+  background: var(--lx-cb-face);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: inset 0 0 0 1px var(--lx-cb-edge);
+  translate: 0 0;
+  transition:
+    translate var(--lx-d) var(--lx-e-out),
+    background var(--lx-d) var(--lx-e-out),
+    box-shadow var(--lx-d) var(--lx-e-out);
+}
+
+.lx-cb-card:hover,
+.lx-cb-card:focus-within {
+  translate: 0 -6px;
+  background: var(--lx-cb-face-hi);
+  box-shadow: inset 0 0 0 1px var(--lx-cb-edge-hi), var(--lx-sh-green);
+}
+
+/* ── Icon in a gold ring; fills with gold on hover ── */
+.lx-cb-ring {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--lx-cb-ring);
+  height: var(--lx-cb-ring);
+  border-radius: 50%;
+  font-size: 1.1rem;
+  color: var(--lx-gold-300);
+  background: color-mix(in srgb, var(--lx-gold-500) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 52%, transparent);
+  transition:
+    background var(--lx-d) var(--lx-e-out),
+    color var(--lx-d-fast) ease,
+    box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-cb-ring svg { display: block; }
+
+.lx-cb-card:hover .lx-cb-ring,
+.lx-cb-card:focus-within .lx-cb-ring {
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+  box-shadow: var(--lx-sh-gold), inset 0 0 0 1px transparent;
+}
+
+/* ── Label + values column (so the mobile row layout can flip cleanly) ── */
+.lx-cb-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* ── Label ── */
+.lx-cb-label {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--lx-gold-400);
+}
+
+/* ── Values ── */
+.lx-cb-vals {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+/* Minimum 44px tappable height, every value, every breakpoint. */
+.lx-cb-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55em;
+  min-height: 44px;
+  padding-inline: 6px;
+  font-family: var(--lx-sans);
+  font-size: clamp(.95rem, 1.15vw, 1.06rem);
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: var(--lx-paper);
+  text-decoration: none;
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-cb-link:hover { color: var(--lx-gold-300); }
+.lx-cb-link svg { font-size: .68em; opacity: .75; }
+
+.lx-cb-link--maps {
+  font-size: var(--lx-t-body);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--lx-gold-300);
+}
+.lx-cb-link--maps:hover { color: var(--lx-gold-100); }
+
+.lx-cb-addr {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--lx-paper) 82%, transparent);
+  padding-block: 8px;
+}
+
+.lx-cb-note {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--lx-cb-muted);
+  max-width: 24ch;
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1080px) {
+  .lx-cb { --lx-cb-cols: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 620px) {
+  .lx-cb {
+    --lx-cb-cols: minmax(0, 1fr);
+    --lx-cb-gap: 12px;
+    --lx-cb-ring: 52px;
+  }
+  /* One column reads better as a row: ring beside the text, not above it. */
+  .lx-cb-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+    padding: 20px 18px;
+  }
+  .lx-cb-body { align-items: flex-start; gap: 6px; }
+  .lx-cb-vals { align-items: flex-start; }
+  .lx-cb-link { justify-content: flex-start; padding-inline: 0; }
+  .lx-cb-note { max-width: none; }
+  .lx-cb-ring { margin-top: 2px; }
+}
+
+/* ═══ REDUCED MOTION ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .lx-cb-rule { transform: none !important; }
+  .lx-cb-wash { transform: none !important; }
+  .lx-cb-card:hover,
+  .lx-cb-card:focus-within { translate: 0 0; }
+}

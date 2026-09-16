@@ -1,0 +1,161 @@
+/* ═══════════════════════════════════════════════════════════════
+   SPECIALITY  ·  #speciality  ·  full-width dark green badge band
+   `#speciality.lx-spc` compounds outrank the legacy id rules that
+   still live in src/index.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+#speciality.lx-spc {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: var(--lx-pad-sm);
+  /* Lighter at the top where the ivory Services section ends, darkening into
+     the (also green) Stats band below so the two read as separate panels. */
+  background: linear-gradient(180deg, var(--lx-green-800) 0%, var(--lx-green-900) 55%, var(--lx-green-950) 100%);
+  color: var(--lx-paper);
+  /* top hairline only — Stats draws its own, a second one here would double up */
+  border-top: 1px solid color-mix(in srgb, var(--lx-gold-500) 32%, transparent);
+}
+
+/* retire the legacy corner-shadow overlay */
+#speciality.lx-spc::before { content: none; }
+
+/* a single soft gold bloom behind the row */
+.lx-spc-glow {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: min(1100px, 120%);
+  height: 130%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--lx-gold-500) 13%, transparent), transparent 66%);
+  filter: blur(40px);
+}
+
+/* ── eyebrow ──────────────────────────────────────────────── */
+
+.lx-spc-head {
+  display: flex;
+  justify-content: center;
+  margin-bottom: clamp(26px, 3.2vw, 44px);
+}
+.lx-spc .lx-eyebrow { color: var(--lx-gold-400); }
+
+/* ── the badge row ────────────────────────────────────────── */
+
+.lx-spc-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(8px, 1.6vw, 26px);
+}
+
+.lx-spc-item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(12px, 1.3vw, 18px);
+  padding: 6px clamp(4px, 1vw, 14px);
+  transition: transform var(--lx-d) var(--lx-e-out);
+}
+.lx-spc-item:hover { transform: translateY(-4px); }
+
+/* gold-ringed circle that fills with gold on hover */
+.lx-spc-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(50px, 4.6vw, 64px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: clamp(1rem, 1.35vw, 1.28rem);
+  color: var(--lx-gold-300);
+  background: color-mix(in srgb, var(--lx-gold-500) 9%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 48%, transparent);
+  transition:
+    background var(--lx-d) var(--lx-e-out),
+    color var(--lx-d-fast) ease,
+    box-shadow var(--lx-d) var(--lx-e-out),
+    transform var(--lx-d) var(--lx-e-out);
+}
+.lx-spc-item:hover .lx-spc-icon,
+.lx-spc-item:focus-within .lx-spc-icon {
+  background: var(--lx-grad-gold);
+  color: var(--lx-green-950);
+  box-shadow: var(--lx-sh-gold), inset 0 0 0 1px transparent;
+  transform: scale(1.06) rotate(-6deg);
+}
+
+.lx-spc-text { display: grid; gap: 4px; }
+
+.lx-spc-title {
+  font-family: var(--lx-sans);
+  font-size: clamp(.82rem, 1vw, .95rem);
+  font-weight: 600;
+  letter-spacing: -.005em;
+  line-height: 1.25;
+  color: var(--lx-paper);
+  text-wrap: balance;
+}
+
+.lx-spc-desc {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 300;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--lx-paper) 62%, transparent);
+  text-wrap: balance;
+}
+
+/* thin vertical gold rules between the badges */
+.lx-spc-rule {
+  flex: none;
+  align-self: stretch;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--lx-gold-500) 52%, transparent) 30%,
+    color-mix(in srgb, var(--lx-gold-500) 52%, transparent) 70%,
+    transparent
+  );
+}
+
+/* ── below 900px: horizontal snap strip, scrollbar hidden ─── */
+
+@media (max-width: 900px) {
+  .lx-spc-row {
+    justify-content: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 6px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-block: 2px;
+  }
+  .lx-spc-row::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+  .lx-spc-item {
+    flex: 0 0 min(58vw, 216px);
+    scroll-snap-align: center;
+    padding-inline: 14px;
+  }
+  .lx-spc-rule {
+    align-self: center;
+    height: 66px;
+  }
+}
+
+@media (max-width: 520px) {
+  .lx-spc-item { flex-basis: min(68vw, 200px); }
+  .lx-spc-title { font-size: .88rem; }
+}

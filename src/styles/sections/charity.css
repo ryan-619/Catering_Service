@@ -1,0 +1,649 @@
+/* ═══════════════════════════════════════════════════════════════
+   CHARITY — "Prasad Vitaran · Seva & Compassion"
+   Ivory ground washed with saffron rather than the hard green: this
+   section is about feeding people at a temple, so it has to read warm
+   and sincere, not like another sales block.
+
+   Left  — the story: eyebrow, Cormorant headline, mission prose and
+           four info rows on a drawn gold rule.
+   Right — the photography: a tall primary frame with a square
+           secondary frame overlapping its corner, each running its
+           own fading Swiper with no visible controls.
+   Below — the ledger of the seva, then the join-in form as a calm
+           card with floating labels.
+
+   The `#charity.lx-ch` compound is deliberate: the legacy sheet owns
+   `#charity` by id, so a plain class cannot outrank it.
+   ═══════════════════════════════════════════════════════════════ */
+
+#charity.lx-ch {
+  padding-block: var(--lx-pad);
+  overflow: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(72% 46% at 86% -6%, color-mix(in srgb, var(--lx-saffron) 17%, transparent), transparent 64%),
+    radial-gradient(58% 44% at -8% 94%, color-mix(in srgb, var(--lx-gold-500) 13%, transparent), transparent 66%),
+    var(--lx-ivory);
+}
+
+.lx-ch-wash { opacity: .5; }
+.lx-ch-wash--a {
+  top: -8%;
+  right: -7%;
+  width: clamp(240px, 32vw, 460px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, color-mix(in srgb, var(--lx-saffron) 30%, transparent), transparent 68%);
+}
+.lx-ch-wash--b {
+  bottom: 2%;
+  left: -10%;
+  width: clamp(220px, 28vw, 400px);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, color-mix(in srgb, var(--lx-gold-500) 24%, transparent), transparent 68%);
+}
+
+.lx-ch-ct {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────
+   SPLIT — story / photography
+   ───────────────────────────────────────────── */
+
+.lx-ch-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
+  gap: clamp(44px, 6vw, 98px);
+  align-items: start;
+}
+
+/* ── Left: the story ── */
+
+.lx-ch-story {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.lx-ch-title { margin: 2px 0 0; }
+.lx-ch-lead { margin: 0; }
+
+.lx-ch-mission {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-block-start: clamp(10px, 1.6vw, 18px);
+}
+
+.lx-ch-mission-ey {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--lx-saffron-dp);
+}
+
+.lx-ch-mission-title { margin: 0; }
+.lx-ch-mission-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--lx-gold-600);
+}
+
+.lx-ch-mission p {
+  margin: 0;
+  max-width: var(--lx-max-text);
+}
+.lx-ch-mission strong {
+  font-weight: 600;
+  color: var(--lx-ink-2);
+}
+
+/* ── Four info rows on a gold rule ── */
+
+.lx-ch-facts {
+  position: relative;
+  width: 100%;
+  margin-block-start: clamp(24px, 3.4vw, 40px);
+  padding-inline-start: clamp(18px, 2.4vw, 30px);
+}
+
+.lx-ch-rule {
+  position: absolute;
+  inset-block: 8px;
+  inset-inline-start: 0;
+  width: 2px;
+  border-radius: var(--lx-r-pill);
+  transform-origin: 50% 0;
+  background: linear-gradient(
+    180deg,
+    var(--lx-gold-400),
+    color-mix(in srgb, var(--lx-gold-500) 18%, transparent)
+  );
+}
+
+.lx-ch-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.lx-ch-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(14px, 1.7vw, 22px);
+  align-items: start;
+  padding-block: clamp(17px, 2vw, 23px);
+}
+.lx-ch-row + .lx-ch-row { border-block-start: 1px solid var(--lx-line); }
+
+.lx-ch-row-ico {
+  display: grid;
+  place-items: center;
+  width: clamp(42px, 4.4vw, 52px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: 1rem;
+  color: var(--lx-saffron-dp);
+  background: color-mix(in srgb, var(--lx-saffron) 15%, var(--lx-paper));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-saffron) 34%, transparent);
+  transition:
+    background var(--lx-d) var(--lx-e-out),
+    box-shadow var(--lx-d) var(--lx-e-out),
+    transform var(--lx-d) var(--lx-e-out);
+}
+.lx-ch-row-ico svg { display: block; }
+.lx-ch-row:hover .lx-ch-row-ico {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--lx-saffron) 26%, var(--lx-paper));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-saffron-dp) 46%, transparent);
+}
+
+.lx-ch-row-body { min-width: 0; }
+
+.lx-ch-row-lab {
+  margin: 0 0 7px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--lx-gold-700);
+}
+
+.lx-ch-row-txt {
+  margin: 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.68;
+  color: var(--lx-ink-3);
+}
+
+/* ── Right: the photography ── */
+
+.lx-ch-media { min-width: 0; }
+
+.lx-ch-stack {
+  position: relative;
+  padding-block-end: clamp(52px, 7vw, 92px);
+  padding-inline-end: clamp(26px, 4vw, 44px);
+}
+
+.lx-ch-frame {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--lx-r-lg);
+  background: var(--lx-ivory-2);
+  box-shadow: var(--lx-sh-3);
+}
+.lx-ch-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 44%, transparent);
+  pointer-events: none;
+}
+
+.lx-ch-frame--main { aspect-ratio: 4 / 5; }
+
+.lx-ch-frame--sub {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  z-index: 4;
+  width: clamp(142px, 44%, 236px);
+  aspect-ratio: 1;
+  border-radius: var(--lx-r);
+  box-shadow:
+    0 0 0 clamp(6px, .8vw, 11px) var(--lx-ivory),
+    var(--lx-sh-4);
+}
+
+.lx-ch-shots {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.lx-ch-shots .swiper-slide { height: 100%; }
+.lx-ch-shots img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Tuesday stamp — the one badge this section gets */
+.lx-ch-stamp {
+  position: absolute;
+  z-index: 5;
+  top: clamp(14px, 1.8vw, 22px);
+  left: clamp(14px, 1.8vw, 22px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: clamp(58px, 6vw, 72px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lx-green-950) 76%, transparent);
+  backdrop-filter: blur(9px) saturate(130%);
+  -webkit-backdrop-filter: blur(9px) saturate(130%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 58%, transparent);
+}
+.lx-ch-stamp b {
+  font-family: var(--lx-display);
+  font-size: clamp(1rem, 1.5vw, 1.24rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--lx-gold-300);
+}
+.lx-ch-stamp i {
+  font-family: var(--lx-sans);
+  font-style: normal;
+  font-size: calc(var(--lx-t-xs) * .78);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--lx-paper) 70%, transparent);
+}
+
+/* ─────────────────────────────────────────────
+   LEDGER — the numbers of the seva
+   ───────────────────────────────────────────── */
+
+.lx-ch-ledger {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 46px);
+  margin-block: clamp(54px, 7vw, 96px);
+  padding-block: clamp(26px, 3.4vw, 40px);
+  border-block: 1px solid var(--lx-line);
+}
+
+.lx-ch-fig {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  text-align: center;
+}
+.lx-ch-fig + .lx-ch-fig { border-inline-start: 1px solid var(--lx-line); }
+
+.lx-ch-fig-n {
+  font-family: var(--lx-display);
+  font-size: clamp(2rem, 3.6vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1;
+  background: var(--lx-grad-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lx-ch-fig-l {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--lx-ink-4);
+}
+
+/* ─────────────────────────────────────────────
+   GIVE — the join-in card
+   ───────────────────────────────────────────── */
+
+.lx-ch-give {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(26px, 3.4vw, 42px);
+}
+.lx-ch-give > * {
+  width: 100%;
+  max-width: 780px;
+}
+
+.lx-ch-give-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.lx-ch-give-ey svg { color: var(--lx-saffron-dp); }
+
+.lx-ch-give-title { margin: 0; }
+.lx-ch-give-lead {
+  margin: 0;
+  max-width: 46ch;
+}
+
+.lx-ch-card {
+  position: relative;
+  padding: clamp(26px, 3.6vw, 50px);
+  border-radius: var(--lx-r-xl);
+  background: var(--lx-paper);
+  box-shadow:
+    var(--lx-sh-3),
+    inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 22%, transparent);
+}
+.lx-ch-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  border-start-start-radius: var(--lx-r-xl);
+  border-start-end-radius: var(--lx-r-xl);
+  background: var(--lx-grad-gold);
+}
+
+/* ── Fields ── */
+
+.lx-ch-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(13px, 1.7vw, 18px);
+}
+
+.lx-ch-field { position: relative; }
+.lx-ch-field.is-full { grid-column: 1 / -1; }
+
+.lx-ch-inp {
+  width: 100%;
+  min-height: 62px;
+  padding: 26px 18px 10px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--lx-ink);
+  background: var(--lx-ivory);
+  border: 0;
+  border-radius: var(--lx-r-sm);
+  box-shadow: inset 0 0 0 1px var(--lx-line);
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    box-shadow var(--lx-d) var(--lx-e-out),
+    background var(--lx-d) var(--lx-e-out);
+}
+.lx-ch-inp:hover {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 46%, var(--lx-line));
+}
+.lx-ch-inp:focus {
+  outline: none;
+  background: var(--lx-paper);
+  box-shadow: inset 0 0 0 1.5px var(--lx-gold-500);
+}
+/* Belt and braces: an outline as well as the inset ring, so the focused
+   control is obvious against both the ivory and the paper ground. */
+.lx-ch-inp:focus-visible {
+  outline: 2px solid var(--lx-gold-500);
+  outline-offset: 2px;
+}
+
+.lx-ch-inp::placeholder {
+  color: var(--lx-ink-4);
+  opacity: 0;
+  transition: opacity var(--lx-d-fast) ease;
+}
+.lx-ch-inp:focus::placeholder { opacity: 1; }
+
+.lx-ch-field--select .lx-ch-inp { padding-inline-end: 46px; cursor: pointer; }
+
+.lx-ch-field--area .lx-ch-inp {
+  min-height: 132px;
+  padding-block-start: 30px;
+  line-height: 1.65;
+  resize: vertical;
+}
+
+/* Floating labels — a real <label> that doubles as the placeholder. */
+.lx-ch-label {
+  position: absolute;
+  inset-inline-start: 19px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 400;
+  color: var(--lx-ink-4);
+  pointer-events: none;
+  transition:
+    top var(--lx-d) var(--lx-e-out),
+    transform var(--lx-d) var(--lx-e-out),
+    font-size var(--lx-d) var(--lx-e-out),
+    letter-spacing var(--lx-d) var(--lx-e-out),
+    color var(--lx-d) var(--lx-e-out);
+}
+
+.lx-ch-inp:focus ~ .lx-ch-label,
+.lx-ch-inp:not(:placeholder-shown) ~ .lx-ch-label,
+.lx-ch-field--select .lx-ch-label {
+  top: 11px;
+  transform: none;
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--lx-gold-700);
+}
+
+/* A textarea's resting label sits at the first line, not the middle. */
+.lx-ch-field--area .lx-ch-label { top: 24px; transform: none; }
+.lx-ch-field--area .lx-ch-inp:focus ~ .lx-ch-label,
+.lx-ch-field--area .lx-ch-inp:not(:placeholder-shown) ~ .lx-ch-label { top: 11px; }
+
+.lx-ch-caret {
+  position: absolute;
+  inset-inline-end: 21px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -6px;
+  border-inline-end: 1.5px solid var(--lx-gold-600);
+  border-block-end: 1.5px solid var(--lx-gold-600);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+/* ── Inline error ──
+   tokens.css has no danger colour, so this is composed from the warm
+   pair: deep saffron pulled towards ink until it reads as a warning
+   rather than as more gold. The icon, not the hue, carries the meaning.
+   Swap for a real --lx-danger token the moment one exists. */
+.lx-ch-err {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 clamp(16px, 2vw, 22px);
+  padding: 12px 16px;
+  border-radius: var(--lx-r-sm);
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--lx-saffron-dp) 70%, var(--lx-ink));
+  background: color-mix(in srgb, var(--lx-saffron) 13%, var(--lx-paper));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-saffron-dp) 32%, transparent);
+}
+.lx-ch-err svg {
+  flex: none;
+  margin-top: 2px;
+  font-size: .95rem;
+}
+
+/* ── Actions ── */
+
+.lx-ch-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-block-start: clamp(22px, 2.8vw, 32px);
+}
+
+.lx-ch-submit,
+.lx-ch-wa { text-align: center; }
+
+.lx-ch-submit > span,
+.lx-ch-wa > span {
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+}
+
+.lx-ch-submit {
+  width: 100%;
+  max-width: 340px;
+}
+.lx-ch-submit:disabled {
+  opacity: .62;
+  cursor: progress;
+}
+.lx-ch-submit:disabled:hover { transform: none; }
+.lx-ch-submit:disabled::after { transform: translateY(101%); }
+
+/* ── Success ── */
+
+.lx-ch-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+  padding-block: clamp(14px, 2.6vw, 30px);
+}
+
+.lx-ch-done-mark {
+  display: grid;
+  place-items: center;
+  width: clamp(66px, 7vw, 84px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  color: var(--lx-green-900);
+  background: var(--lx-grad-gold);
+  box-shadow:
+    var(--lx-sh-gold),
+    0 0 0 10px color-mix(in srgb, var(--lx-gold-500) 12%, transparent);
+}
+.lx-ch-done-mark svg { display: block; }
+
+.lx-ch-done-title {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: var(--lx-t-h3);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--lx-ink);
+}
+
+.lx-ch-done-txt {
+  margin: 0;
+  max-width: 40ch;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--lx-ink-3);
+}
+
+.lx-ch-done .lx-ch-wa { margin-block-start: 6px; }
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .lx-ch-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 60px);
+  }
+  .lx-ch-media {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+  .lx-ch-story { align-items: flex-start; }
+}
+
+@media (max-width: 760px) {
+  .lx-ch-fields { grid-template-columns: minmax(0, 1fr); }
+  .lx-ch-stack { padding-inline-end: clamp(20px, 5vw, 34px); }
+  .lx-ch-submit { max-width: 100%; }
+}
+
+@media (max-width: 640px) {
+  .lx-ch-ledger {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .lx-ch-fig {
+    align-items: flex-start;
+    text-align: start;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 14px;
+    padding-block: 18px;
+  }
+  .lx-ch-fig + .lx-ch-fig {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--lx-line);
+  }
+  .lx-ch-fig-n { min-width: 4.2ch; }
+}
+
+@media (max-width: 460px) {
+  .lx-ch-facts { padding-inline-start: 14px; }
+  .lx-ch-row { gap: 13px; }
+  .lx-ch-row-ico { width: 40px; font-size: .92rem; }
+  .lx-ch-frame--sub { width: clamp(126px, 46%, 180px); }
+  .lx-ch-stamp { gap: 2px; }
+}
+
+/* ─────────────────────────────────────────────
+   REDUCED MOTION — Swiper autoplay is already off from JS;
+   this pins the decorative layers so nothing drifts.
+   ───────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-ch-frame,
+  .lx-ch-rule { transform: none !important; }
+  .lx-ch-rule { transform: scaleY(1) !important; }
+}

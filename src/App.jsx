@@ -21,6 +21,11 @@ import ContactBar from './components/ContactBar'
 import Gratitude from './components/Gratitude'
 import Footer from './components/Footer'
 import QuoteModal from './components/QuoteModal'
+import SmoothScroll from './components/ui/SmoothScroll'
+import ScrollProgress from './components/ui/ScrollProgress'
+import Cursor from './components/ui/Cursor'
+import Grain from './components/ui/Grain'
+import FloatingActions from './components/FloatingActions'
 // import WhyUs from './components/WhyUs'
 
 
@@ -32,6 +37,10 @@ export default function App() {
 
   return (
     <>
+      <SmoothScroll />
+      <ScrollProgress />
+      <Cursor />
+      <Grain />
       <PageLoader />
       <TopBar />
       <Navbar onBookNow={openModal} />
@@ -56,6 +65,7 @@ export default function App() {
       <ContactBar />
       <Gratitude />
       <Footer />
+      <FloatingActions onBookNow={openModal} />
       <QuoteModal isOpen={modalOpen} onClose={closeModal} />
     </>
   )

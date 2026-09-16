@@ -1,0 +1,297 @@
+/* ═══════════════════════════════════════════════════════════════
+   FAQ  ·  #faq  ·  sticky editorial intro + hairline accordion
+   `#faq.lx-faq …` compounds outrank the legacy `#faq` / `#faq .ey`
+   rules that still live in src/index.css.
+   The panel height is owned by GSAP — nothing here may set a
+   max-height, or long answers would clip again.
+   ═══════════════════════════════════════════════════════════════ */
+
+#faq.lx-faq {
+  position: relative;
+  isolation: isolate;
+  overflow: clip; /* clip, not hidden — `hidden` would kill the sticky intro */
+  padding-block: var(--lx-pad);
+  background: var(--lx-paper);
+  color: var(--lx-ink);
+
+  /* one source of truth for the row grid, reused by the answer indent */
+  --lx-faq-px: clamp(14px, 1.6vw, 22px);
+  --lx-faq-num: clamp(22px, 2.4vw, 30px);
+  --lx-faq-gap: clamp(12px, 1.6vw, 20px);
+  --lx-faq-indent: calc(var(--lx-faq-num) + var(--lx-faq-gap));
+}
+
+.lx-faq-wash {
+  position: absolute;
+  z-index: -1;
+  top: -12%;
+  right: -14%;
+  width: min(760px, 78vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--lx-gold-500) 14%, transparent),
+    transparent 66%
+  );
+  filter: blur(70px);
+}
+
+/* ── layout ───────────────────────────────────────────────── */
+
+.lx-faq-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+  gap: clamp(34px, 5vw, 92px);
+  align-items: start;
+}
+
+/* ── intro column ─────────────────────────────────────────── */
+
+.lx-faq-intro {
+  position: sticky;
+  top: clamp(96px, 13vh, 150px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#faq.lx-faq .lx-eyebrow { color: var(--lx-gold-600); }
+.lx-faq-orn { margin-block: 14px 20px; }
+
+#faq.lx-faq .lx-faq-title {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: var(--lx-t-h2);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  color: var(--lx-ink);
+}
+#faq.lx-faq .lx-faq-title-l { display: block; }
+#faq.lx-faq .lx-faq-title-em {
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--lx-gold-600);
+}
+
+#faq.lx-faq .lx-faq-lead {
+  max-width: 40ch;
+  margin: clamp(16px, 2vw, 22px) 0 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--lx-ink-3);
+  text-wrap: pretty;
+}
+
+.lx-faq-actions { margin-top: clamp(22px, 2.8vw, 30px); }
+
+#faq.lx-faq .lx-faq-note {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: clamp(20px, 2.4vw, 26px) 0 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--lx-ink-4);
+}
+#faq.lx-faq .lx-faq-note i {
+  flex: none;
+  width: 5px;
+  aspect-ratio: 1;
+  background: var(--lx-gold-500);
+  transform: rotate(45deg);
+}
+
+/* ── accordion ────────────────────────────────────────────── */
+
+.lx-faq-list { display: flex; flex-direction: column; }
+
+.lx-faq-item {
+  position: relative;
+  border-radius: var(--lx-r-sm);
+  background: transparent;
+  transition: background var(--lx-d) var(--lx-e-out);
+}
+
+/* the hairline between rows — its own element rather than a border, so the
+   open row's rounded tint can sit behind it without a mitred seam */
+.lx-faq-rule {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: var(--lx-line);
+  pointer-events: none;
+}
+.lx-faq-item:first-child .lx-faq-rule { background: var(--lx-line-2); }
+.lx-faq-list::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--lx-line);
+}
+
+/* open row: soft ivory tint + gold left rule */
+.lx-faq-item.is-open {
+  background: linear-gradient(
+    90deg,
+    var(--lx-ivory-2),
+    color-mix(in srgb, var(--lx-ivory-2) 28%, var(--lx-paper))
+  );
+}
+.lx-faq-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-radius: var(--lx-r-pill);
+  background: var(--lx-grad-gold);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  transition: transform var(--lx-d) var(--lx-e-out);
+  pointer-events: none;
+}
+.lx-faq-item.is-open::before { transform: scaleY(1); }
+
+/* ── question row ─────────────────────────────────────────── */
+
+.lx-faq-q {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--lx-faq-gap);
+  padding: clamp(18px, 2.1vw, 24px) var(--lx-faq-px);
+  margin: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lx-faq-num {
+  width: var(--lx-faq-num);
+  font-family: var(--lx-display);
+  font-size: clamp(0.95rem, 1.2vw, 1.12rem);
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1;
+  color: var(--lx-gold-600);
+  transition: color var(--lx-d-fast) ease, opacity var(--lx-d-fast) ease;
+  opacity: 0.65;
+}
+.lx-faq-item.is-open .lx-faq-num { opacity: 1; }
+
+.lx-faq-qt {
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-h4);
+  font-weight: 600;
+  line-height: 1.34;
+  letter-spacing: -0.005em;
+  color: var(--lx-ink-2);
+  text-wrap: pretty;
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-faq-q:hover .lx-faq-qt,
+.lx-faq-q:focus-visible .lx-faq-qt { color: var(--lx-green-700); }
+.lx-faq-item.is-open .lx-faq-qt { color: var(--lx-ink); }
+
+/* circular gold +  →  rotates 45° into an × */
+.lx-faq-ic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: clamp(30px, 3vw, 38px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--lx-gold-500) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 40%, transparent);
+  transition:
+    transform 0.5s var(--lx-e-out),
+    background var(--lx-d) var(--lx-e-out),
+    box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-faq-ic i {
+  position: absolute;
+  width: 45%;
+  height: 1.5px;
+  border-radius: var(--lx-r-pill);
+  background: var(--lx-gold-700);
+  transition: background var(--lx-d-fast) ease;
+}
+.lx-faq-ic i:last-child { transform: rotate(90deg); }
+
+.lx-faq-q:hover .lx-faq-ic {
+  background: color-mix(in srgb, var(--lx-gold-500) 20%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-500) 62%, transparent);
+}
+.lx-faq-item.is-open .lx-faq-ic {
+  transform: rotate(45deg);
+  background: var(--lx-grad-gold);
+  box-shadow: var(--lx-sh-gold), inset 0 0 0 1px transparent;
+}
+.lx-faq-item.is-open .lx-faq-ic i { background: var(--lx-green-950); }
+
+/* ── answer panel (GSAP owns height + visibility) ─────────── */
+
+.lx-faq-panel {
+  position: relative;
+  z-index: 1;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.lx-faq-a {
+  padding: 0 var(--lx-faq-px) clamp(20px, 2.3vw, 26px);
+  padding-inline-start: calc(var(--lx-faq-px) + var(--lx-faq-indent));
+  max-width: var(--lx-max-text);
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-body);
+  font-weight: 300;
+  line-height: 1.78;
+  color: var(--lx-ink-3);
+  text-wrap: pretty;
+}
+
+/* ── responsive ───────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .lx-faq-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(30px, 5vw, 48px);
+  }
+  .lx-faq-intro { position: static; top: auto; }
+  #faq.lx-faq .lx-faq-lead { max-width: var(--lx-max-text); }
+}
+
+@media (max-width: 560px) {
+  #faq.lx-faq {
+    padding-block: var(--lx-pad-sm);
+    --lx-faq-px: 12px;
+    --lx-faq-gap: 12px;
+    --lx-faq-indent: 0px;
+  }
+  .lx-faq-num { display: none; }
+  .lx-faq-q { grid-template-columns: minmax(0, 1fr) auto; }
+  .lx-faq-actions { width: 100%; }
+  #faq.lx-faq .lx-faq-actions .lx-btn { flex: 1 1 auto; }
+  #faq.lx-faq .lx-faq-note { letter-spacing: 0.1em; }
+  .lx-faq-wash { top: -4%; right: -32%; filter: blur(52px); }
+}

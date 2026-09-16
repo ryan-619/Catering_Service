@@ -1,4 +1,7 @@
-import { FadeUp, Stagger, StaggerItem } from './AnimatedSection'
+import Reveal from './ui/Reveal'
+import SectionHead from './ui/SectionHead'
+import MagneticButton from './ui/MagneticButton'
+import TiltCard from './ui/TiltCard'
 import lunchBoxImg from '../assets/services/lunch-box.jpg'
 import thaliImg from '../assets/services/thali.jpg'
 import liveBuffetImg from '../assets/services/live-buffet.jpg'
@@ -28,39 +31,61 @@ const services = [
 ]
 
 export default function Services() {
-  return (
-    <section id="services">
-      <div className="ct">
-        <FadeUp>
-          <div className="sh">
-            <span className="ey">What We Do</span>
-            <span className="gline"></span>
-            <h2 className="st">Freshly Prepared Meals for Every Occasion</h2>
-            <p className="services-subheading">
-              From intimate gatherings to large corporate events, we deliver hygienic, delicious meals on time.
-            </p>
-          </div>
-        </FadeUp>
+  const goToMenu = () => window.lxScrollTo?.('#cuisines', { offset: -80 })
 
-        <Stagger className="sgrid">
-          {services.map((s) => (
-            <StaggerItem key={s.name}>
-              <div className="sc">
-                <img src={s.img} alt={s.alt} loading="lazy" />
-                <div className="so">
-                  <span className="stag">{s.tag}</span>
-                  <div className="sname">{s.name}</div>
-                  <ul className="slist">
-                    {s.items.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+  return (
+    <section id="services" className="lx-sec lx-srv">
+      <span className="lx-wash lx-wash--gold lx-srv-wash" aria-hidden="true" />
+
+      <div className="lx-ct">
+        <SectionHead
+          eyebrow="What We Do"
+          title={'Freshly Prepared Meals\nfor Every Occasion'}
+          lead="From intimate gatherings to large corporate events, we deliver hygienic, delicious meals on time."
+        />
+
+        <Reveal className="lx-srv-grid" from="up" stagger={0.09} duration={0.9}>
+          {services.map((s, i) => (
+            <TiltCard
+              key={s.name}
+              max={7}
+              scale={1.015}
+              className="lx-srv-cell"
+              innerClassName="lx-srv-card lx-topline"
+            >
+              <article className="lx-srv-inner" tabIndex={0} data-cursor="hot" aria-label={s.name}>
+                <figure className="lx-srv-media">
+                  <img src={s.img} alt={s.alt} loading="lazy" decoding="async" />
+                  <span className="lx-srv-scrim" aria-hidden="true" />
+                </figure>
+
+                <span className="lx-chip lx-chip--glass lx-srv-tag">{s.tag}</span>
+                <span className="lx-srv-idx" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+
+                <div className="lx-srv-body">
+                  <h3 className="lx-srv-name">{s.name}</h3>
+                  <div className="lx-srv-drop">
+                    <div>
+                      <span className="lx-srv-rule" aria-hidden="true" />
+                      <ul className="lx-srv-list">
+                        {s.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-                <div className="sarrow">→</div>
-              </div>
-            </StaggerItem>
+              </article>
+            </TiltCard>
           ))}
-        </Stagger>
+        </Reveal>
+
+        <Reveal className="lx-srv-foot" from="up" delay={0.08}>
+          <p className="lx-srv-note">
+            Pure vegetarian throughout — freshly prepared, hygienically packed and served on time.
+          </p>
+          <MagneticButton variant="ghost" onClick={goToMenu}>See Full Menu</MagneticButton>
+        </Reveal>
       </div>
     </section>
   )

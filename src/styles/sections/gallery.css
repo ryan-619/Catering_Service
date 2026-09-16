@@ -1,0 +1,420 @@
+/* ═══════════════════════════════════════════════════════════════
+   GALLERY — "Moments We've Crafted"
+   Seven photographs at wildly mixed ratios (six 20:9 panoramas of
+   the live counters, one 9:20 portrait) plus three short films.
+   A fixed grid would crop them, so the wall is a CSS-columns
+   masonry: every tile keeps its real ratio and only the portrait
+   is height-capped. Alternate columns drift ~22px apart on a
+   ScrollTrigger scrub (built in Gallery.jsx).
+   Namespaced `lx-gal-*`. The shared lightbox skin lives in
+   styles/ui.css (.lx-lb-*) and is deliberately not redefined here.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-gal {
+  /* Local knobs. On the bare class so the media queries below can
+     retune them at equal specificity. */
+  --lx-gal-gap: clamp(14px, 1.6vw, 22px);
+  --lx-gal-cols: 3;
+  --lx-gal-r: var(--lx-r);
+  --lx-gal-portrait-h: clamp(420px, 56vh, 660px);
+
+  --lx-gal-line: color-mix(in srgb, var(--lx-gold-500) 30%, transparent);
+  --lx-gal-line-lit: color-mix(in srgb, var(--lx-gold-300) 85%, transparent);
+  --lx-gal-scrim-1: color-mix(in srgb, var(--lx-green-950) 88%, transparent);
+  --lx-gal-scrim-2: color-mix(in srgb, var(--lx-green-950) 44%, transparent);
+  --lx-gal-glass: color-mix(in srgb, var(--lx-green-950) 52%, transparent);
+  --lx-gal-shade: color-mix(in srgb, var(--lx-green-950) 55%, transparent);
+  --lx-gal-tint: color-mix(in srgb, var(--lx-green-600) 6%, transparent);
+}
+
+/* The legacy sheet still owns `#gallery` by id (padding, ivory ground and a
+   radial tint) and an id outranks `.lx-sec--ivory`, so the box is re-declared
+   once at matching weight in tokens. Everything inside is plain `lx-`. */
+#gallery.lx-gal {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  padding-block: var(--lx-pad);
+  padding-inline: 0;
+  background:
+    radial-gradient(78% 46% at 50% 0%, var(--lx-gal-tint), transparent 64%),
+    var(--lx-ivory);
+}
+
+.lx-gal-inner { position: relative; z-index: 1; }
+
+/* ── Two very soft washes so the ivory ground has depth ── */
+.lx-gal-wash { z-index: 0; }
+.lx-gal-wash--a {
+  top: clamp(-110px, -7vw, -50px);
+  right: clamp(-190px, -12vw, -90px);
+  width: clamp(320px, 40vw, 600px);
+  aspect-ratio: 1;
+  opacity: .72;
+}
+.lx-gal-wash--b {
+  bottom: clamp(-140px, -9vw, -70px);
+  left: clamp(-200px, -13vw, -100px);
+  width: clamp(300px, 36vw, 540px);
+  aspect-ratio: 1;
+  opacity: .5;
+}
+
+/* ── Counter line under the header ── */
+.lx-gal-count {
+  display: inline-flex;
+  align-items: center;
+  gap: .8em;
+  margin: 2px 0 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--lx-ink-4);
+}
+.lx-gal-count i {
+  font-style: normal;
+  line-height: 1;
+  color: var(--lx-gold-500);
+}
+
+/* ═══ THE WALL ═══ */
+
+.lx-gal-masonry {
+  margin-top: clamp(42px, 5vw, 76px);
+  column-count: var(--lx-gal-cols);
+  column-gap: var(--lx-gal-gap);
+}
+
+.lx-gal-tile {
+  display: block;
+  width: 100%;
+  margin: 0 0 var(--lx-gal-gap);
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+  -webkit-column-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* The scrub target. Kept separate from the tile so the per-column drift never
+   collides with the clip-path reveal GSAP writes onto the tile itself. */
+.lx-gal-drift {
+  display: block;
+  will-change: transform;
+}
+
+.lx-gal-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--lx-gal-r);
+  background: var(--lx-green-950);
+  box-shadow: var(--lx-sh-2), inset 0 0 0 1px var(--lx-gal-line);
+  transition:
+    transform var(--lx-d) var(--lx-e-out),
+    box-shadow var(--lx-d) var(--lx-e-out);
+}
+
+.lx-gal-tile:hover .lx-gal-frame,
+.lx-gal-tile:focus-visible .lx-gal-frame {
+  transform: translateY(-7px);
+  box-shadow: var(--lx-sh-4), var(--lx-sh-gold), inset 0 0 0 1px var(--lx-gal-line-lit);
+}
+.lx-gal-tile:focus-visible { outline: none; }
+.lx-gal-tile:focus-visible .lx-gal-frame {
+  outline: 2px solid var(--lx-gold-500);
+  outline-offset: 3px;
+}
+
+/* ── Photograph ── */
+.lx-gal-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(.95) contrast(1.02);
+  /* A hair over 1 so the edges stay clean while the scale settles. */
+  transform: scale(1.004);
+  transition:
+    transform .9s var(--lx-e-out),
+    filter .6s var(--lx-e-out);
+}
+.lx-gal-tile:hover .lx-gal-img,
+.lx-gal-tile:focus-visible .lx-gal-img {
+  transform: scale(1.05);
+  filter: saturate(1.05) contrast(1.04);
+}
+
+/* The 9:20 portrait would otherwise run past 1200px tall in a single column,
+   so it is capped and cropped from the upper third where the action is. */
+.lx-gal-tile--portrait .lx-gal-img {
+  height: var(--lx-gal-portrait-h);
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+/* ── Scrim + caption ── */
+.lx-gal-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    to top,
+    var(--lx-gal-scrim-1) 0%,
+    var(--lx-gal-scrim-2) 40%,
+    transparent 76%
+  );
+  transition: opacity var(--lx-d) var(--lx-e-out);
+}
+.lx-gal-tile:hover .lx-gal-scrim,
+.lx-gal-tile:focus-visible .lx-gal-scrim { opacity: 1; }
+
+.lx-gal-meta {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  padding: clamp(13px, 1.5vw, 20px);
+  pointer-events: none;
+}
+
+.lx-gal-cap {
+  min-width: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.02rem, 1.45vw, 1.28rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -.005em;
+  color: var(--lx-paper);
+  text-shadow: 0 1px 16px var(--lx-gal-shade);
+  opacity: 0;
+  transform: translateY(15px);
+  transition:
+    opacity var(--lx-d) var(--lx-e-out),
+    transform var(--lx-d) var(--lx-e-out);
+}
+
+.lx-gal-glyph {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: .78rem;
+  color: var(--lx-gold-300);
+  background: var(--lx-gal-glass);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  box-shadow: inset 0 0 0 1px var(--lx-gal-line-lit);
+  opacity: 0;
+  transform: translateY(15px) scale(.88);
+  transition:
+    opacity var(--lx-d) var(--lx-e-out),
+    transform var(--lx-d) var(--lx-e-out);
+}
+
+.lx-gal-tile:hover .lx-gal-cap,
+.lx-gal-tile:focus-visible .lx-gal-cap,
+.lx-gal-tile:hover .lx-gal-glyph,
+.lx-gal-tile:focus-visible .lx-gal-glyph {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ═══ FILMS — "Behind the Setup" ═══ */
+
+.lx-gal-films { margin-top: clamp(58px, 6.6vw, 104px); }
+
+.lx-gal-films-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.lx-gal-films-title { margin: 0; }
+.lx-gal-films-note {
+  margin: 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--lx-ink-4);
+}
+
+.lx-gal-films-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2.2vw, 30px);
+  margin-top: clamp(28px, 3.4vw, 48px);
+}
+
+.lx-gal-film {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  cursor: pointer;
+}
+
+.lx-gal-film-frame {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--lx-gal-r);
+  background: var(--lx-green-950);
+  box-shadow: var(--lx-sh-2), inset 0 0 0 1px var(--lx-gal-line);
+  transition:
+    transform var(--lx-d) var(--lx-e-out),
+    box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-gal-film:hover .lx-gal-film-frame,
+.lx-gal-film:focus-visible .lx-gal-film-frame {
+  transform: translateY(-7px);
+  box-shadow: var(--lx-sh-4), var(--lx-sh-gold), inset 0 0 0 1px var(--lx-gal-line-lit);
+}
+.lx-gal-film:focus-visible { outline: none; }
+.lx-gal-film:focus-visible .lx-gal-film-frame {
+  outline: 2px solid var(--lx-gold-500);
+  outline-offset: 3px;
+}
+
+.lx-gal-film-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.94) contrast(1.02);
+  transform: scale(1.004);
+  transition:
+    transform .9s var(--lx-e-out),
+    filter .6s var(--lx-e-out);
+}
+.lx-gal-film:hover .lx-gal-film-thumb,
+.lx-gal-film:focus-visible .lx-gal-film-thumb {
+  transform: scale(1.05);
+  filter: saturate(1.04) contrast(1.04);
+}
+
+.lx-gal-film-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    var(--lx-gal-scrim-2) 0%,
+    transparent 58%
+  );
+}
+
+/* ── Gold play button, gently pulsing ── */
+.lx-gal-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  width: clamp(50px, 4.6vw, 64px);
+  height: clamp(50px, 4.6vw, 64px);
+  /* Optical centring: the triangle's mass sits left of its bounding box. */
+  padding-left: .14em;
+  border-radius: 50%;
+  font-size: .82rem;
+  color: var(--lx-green-950);
+  background: var(--lx-grad-gold);
+  box-shadow: var(--lx-sh-gold);
+  transition: transform var(--lx-d) var(--lx-e-out);
+}
+.lx-gal-film:hover .lx-gal-play,
+.lx-gal-film:focus-visible .lx-gal-play { transform: scale(1.1); }
+
+.lx-gal-play::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--lx-gal-line-lit);
+  animation: lx-gal-pulse 2.9s var(--lx-e-io) infinite;
+}
+@keyframes lx-gal-pulse {
+  0%   { transform: scale(1);    opacity: .8; }
+  70%  { transform: scale(1.55); opacity: 0; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+
+.lx-gal-film-cap {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 15px;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-sm);
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: var(--lx-ink-2);
+  transition: color var(--lx-d-fast) ease;
+}
+.lx-gal-film-cap i {
+  flex: none;
+  width: 20px;
+  height: 1px;
+  background: var(--lx-grad-gold);
+  transition: width var(--lx-d) var(--lx-e-out);
+}
+.lx-gal-film:hover .lx-gal-film-cap { color: var(--lx-green-800); }
+.lx-gal-film:hover .lx-gal-film-cap i { width: 34px; }
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1024px) {
+  .lx-gal { --lx-gal-cols: 2; }
+}
+
+@media (max-width: 860px) {
+  .lx-gal-films-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Three films in two columns: the last one centres itself rather than
+     stretching across the full row. */
+  .lx-gal-film:last-child {
+    grid-column: 1 / -1;
+    max-width: calc(50% - (clamp(16px, 2.2vw, 30px) / 2));
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .lx-gal {
+    --lx-gal-cols: 1;
+    --lx-gal-portrait-h: clamp(360px, 62vh, 520px);
+  }
+  .lx-gal-films-grid { grid-template-columns: minmax(0, 1fr); }
+  .lx-gal-film:last-child { grid-column: auto; max-width: none; margin-inline: 0; }
+  .lx-gal-glyph { width: 36px; height: 36px; }
+}
+
+/* Touch and no-hover pointers never fire :hover, so the caption must not be
+   the only way to read a tile — reveal it permanently instead. */
+@media (hover: none), (pointer: coarse) {
+  .lx-gal-scrim { opacity: .92; }
+  .lx-gal-cap,
+  .lx-gal-glyph { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-gal-drift { transform: none !important; }
+  .lx-gal-play::before { animation: none; opacity: 0; }
+}

@@ -1,0 +1,471 @@
+/* ═══════════════════════════════════════════════════════════════
+   NATIONAL EVENTS — "National Recognition"
+   Two ceremonial panels (Rashtriya Karyakari Samiti, Ram Mandir),
+   each opening on a gold rule + badge, then a wall of dignitary
+   portraits, then photo and film carousels.
+
+   Namespaced `lx-ne-*`. This section used to borrow `.pers-card`
+   from Personalities; that coupling is gone — the portrait card
+   here is `lx-ne-card` and owns its own look (photo over a solid
+   name plate, rather than the full-bleed scrim used next door).
+
+   The lightbox and the swiper chrome come from styles/ui.css
+   (.lx-lb-*, .lx-swiper, .lx-arrow, .lx-dots) — never redefined.
+   ═══════════════════════════════════════════════════════════════ */
+
+.lx-ne {
+  --lx-ne-r: var(--lx-r-lg);
+  --lx-ne-card-r: var(--lx-r);
+  --lx-ne-rule: color-mix(in srgb, var(--lx-gold-500) 26%, transparent);
+  --lx-ne-rule-soft: color-mix(in srgb, var(--lx-gold-500) 15%, transparent);
+  --lx-ne-hair: color-mix(in srgb, var(--lx-ink) 6%, transparent);
+  --lx-ne-pad: clamp(20px, 3.4vw, 52px);
+}
+
+/* The legacy sheet carries `#national-events { padding; background }` twice at
+   ID weight, which would out-rank a plain `.lx-sec--paper`. Re-assert the
+   token values at matching specificity — a deep ivory ground that lifts to
+   white as the eye travels down the section. */
+#national-events.lx-ne {
+  padding-block: var(--lx-pad);
+  padding-inline: 0;
+  background:
+    radial-gradient(72% 46% at 88% 2%, color-mix(in srgb, var(--lx-gold-300) 24%, transparent), transparent 66%),
+    radial-gradient(58% 40% at 4% 98%, color-mix(in srgb, var(--lx-green-500) 7%, transparent), transparent 68%),
+    linear-gradient(180deg, var(--lx-ivory-2) 0%, var(--lx-ivory) 38%, var(--lx-paper) 100%);
+}
+
+.lx-ne-inner { position: relative; z-index: 1; }
+
+/* ── Decorative washes (GSAP drifts these on scrub) ── */
+.lx-ne-wash { z-index: 0; }
+.lx-ne-wash--a {
+  top: clamp(-110px, -7vw, -50px); right: clamp(-170px, -10vw, -80px);
+  width: clamp(320px, 40vw, 600px); aspect-ratio: 1;
+  opacity: .78;
+}
+.lx-ne-wash--b {
+  bottom: clamp(-140px, -9vw, -70px); left: clamp(-180px, -12vw, -90px);
+  width: clamp(300px, 36vw, 540px); aspect-ratio: 1;
+  opacity: .5;
+}
+
+/* ── Section head: the eyebrow is struck in gold foil ── */
+.lx-ne-head .lx-eyebrow .lx-foil { background-position: 24% 50%; }
+
+/* ═══ SUBSECTION PANEL ═══ */
+
+.lx-ne-subs {
+  margin-top: clamp(46px, 5.4vw, 84px);
+  display: flex; flex-direction: column;
+  gap: clamp(28px, 3.6vw, 56px);
+}
+
+.lx-ne-sub {
+  position: relative;
+  padding: var(--lx-ne-pad);
+  border-radius: var(--lx-ne-r);
+  background: var(--lx-paper);
+  box-shadow: var(--lx-sh-2), inset 0 0 0 1px var(--lx-ne-rule-soft);
+}
+
+/* Gold corner brackets — a printed-invitation cue, two corners only. */
+.lx-ne-corner {
+  position: absolute;
+  width: clamp(18px, 2.2vw, 30px); height: clamp(18px, 2.2vw, 30px);
+  pointer-events: none;
+  border: 1px solid var(--lx-ne-rule);
+}
+.lx-ne-corner--tl {
+  top: 12px; left: 12px;
+  border-right: 0; border-bottom: 0;
+  border-top-left-radius: calc(var(--lx-ne-r) - 10px);
+}
+.lx-ne-corner--br {
+  bottom: 12px; right: 12px;
+  border-left: 0; border-top: 0;
+  border-bottom-right-radius: calc(var(--lx-ne-r) - 10px);
+}
+
+/* ── Panel header ── */
+.lx-ne-sub-head {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 16px;
+  padding-top: clamp(14px, 1.6vw, 22px);
+}
+
+.lx-ne-rule {
+  display: block;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg,
+    var(--lx-gold-500) 0%,
+    var(--lx-gold-400) 26%,
+    var(--lx-ne-rule) 62%,
+    transparent 100%);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.lx-ne-badge {
+  gap: .6em;
+  background: color-mix(in srgb, var(--lx-gold-100) 76%, transparent);
+  color: var(--lx-gold-700);
+  letter-spacing: .13em;
+  box-shadow: inset 0 0 0 1px var(--lx-ne-rule);
+}
+.lx-ne-badge-dia {
+  width: 6px; height: 6px; flex: none;
+  background: var(--lx-grad-gold);
+  transform: rotate(45deg);
+}
+
+.lx-ne-sub-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(14px, 2.4vw, 46px);
+  width: 100%;
+}
+
+.lx-ne-sub-title {
+  margin: 0;
+  font-family: var(--lx-display);
+  font-size: clamp(1.62rem, 3.1vw, 2.65rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -.012em;
+  color: var(--lx-green-900);
+  text-wrap: balance;
+}
+
+.lx-ne-sub-desc {
+  margin: 0;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-lead);
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--lx-ink-3);
+  max-width: 52ch;
+  padding-bottom: .22em;
+}
+
+/* ═══ BLOCKS INSIDE A PANEL ═══ */
+
+.lx-ne-block { margin-top: clamp(30px, 3.6vw, 56px); }
+
+.lx-ne-block-head {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: clamp(16px, 2vw, 26px);
+}
+.lx-ne-block-title {
+  flex: none;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-eyebrow);
+  font-weight: 600;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--lx-green-700);
+}
+.lx-ne-block-rule {
+  flex: 1; min-width: 20px; height: 1px;
+  background: linear-gradient(90deg, var(--lx-ne-rule), transparent);
+}
+.lx-ne-block-count {
+  flex: none;
+  font-family: var(--lx-sans);
+  font-size: var(--lx-t-xs);
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--lx-ink-4);
+}
+
+.lx-ne-empty {
+  margin: clamp(22px, 3vw, 34px) 0 0;
+  text-align: center;
+  font-family: var(--lx-display);
+  font-style: italic;
+  font-size: var(--lx-t-lead);
+  color: var(--lx-ink-4);
+}
+
+/* ═══ DIGNITARY PORTRAIT CARDS (own styling — no .pers-* borrowing) ═══ */
+
+.lx-ne-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+.lx-ne-cell { min-width: 0; }
+.lx-ne-cell .lx-tilt-scene { height: 100%; }
+
+.lx-ne-card {
+  position: relative;
+  height: 100%;
+  display: flex; flex-direction: column;
+  border-radius: var(--lx-ne-card-r);
+  background: var(--lx-paper);
+  box-shadow: var(--lx-sh-1), inset 0 0 0 1px var(--lx-ne-hair);
+  /* Must stay 3D: an `overflow:hidden` here would flatten the tilt plane and
+     the name plate would stop parallaxing against the photograph. */
+  transform-style: preserve-3d;
+  /* transform is listed so this rule does not drop `.lx-tilt`'s own transition;
+     `.lx-tilt.is-tilting` still out-ranks it while the pointer is inside. */
+  transition: transform .5s var(--lx-e-out), box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-card:hover { box-shadow: var(--lx-sh-3), inset 0 0 0 1px var(--lx-ne-rule); }
+.lx-ne-card > .lx-glare { border-radius: var(--lx-ne-card-r); }
+
+/* Gold hairline that draws across the top of the card on hover. */
+.lx-ne-card::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 3px; z-index: 4;
+  background: var(--lx-grad-gold);
+  border-radius: var(--lx-ne-card-r) var(--lx-ne-card-r) 0 0;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .6s var(--lx-e-out);
+}
+.lx-ne-card:hover::before { transform: scaleX(1); }
+
+.lx-ne-fig {
+  margin: 0;
+  flex: 1;
+  display: flex; flex-direction: column;
+  transform-style: preserve-3d;
+}
+
+/* The photograph gets its own overflow box so the card plane stays 3D. */
+.lx-ne-shot {
+  position: relative;
+  display: block;
+  flex: none;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: var(--lx-ne-card-r) var(--lx-ne-card-r) 0 0;
+  background: var(--lx-green-900);
+}
+.lx-ne-img {
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover; object-position: center 20%;
+  filter: saturate(.96) contrast(1.02);
+  transform: scale(1.004);
+  transition: transform .85s var(--lx-e-out), filter .6s var(--lx-e-out);
+}
+.lx-ne-card:hover .lx-ne-img { transform: scale(1.055); filter: saturate(1.04) contrast(1.04); }
+
+.lx-ne-shot-veil {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--lx-green-950) 34%, transparent) 0%,
+    transparent 38%);
+}
+
+/* ── Name plate (floats forward on Z inside the tilt) ── */
+.lx-ne-plate.lx-tilt-layer {
+  /* 40px of Z is too much for small type — it softens the glyph edges. */
+  transform: translateZ(14px);
+}
+.lx-ne-plate {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5px;
+  padding: clamp(11px, 1.1vw, 16px) clamp(11px, 1.1vw, 15px) clamp(13px, 1.2vw, 17px);
+  transform-style: preserve-3d;
+  border-top: 1px solid var(--lx-ne-rule-soft);
+  border-radius: 0 0 var(--lx-ne-card-r) var(--lx-ne-card-r);
+  background: linear-gradient(180deg, var(--lx-ivory) 0%, var(--lx-paper) 100%);
+}
+.lx-ne-name {
+  font-family: var(--lx-display);
+  font-size: clamp(1rem, 1.15vw, 1.24rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -.005em;
+  color: var(--lx-green-900);
+  overflow-wrap: break-word;
+}
+.lx-ne-role {
+  font-family: var(--lx-sans);
+  font-size: clamp(.58rem, .62vw, .68rem);
+  font-weight: 600;
+  line-height: 1.46;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--lx-gold-700);
+  overflow-wrap: break-word;
+}
+
+/* ═══ MEDIA CAROUSELS ═══ */
+
+.lx-ne-carousel { position: relative; }
+
+/* `.lx-swiper` in ui.css forces `overflow: visible` so hover lift and shadow
+   are not cropped; this box re-clips the row so neighbouring slides do not
+   spill across the panel. Negative margin keeps the padding invisible. */
+.lx-ne-clip {
+  overflow: hidden;
+  /* Vertical padding only: the horizontal clip edge then lands exactly on the
+     row's edge (no sliver of the looped neighbour bleeding out) while the
+     hover lift and drop shadow still have room above and below. */
+  margin-block: -14px;
+  padding-block: 14px;
+}
+
+/* Swiper's own pagination CSS absolutely-positions `.swiper-pagination`; these
+   dots live outside the swiper, so pin them back into flow. */
+.lx-ne-carousel .lx-dots { position: relative; width: 100%; }
+
+/* Arrows sit against the panel's inner padding. */
+.lx-ne-stage .lx-arrow--prev { left: clamp(-24px, -1.5vw, -8px); }
+.lx-ne-stage .lx-arrow--next { right: clamp(-24px, -1.5vw, -8px); }
+
+.lx-ne-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0; padding: 0; border: 0;
+  background: none;
+  font: inherit; color: inherit;
+  cursor: pointer;
+  border-radius: var(--lx-r);
+  transition: transform var(--lx-d) var(--lx-e-out), box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-tile:hover { transform: translateY(-5px); }
+
+.lx-ne-tile-shot {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--lx-r);
+  background: var(--lx-green-950);
+  box-shadow: var(--lx-sh-1), inset 0 0 0 1px var(--lx-ne-hair);
+  transition: box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-tile:hover .lx-ne-tile-shot { box-shadow: var(--lx-sh-3), inset 0 0 0 1px var(--lx-ne-rule); }
+
+.lx-ne-tile-media {
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover; object-position: center;
+  transform: scale(1.004);
+  transition: transform .9s var(--lx-e-out);
+}
+.lx-ne-tile:hover .lx-ne-tile-media { transform: scale(1.08); }
+
+.lx-ne-tile-veil {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--lx-green-950) 62%, transparent) 0%,
+    color-mix(in srgb, var(--lx-green-950) 14%, transparent) 34%,
+    transparent 62%);
+  opacity: .5;
+  transition: opacity var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-tile:hover .lx-ne-tile-veil { opacity: .9; }
+
+/* Gold hairline frame that fades up inside the tile on hover. */
+.lx-ne-tile-frame {
+  position: absolute; inset: 8px;
+  pointer-events: none;
+  border-radius: calc(var(--lx-r) - 7px);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-300) 70%, transparent);
+  opacity: 0;
+  transition: opacity var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-tile:hover .lx-ne-tile-frame { opacity: 1; }
+
+/* ── Expand icon (top-right) ── */
+.lx-ne-tile-expand {
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  display: grid; place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  font-size: .68rem;
+  color: var(--lx-gold-300);
+  background: color-mix(in srgb, var(--lx-green-950) 58%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lx-gold-400) 40%, transparent);
+  opacity: 0;
+  transform: scale(.82);
+  transition: opacity var(--lx-d) var(--lx-e-out), transform var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-tile:hover .lx-ne-tile-expand,
+.lx-ne-tile:focus-visible .lx-ne-tile-expand { opacity: 1; transform: scale(1); }
+
+/* ── Gold play badge (centre, videos only) ── */
+.lx-ne-tile-play {
+  position: absolute; top: 50%; left: 50%; z-index: 3;
+  display: grid; place-items: center;
+  width: clamp(44px, 4.4vw, 56px); aspect-ratio: 1;
+  margin: 0;
+  border-radius: 50%;
+  font-size: .82rem;
+  color: var(--lx-green-950);
+  background: var(--lx-grad-gold);
+  box-shadow: var(--lx-sh-gold);
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform var(--lx-d) var(--lx-e-out), box-shadow var(--lx-d) var(--lx-e-out);
+}
+.lx-ne-tile-play svg { margin-left: 2px; }
+.lx-ne-tile--video:hover .lx-ne-tile-play {
+  transform: translate(-50%, -50%) scale(1.12);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--lx-gold-600) 42%, transparent);
+}
+
+/* ═══ RESPONSIVE ═══ */
+
+@media (max-width: 1200px) {
+  .lx-ne-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 960px) {
+  .lx-ne-sub-grid { grid-template-columns: minmax(0, 1fr); align-items: start; gap: 12px; }
+  .lx-ne-sub-desc { padding-bottom: 0; }
+  .lx-ne-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  /* ui.css pulls the shared arrows inboard here — match it so they do not
+     hang over the panel's rounded edge. */
+  .lx-ne-stage .lx-arrow--prev { left: 2px; }
+  .lx-ne-stage .lx-arrow--next { right: 2px; }
+}
+
+@media (max-width: 640px) {
+  .lx-ne { --lx-ne-r: var(--lx-r); --lx-ne-card-r: var(--lx-r-sm); }
+  .lx-ne-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .lx-ne-name { font-size: .98rem; }
+  .lx-ne-role { font-size: .56rem; letter-spacing: .1em; }
+  .lx-ne-badge { font-size: .68rem; letter-spacing: .1em; padding: 6px 12px; }
+  .lx-ne-block-head { flex-wrap: wrap; gap: 10px; }
+  .lx-ne-block-rule { min-width: 12px; }
+  .lx-ne-corner { width: 14px; height: 14px; top: 9px; left: 9px; }
+  .lx-ne-corner--br { top: auto; left: auto; bottom: 9px; right: 9px; }
+  .lx-ne-tile-expand { width: 28px; height: 28px; top: 10px; right: 10px; }
+}
+
+/* ── Touch: hover-only affordances must resolve to visible ── */
+@media (hover: none), (pointer: coarse) {
+  .lx-ne-tile-expand { opacity: 1; transform: scale(1); }
+  .lx-ne-tile-frame { opacity: .7; }
+  .lx-ne-tile-veil { opacity: .75; }
+  .lx-ne-card::before { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-ne-rule { transform: none !important; }
+  .lx-ne-img,
+  .lx-ne-tile-media { transform: none !important; }
+  .lx-ne-tile:hover { transform: none; }
+  .lx-ne-tile-expand { opacity: 1; transform: none; }
+  .lx-ne-card::before { transform: scaleX(1); }
+}

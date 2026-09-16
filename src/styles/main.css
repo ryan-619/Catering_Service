@@ -1,0 +1,33 @@
+/* ═══════════════════════════════════════════════════════════════
+   LTCS — new style entry.
+   Loaded AFTER the legacy index.css in main.jsx, so anything here
+   wins on equal specificity. Rewritten sections use `lx-` class
+   names, which the legacy sheet never targets, so the two layers
+   coexist while the rewrite rolls through section by section.
+   ═══════════════════════════════════════════════════════════════ */
+
+@import './tokens.css';
+@import './ui.css';
+
+@import './sections/navbar.css';
+@import './sections/hero.css';
+@import './sections/about.css';
+@import './sections/founder.css';
+@import './sections/services.css';
+@import './sections/speciality.css';
+@import './sections/stats.css';
+@import './sections/cuisines.css';
+@import './sections/personalities.css';
+@import './sections/national.css';
+@import './sections/gallery.css';
+@import './sections/videos.css';
+@import './sections/reviews.css';
+@import './sections/charity.css';
+@import './sections/cta.css';
+@import './sections/faq.css';
+@import './sections/contact.css';
+@import './sections/gratitude.css';
+@import './sections/footer.css';
+@import './sections/loader.css';
+@import './sections/modal.css';
+@import './sections/fab.css';

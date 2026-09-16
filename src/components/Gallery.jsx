@@ -1,7 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { FaExpand, FaTimes, FaChevronLeft, FaChevronRight, FaPlay } from 'react-icons/fa'
-import { FadeUp } from './AnimatedSection'
+import { useState } from 'react'
+import { FaExpand, FaPlay } from 'react-icons/fa'
+
+import { gsap, ScrollTrigger, prefersReducedMotion } from '../lib/gsapSetup'
+import { useGsapContext } from '../lib/useGsap'
+import Reveal from './ui/Reveal'
+import SectionHead from './ui/SectionHead'
+import Lightbox from './ui/Lightbox'
 
 import ev1 from '../assets/events/ev1.jpg'
 import ev2 from '../assets/events/ev2.jpg'
@@ -15,8 +19,9 @@ import evv2 from '../assets/events/ev-v2.mp4'
 import evv3 from '../assets/events/ev-v3.mp4'
 
 // Six of these are wide 20:9 panoramas of the live counters and one (ev7) is a
-// portrait, so the grid spans are assigned to match each shot's real aspect
-// ratio rather than forcing everything into the same cell.
+// portrait. A fixed grid would crop them badly, so the wall is a CSS-columns
+// masonry: every tile keeps its real aspect ratio and `cls` survives only as a
+// modifier hint (the portrait gets a height cap so it cannot run 1200px tall).
 const photos = [
   { src: ev1, cls: 'wide', cap: 'Illuminated Live Counter' },
   { src: ev7, cls: 'portrait', cap: 'Sweet & Dessert Station' },
@@ -40,166 +45,163 @@ const allMedia = [
   ...videos.map((v) => ({ src: v.src, type: 'video', cap: v.cap })),
 ]
 
+/* Below this width the masonry is one or two columns and a per-column drift
+   reads as jitter rather than depth, so the scrub is simply not built. */
+const DRIFT_MIN_WIDTH = 720
+/* Half-travel, in px, of the outermost column. Adjacent columns end up ~22px
+   apart at the extremes — enough to feel engineered, small enough to stay calm. */
+const DRIFT_STEP = 11
+
 export default function Gallery() {
-  const [lightbox, setLightbox] = useState(null)
+  // `null` = closed. The shared Lightbox owns keyboard, scroll-lock and portal.
+  const [lbIndex, setLbIndex] = useState(null)
 
-  const openLightbox = (index) => setLightbox({ index })
-  const closeLightbox = () => setLightbox(null)
+  const scope = useGsapContext((ctx, el) => {
+    if (prefersReducedMotion()) return
+    if (window.innerWidth < DRIFT_MIN_WIDTH) return
 
-  const prevItem = useCallback(() => {
-    setLightbox((p) => p && { index: (p.index - 1 + allMedia.length) % allMedia.length })
-  }, [])
+    const masonry = el.querySelector('.lx-gal-masonry')
+    const tiles = gsap.utils.toArray('.lx-gal-tile', el)
+    if (!masonry || !tiles.length) return
 
-  const nextItem = useCallback(() => {
-    setLightbox((p) => p && { index: (p.index + 1) % allMedia.length })
-  }, [])
+    // CSS columns place tiles at a handful of discrete x offsets; the sorted
+    // set of those offsets IS the column order. Measured rather than assumed so
+    // the same code works at 3 columns and at 2.
+    const lefts = [...new Set(tiles.map((t) => Math.round(t.offsetLeft)))].sort((a, b) => a - b)
+    const mid = (lefts.length - 1) / 2
 
-  useEffect(() => {
-    const handleKey = (e) => {
-      if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') prevItem()
-      if (e.key === 'ArrowRight') nextItem()
+    tiles.forEach((tile) => {
+      const col = lefts.indexOf(Math.round(tile.offsetLeft))
+      const amp = (col - mid) * DRIFT_STEP
+      if (!amp) return
+      // The drift rides an inner span so it never fights the clip-path reveal
+      // GSAP puts on the tile itself.
+      gsap.fromTo(
+        tile.querySelector('.lx-gal-drift'),
+        { y: -amp },
+        {
+          y: amp,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: masonry,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.9,
+            invalidateOnRefresh: true,
+          },
+        }
+      )
+    })
+
+    // Natural-ratio tiles reserve no height, so each lazily-decoded image grows
+    // its column and invalidates the scrub's end point. Lazy loading means they
+    // land one at a time while scrolling, hence the debounce.
+    let settleTimer = 0
+    const settle = () => {
+      clearTimeout(settleTimer)
+      settleTimer = setTimeout(() => {
+        if (el.isConnected) ScrollTrigger.refresh()
+      }, 140)
     }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [prevItem, nextItem])
-
-  // Body scroll lock while the lightbox is open.
-  useEffect(() => {
-    document.body.style.overflow = lightbox ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [lightbox])
-
-  const current = lightbox ? allMedia[lightbox.index] : null
+    el.querySelectorAll('.lx-gal-img').forEach((img) => {
+      if (img.complete) return
+      img.addEventListener('load', settle, { once: true })
+      img.addEventListener('error', settle, { once: true })
+    })
+  }, [])
 
   return (
-    <section id="gallery">
-      <div className="ct">
+    <section id="gallery" className="lx-sec lx-sec--ivory lx-gal" ref={scope}>
+      <span className="lx-wash lx-wash--gold lx-gal-wash lx-gal-wash--a" aria-hidden="true" />
+      <span className="lx-wash lx-wash--green lx-gal-wash lx-gal-wash--b" aria-hidden="true" />
 
-        <FadeUp>
-          <div className="gh">
-            <span className="ey">Photo Gallery</span>
-            <span className="gline"></span>
-            <h2 className="st">Moments We've Crafted</h2>
-            <p className="gallery-subtitle">
-              A glimpse into the events, celebrations and memories
-              we have been privileged to be part of.
+      <div className="lx-ct-wide lx-gal-inner">
+
+        <SectionHead
+          eyebrow="Photo Gallery"
+          title="Moments We've Crafted"
+          lead="A glimpse into the events, celebrations and memories we have been privileged to be part of."
+        >
+          <Reveal from="up" delay={0.18}>
+            <p className="lx-gal-count">
+              <span>{photos.length} photographs</span>
+              <i aria-hidden="true">·</i>
+              <span>{videos.length} films</span>
             </p>
-          </div>
-        </FadeUp>
+          </Reveal>
+        </SectionHead>
 
-        {/* Photos */}
-        <FadeUp delay={0.15}>
-          <div className="gallery-masonry">
-            {photos.map((item, i) => (
-              <motion.div
-                className={`gm-item ${item.cls}`}
+        {/* ── Photographs ── */}
+        <Reveal className="lx-gal-masonry" from="mask" stagger={0.07} duration={0.95}>
+          {photos.map((item, i) => (
+            <button
+              type="button"
+              key={i}
+              className={`lx-gal-tile ${item.cls ? `lx-gal-tile--${item.cls}` : ''}`}
+              onClick={() => setLbIndex(i)}
+              aria-label={`Open ${item.cap} full size`}
+              data-cursor="hot"
+            >
+              <span className="lx-gal-drift">
+                <span className="lx-gal-frame">
+                  <img className="lx-gal-img" src={item.src} alt={item.cap} loading="lazy" />
+                  <span className="lx-gal-scrim" aria-hidden="true" />
+                  <span className="lx-gal-meta">
+                    <span className="lx-gal-cap">{item.cap}</span>
+                    <span className="lx-gal-glyph" aria-hidden="true"><FaExpand /></span>
+                  </span>
+                </span>
+              </span>
+            </button>
+          ))}
+        </Reveal>
+
+        {/* ── Films ── */}
+        <div className="lx-gal-films">
+          <Reveal from="up" className="lx-gal-films-head">
+            <span className="lx-orn" aria-hidden="true"><i /><b /><i /></span>
+            <h3 className="lx-h3 lx-gal-films-title">Behind the Setup</h3>
+            <p className="lx-gal-films-note">Three short films from the floor, shot on the night.</p>
+          </Reveal>
+
+          <Reveal className="lx-gal-films-grid" from="up" stagger={0.09}>
+            {videos.map((v, i) => (
+              <button
+                type="button"
                 key={i}
-                initial={{ opacity: 0, y: 24, scale: 0.97 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.55, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -6 }}
-                onClick={() => openLightbox(i)}
+                className="lx-gal-film"
+                onClick={() => setLbIndex(photos.length + i)}
+                aria-label={`Play ${v.cap}`}
+                data-cursor="hot"
               >
-                <img src={item.src} alt={item.cap} loading="lazy" />
-                <div className="gm-overlay">
-                  <FaExpand className="gm-icon" />
-                  <span className="gm-cap">{item.cap}</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </FadeUp>
-
-        {/* Videos */}
-        <FadeUp delay={0.2}>
-          <div className="gallery-videos">
-            <h3 className="gallery-carousel-title">Behind the Setup</h3>
-            <div className="gv-grid">
-              {videos.map((v, i) => (
-                <motion.div
-                  className="gv-card"
-                  key={i}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -6 }}
-                  onClick={() => openLightbox(photos.length + i)}
-                >
+                <span className="lx-gal-film-frame">
                   <video
                     src={v.src}
                     muted
                     playsInline
                     preload="metadata"
-                    className="gv-thumb"
+                    className="lx-gal-film-thumb"
                   />
-                  <div className="gv-overlay">
-                    <span className="gv-play"><FaPlay /></span>
-                  </div>
-                  <div className="gv-cap">{v.cap}</div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </FadeUp>
+                  <span className="lx-gal-film-scrim" aria-hidden="true" />
+                  <span className="lx-gal-play" aria-hidden="true"><FaPlay /></span>
+                </span>
+                <span className="lx-gal-film-cap">
+                  <i aria-hidden="true" />
+                  {v.cap}
+                </span>
+              </button>
+            ))}
+          </Reveal>
+        </div>
 
       </div>
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {current && (
-          <motion.div
-            className="gallery-lightbox"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeLightbox}
-          >
-            <motion.div
-              className="gallery-lightbox-inner"
-              initial={{ scale: 0.9, opacity: 0, y: 16 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 16 }}
-              transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button className="gallery-lightbox-close" onClick={closeLightbox} aria-label="Close">
-                <FaTimes />
-              </button>
-              <button className="gallery-lightbox-prev" onClick={prevItem} aria-label="Previous">
-                <FaChevronLeft />
-              </button>
-
-              {current.type === 'video' ? (
-                <video
-                  key={current.src}
-                  src={current.src}
-                  controls
-                  autoPlay
-                  playsInline
-                  className="gallery-lightbox-img"
-                />
-              ) : (
-                <img
-                  key={current.src}
-                  src={current.src}
-                  alt={current.cap}
-                  className="gallery-lightbox-img"
-                />
-              )}
-
-              <button className="gallery-lightbox-next" onClick={nextItem} aria-label="Next">
-                <FaChevronRight />
-              </button>
-              <div className="gallery-lightbox-counter">
-                {current.cap} &nbsp;·&nbsp; {lightbox.index + 1} / {allMedia.length}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Lightbox
+        items={allMedia}
+        index={lbIndex}
+        onClose={() => setLbIndex(null)}
+        onIndexChange={setLbIndex}
+      />
     </section>
   )
 }
