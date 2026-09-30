@@ -1,0 +1,9 @@
+# https://www.lalatrivedicateringservice.com/robots.txt
+User-agent: *
+Allow: /
+
+# The admin panel is staff-only and has nothing to index.
+Disallow: /admin
+Disallow: /admin/
+
+Sitemap: https://www.lalatrivedicateringservice.com/sitemap.xml

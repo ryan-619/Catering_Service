@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import PageLoader from './components/PageLoader'
 import TopBar from './components/TopBar'
 import Navbar from './components/Navbar'
@@ -31,6 +31,15 @@ import FloatingActions from './components/FloatingActions'
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState(false)
+
+  /* index.html ships a static shell — the page's copy in plain semantic HTML —
+     so crawlers and no-JS visitors get real content instead of an empty #root,
+     and slow connections get a branded first paint rather than a white screen.
+     It is a fixed overlay, so React mounts behind it; this runs after the first
+     commit but before paint, which means the handover has no blank frame. */
+  useLayoutEffect(() => {
+    document.getElementById('ltcs-shell')?.remove()
+  }, [])
 
   const openModal = () => setModalOpen(true)
   const closeModal = () => setModalOpen(false)
