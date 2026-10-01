@@ -306,6 +306,25 @@ footer.lx-ftr {
   color: color-mix(in srgb, var(--lx-paper) 22%, transparent);
 }
 
+/* Agency credit. Sits a step brighter than the surrounding legal text so it
+   reads as a link, but stays well below the client's own brand in the
+   hierarchy — it is their footer, not ours. */
+.lx-ftr-made-link {
+  color: color-mix(in srgb, var(--lx-gold-400) 72%, transparent);
+  font-weight: 500;
+  text-decoration: none;
+  background-image: linear-gradient(var(--lx-gold-400), var(--lx-gold-400));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  transition: color var(--lx-d-fast) ease, background-size var(--lx-d) var(--lx-e-out);
+}
+.lx-ftr-made-link:hover,
+.lx-ftr-made-link:focus-visible {
+  color: var(--lx-gold-300);
+  background-size: 100% 1px;
+}
+
 /* ── Back to top ── */
 .lx-ftr-top {
   display: grid;

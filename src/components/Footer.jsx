@@ -154,7 +154,18 @@ export default function Footer() {
           </p>
 
           <div className="lx-ftr-bot-end">
-            <p className="lx-ftr-made">Designed with ♥ for LTCS</p>
+            <p className="lx-ftr-made">
+              Designed &amp; developed by{' '}
+              <a
+                className="lx-ftr-made-link"
+                href="https://pinweb.in"
+                target="_blank"
+                rel="noopener"
+                data-cursor="hot"
+              >
+                PinWeb
+              </a>
+            </p>
             <button
               type="button"
               className="lx-ftr-top"

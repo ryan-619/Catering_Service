@@ -159,12 +159,20 @@
             }
           },
           {
+            "@type": "Organization",
+            "@id": "https://pinweb.in/#agency",
+            "name": "PinWeb",
+            "url": "https://pinweb.in",
+            "description": "IT company and management software provider in India — website development, school and hospital ERP, and digital marketing."
+          },
+          {
             "@type": "WebSite",
             "@id": "https://www.lalatrivedicateringservice.com/#website",
             "url": "https://www.lalatrivedicateringservice.com/",
             "name": "Lala Trivedi Catering Service",
             "inLanguage": "en-IN",
-            "publisher": { "@id": "https://www.lalatrivedicateringservice.com/#business" }
+            "publisher": { "@id": "https://www.lalatrivedicateringservice.com/#business" },
+            "creator": { "@id": "https://pinweb.in/#agency" }
           },
           {
             "@type": "WebPage",
@@ -173,6 +181,7 @@
             "name": "Lala Trivedi Catering Service — Pure Veg Caterers in Kanpur",
             "isPartOf": { "@id": "https://www.lalatrivedicateringservice.com/#website" },
             "about": { "@id": "https://www.lalatrivedicateringservice.com/#business" },
+            "creator": { "@id": "https://pinweb.in/#agency" },
             "primaryImageOfPage": "https://www.lalatrivedicateringservice.com/og-image.jpg"
           }
         ]
@@ -218,6 +227,7 @@
       #ltcs-shell li { margin-bottom: 4px; }
       #ltcs-shell a { color: #efd8a0; }
       #ltcs-shell hr { border: 0; border-top: 1px solid rgba(200, 162, 74, 0.32); margin: 34px 0; }
+      #ltcs-shell .credit { margin-top: 26px; font-size: 0.85rem; color: rgba(251, 249, 242, 0.55); }
     </style>
   </head>
 
@@ -267,6 +277,9 @@
             Office: 7/1, 7/2 LT Enclave, Krishna Nagar, Kanpur – 208007, Uttar Pradesh, India.
           </p>
           <p>GSTIN: 09ACSPT6343B2Z7</p>
+          <p class="credit">
+            Designed &amp; developed by <a href="https://pinweb.in" rel="noopener">PinWeb</a>
+          </p>
       </div>
     </div>
     <div id="root"></div>
